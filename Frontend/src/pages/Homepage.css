@@ -6,6 +6,49 @@
   overflow-x: hidden;
 }
 
+/* Scroll Animations */
+.animate-on-scroll {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.animate-on-scroll.animate-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Stagger animation for feature cards */
+.feature-card.animate-on-scroll:nth-child(1) {
+  transition-delay: 0.1s;
+}
+
+.feature-card.animate-on-scroll:nth-child(2) {
+  transition-delay: 0.2s;
+}
+
+.feature-card.animate-on-scroll:nth-child(3) {
+  transition-delay: 0.3s;
+}
+
+.feature-card.animate-on-scroll:nth-child(4) {
+  transition-delay: 0.4s;
+}
+
+/* Stats animation from left/right */
+.stats-illustration.animate-on-scroll {
+  transform: translateX(-50px);
+}
+
+.stats-grid.animate-on-scroll {
+  transform: translateX(50px);
+}
+
+.stats-illustration.animate-on-scroll.animate-in,
+.stats-grid.animate-on-scroll.animate-in {
+  transform: translateX(0);
+}
+
 /* Hero Section with Background Image */
 .hero {
   width: 100%;
@@ -241,13 +284,43 @@
   min-height: 100vh;
   height: auto;
   padding: 6rem 2rem;
-  background: var(--primary-gradient);
+  background: transparent;
   margin: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
   overflow: hidden;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+.stats::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(29, 78, 216, 0.92),
+    rgba(30, 64, 175, 0.92)
+  );
+  backdrop-filter: blur(4px);
+  z-index: 0;
+}
+
+/* Dark mode - Stats stays in blue theme */
+.dark .stats::before {
+  background: linear-gradient(
+    135deg,
+    rgba(30, 64, 175, 0.92),
+    rgba(29, 78, 216, 0.92)
+  );
+  backdrop-filter: blur(4px);
 }
 
 .stats-content {
@@ -258,6 +331,8 @@
   grid-template-columns: 1fr 1.2fr;
   gap: 4rem;
   align-items: center;
+  position: relative;
+  z-index: 1;
 }
 
 .stats-illustration {
@@ -341,13 +416,35 @@
   min-height: 60vh;
   height: auto;
   padding: 6rem 2rem;
-  background: var(--section-bg);
+  background: transparent;
   margin: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
   overflow: hidden;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+.cta::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(4px);
+  z-index: 0;
+}
+
+/* Dark mode - CTA matches features section dark overlay */
+.dark .cta::before {
+  background: rgba(15, 23, 42, 0.95);
+  backdrop-filter: blur(4px);
 }
 
 .cta-content {
@@ -368,7 +465,7 @@
   left: 50%;
   transform: translate(-50%, -50%);
   opacity: 0.05;
-  z-index: 1;
+  z-index: 0;
 }
 
 .cta-logo-image {
@@ -400,6 +497,8 @@
   cursor: pointer;
   transition: all 0.3s ease;
   font-family: inherit;
+  position: relative;
+  z-index: 10;
 }
 
 .btn-primary {
@@ -409,8 +508,14 @@
 }
 
 .btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 16px rgba(59, 130, 246, 0.4);
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 8px 20px rgba(59, 130, 246, 0.5);
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+}
+
+.btn-primary:active {
+  transform: translateY(0) scale(0.98);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
 }
 
 .btn-secondary {

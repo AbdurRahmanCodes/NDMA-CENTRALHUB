@@ -1,20 +1,52 @@
+import { useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import "./Homepage.css";
 import heroImage from "../assets/1.jpg";
 import featuresImage from "../assets/2.jpg";
 import logo from "../assets/logo.png";
-import EarthquakeIcon from "./icons/EarthquakeIcon";
-import FloodIcon from "./icons/FloodIcon";
-import ReportIcon from "./icons/ReportIcon";
-import AgencyIcon from "./icons/AgencyIcon";
-import StatsIllustration from "./icons/StatsIllustration";
-import BoxIcon from "./icons/BoxIcon";
-import CheckCircleIcon from "./icons/CheckCircleIcon";
-import ClockIcon from "./icons/ClockIcon";
+import EarthquakeIcon from "../components/icons/EarthquakeIcon";
+import FloodIcon from "../components/icons/FloodIcon";
+import ReportIcon from "../components/icons/ReportIcon";
+import AgencyIcon from "../components/icons/AgencyIcon";
+import StatsIllustration from "../components/icons/StatsIllustration";
+import BoxIcon from "../components/icons/BoxIcon";
+import CheckCircleIcon from "../components/icons/CheckCircleIcon";
+import ClockIcon from "../components/icons/ClockIcon";
 
 export default function Homepage() {
+  const observerRef = useRef(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // Create intersection observer for scroll animations
+    observerRef.current = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("animate-in");
+          }
+        });
+      },
+      {
+        threshold: 0.1,
+        rootMargin: "0px 0px -50px 0px",
+      }
+    );
+
+    // Observe all elements with animate-on-scroll class
+    const elements = document.querySelectorAll(".animate-on-scroll");
+    elements.forEach((el) => observerRef.current.observe(el));
+
+    // Cleanup
+    return () => {
+      if (observerRef.current) {
+        observerRef.current.disconnect();
+      }
+    };
+  }, []);
+
   return (
     <div className="homepage">
-      {/* Hero Section with Background Image */}
       <section
         className="hero"
         style={{ backgroundImage: `url(${heroImage})` }}
@@ -22,13 +54,6 @@ export default function Homepage() {
         <div className="hero-overlay"></div>
         <div className="hero-container">
           <div className="hero-content">
-            <div className="hero-logo">
-              <img
-                src={logo}
-                alt="Floods Insights"
-                className="hero-logo-image"
-              />
-            </div>
             <h1 className="hero-title">
               Predicting Natural Disasters,
               <span className="gradient-text"> Protecting Lives</span>
@@ -47,20 +72,19 @@ export default function Homepage() {
         </div>
       </section>
 
-      {/* Features Section with Background Image */}
       <section
         className="features"
         style={{ backgroundImage: `url(${featuresImage})` }}
       >
         <div className="features-overlay"></div>
         <div className="features-container">
-          <h2 className="section-title">How We Help</h2>
-          <p className="section-description">
+          <h2 className="section-title animate-on-scroll">How We Help</h2>
+          <p className="section-description animate-on-scroll">
             Comprehensive disaster analysis and reporting for emergency agencies
           </p>
 
           <div className="features-grid">
-            <div className="feature-card">
+            <div className="feature-card animate-on-scroll">
               <div className="feature-icon earthquake">
                 <EarthquakeIcon />
               </div>
@@ -72,7 +96,7 @@ export default function Homepage() {
               </p>
             </div>
 
-            <div className="feature-card">
+            <div className="feature-card animate-on-scroll">
               <div className="feature-icon flood">
                 <FloodIcon />
               </div>
@@ -83,7 +107,7 @@ export default function Homepage() {
               </p>
             </div>
 
-            <div className="feature-card">
+            <div className="feature-card animate-on-scroll">
               <div className="feature-icon report">
                 <ReportIcon />
               </div>
@@ -94,7 +118,7 @@ export default function Homepage() {
               </p>
             </div>
 
-            <div className="feature-card">
+            <div className="feature-card animate-on-scroll">
               <div className="feature-icon agencies">
                 <AgencyIcon />
               </div>
@@ -110,13 +134,16 @@ export default function Homepage() {
       </section>
 
       {/* Stats Section */}
-      <section className="stats">
+      <section
+        className="stats"
+        style={{ backgroundImage: `url(${featuresImage})` }}
+      >
         <div className="stats-content">
-          <div className="stats-illustration">
+          <div className="stats-illustration animate-on-scroll">
             <StatsIllustration />
           </div>
 
-          <div className="stats-grid">
+          <div className="stats-grid animate-on-scroll">
             <div className="stat-item">
               <div className="stat-icon">
                 <BoxIcon />
@@ -153,8 +180,11 @@ export default function Homepage() {
       </section>
 
       {/* CTA Section */}
-      <section className="cta">
-        <div className="cta-content">
+      <section
+        className="cta"
+        style={{ backgroundImage: `url(${featuresImage})` }}
+      >
+        <div className="cta-content animate-on-scroll">
           <div className="cta-logo-watermark">
             <img src={logo} alt="" className="cta-logo-image" />
           </div>
@@ -163,7 +193,12 @@ export default function Homepage() {
             Start using our advanced tools to protect your community from
             natural disasters
           </p>
-          <button className="btn btn-primary btn-large">Get Started Now</button>
+          <button
+            className="btn btn-primary btn-large"
+            onClick={() => navigate("/analyze")}
+          >
+            Get Started Now
+          </button>
         </div>
       </section>
     </div>
