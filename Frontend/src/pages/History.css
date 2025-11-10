@@ -6,6 +6,50 @@
   background: var(--section-bg);
 }
 
+/* Mouse Glow Effect */
+.mouse-glow {
+  position: fixed;
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(59, 130, 246, 0.4) 0%,
+    rgba(59, 130, 246, 0.2) 30%,
+    rgba(59, 130, 246, 0.1) 50%,
+    transparent 70%
+  );
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  z-index: 50;
+  mix-blend-mode: screen;
+  filter: blur(40px);
+  transition: opacity 0.3s ease;
+  animation: glowPulse 3s ease-in-out infinite;
+}
+
+@keyframes glowPulse {
+  0%,
+  100% {
+    opacity: 0.8;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.05);
+  }
+}
+
+.dark .mouse-glow {
+  background: radial-gradient(
+    circle,
+    rgba(96, 165, 250, 0.5) 0%,
+    rgba(59, 130, 246, 0.3) 30%,
+    rgba(37, 99, 235, 0.15) 50%,
+    transparent 70%
+  );
+}
+
 .slides-container {
   width: 100%;
   height: 100%;
@@ -33,14 +77,14 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(3px);
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(8px);
   z-index: 0;
 }
 
 .dark .slide::before {
-  background: rgba(15, 23, 42, 0.85);
-  backdrop-filter: blur(3px);
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(8px);
 }
 
 .slide-content {
@@ -73,9 +117,9 @@
 .slide-title {
   font-size: 4rem;
   font-weight: 700;
-  color: var(--text-primary);
+  color: #1e3a8a;
   margin-bottom: 1.5rem;
-  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  background: linear-gradient(135deg, #2563eb, #1e40af);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -83,6 +127,16 @@
   opacity: 0;
   transform: translateY(30px);
   transition: opacity 0.6s ease-out 0.2s, transform 0.6s ease-out 0.2s;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.dark .slide-title {
+  color: #93c5fd;
+  background: linear-gradient(135deg, #60a5fa, #93c5fd);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 0 2px 8px rgba(96, 165, 250, 0.3);
 }
 
 .slide.active .slide-title {
@@ -92,12 +146,18 @@
 
 .slide-subtitle {
   font-size: 1.75rem;
-  color: var(--text-secondary);
+  color: #475569;
   margin-bottom: 2rem;
   font-weight: 500;
   opacity: 0;
   transform: translateY(30px);
   transition: opacity 0.6s ease-out 0.4s, transform 0.6s ease-out 0.4s;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.dark .slide-subtitle {
+  color: #cbd5e1;
+  text-shadow: 0 1px 3px rgba(203, 213, 225, 0.2);
 }
 
 .slide.active .slide-subtitle {
@@ -107,13 +167,19 @@
 
 .slide-description {
   font-size: 1.25rem;
-  color: var(--text-secondary);
+  color: #334155;
   line-height: 1.8;
   max-width: 800px;
   margin: 0 auto;
   opacity: 0;
   transform: translateY(30px);
   transition: opacity 0.6s ease-out 0.6s, transform 0.6s ease-out 0.6s;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+
+.dark .slide-description {
+  color: #e2e8f0;
+  text-shadow: 0 1px 3px rgba(226, 232, 240, 0.15);
 }
 
 .slide.active .slide-description {
@@ -132,12 +198,18 @@
 .slide-list li {
   font-size: 1.5rem;
   padding: 1rem 0;
-  color: var(--text-primary);
+  color: #1e293b;
   position: relative;
   padding-left: 2rem;
   opacity: 0;
   transform: translateX(-30px);
   transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+
+.dark .slide-list li {
+  color: #f1f5f9;
+  text-shadow: 0 1px 3px rgba(241, 245, 249, 0.15);
 }
 
 .slide.active .slide-list li:nth-child(1) {

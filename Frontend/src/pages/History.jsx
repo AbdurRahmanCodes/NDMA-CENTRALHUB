@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import "./History.css";
 import useSlideNavigation from "../hooks/useSlideNavigation";
 import SlideIndicator from "../components/history/SlideIndicator";
@@ -9,6 +9,8 @@ import Slide from "../components/history/Slide";
 export default function History() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const glowRef = useRef(null);
   const totalSlides = slidesData.length;
 
   const goToSlide = useCallback(
@@ -37,11 +39,34 @@ export default function History() {
     }
   }, [currentSlide, goToSlide]);
 
+  // Mouse glow effect
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      setMousePosition({ x: e.clientX, y: e.clientY });
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+    };
+  }, []);
+
   // Use custom hook for keyboard, wheel, and touch navigation
   useSlideNavigation(currentSlide, totalSlides, isAnimating, goToSlide);
 
   return (
     <div className="history-page">
+      {/* Mouse Glow Effect */}
+      <div
+        ref={glowRef}
+        className="mouse-glow"
+        style={{
+          left: `${mousePosition.x}px`,
+          top: `${mousePosition.y}px`,
+        }}
+      ></div>
+
       <div
         className="slides-container"
         style={{
