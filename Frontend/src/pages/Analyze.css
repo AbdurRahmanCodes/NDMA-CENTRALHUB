@@ -3,6 +3,7 @@
   height: calc(100vh - 70px); /* Account for navbar height */
   overflow: hidden;
   background: var(--section-bg);
+  position: relative;
 }
 
 .dashboard-container {
@@ -16,6 +17,8 @@
     "left-sidebar charts right-sidebar";
   gap: 0;
   overflow: hidden;
+  position: relative;
+  max-height: 100%;
 }
 
 /* Left Sidebar - Info & Stats */
@@ -27,7 +30,6 @@
   background: var(--section-bg);
   box-shadow: 4px 0 20px rgba(0, 0, 0, 0.08);
   z-index: 10;
-  border-right: 1px solid var(--border-color);
 }
 
 [data-theme="dark"] .left-sidebar-section {
@@ -52,7 +54,6 @@
   background: var(--section-bg);
   box-shadow: -4px 0 20px rgba(0, 0, 0, 0.08);
   z-index: 10;
-  border-left: 1px solid var(--border-color);
 }
 
 [data-theme="dark"] .right-sidebar-section {
@@ -66,7 +67,7 @@
   overflow: hidden;
   background: var(--section-bg);
   border-top: 1px solid var(--border-color);
-  padding-block: 15px;
+  padding: 0px;
 }
 
 /* Responsive Layouts */

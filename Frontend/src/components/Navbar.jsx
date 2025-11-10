@@ -1,6 +1,15 @@
 import { useEffect, useState, useRef } from "react";
 import { Link, NavLink } from "react-router";
-import { Sun, Moon, User, Bookmark, Settings, LogOut } from "lucide-react";
+import {
+  Sun,
+  Moon,
+  User,
+  Bookmark,
+  Settings,
+  LogOut,
+  Menu,
+  X,
+} from "lucide-react";
 import "./Navbar.css";
 
 export default function Navbar() {
@@ -10,6 +19,7 @@ export default function Navbar() {
     return savedTheme || "light";
   });
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [menuAnimation, setMenuAnimation] = useState("");
   const dropdownRef = useRef(null);
   const buttonRef = useRef(null);
@@ -29,6 +39,14 @@ export default function Navbar() {
       setIsUserMenuOpen(true);
       setMenuAnimation("entering");
     }
+  }
+
+  function toggleMobileMenu() {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  }
+
+  function closeMobileMenu() {
+    setIsMobileMenuOpen(false);
   }
 
   function handleLogout() {
@@ -60,6 +78,30 @@ export default function Navbar() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isUserMenuOpen]);
 
+  // Close mobile menu when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event) {
+      const navbar = document.querySelector(".navbar-container");
+      const mobileMenu = document.querySelector(".navbar-links");
+
+      if (
+        isMobileMenuOpen &&
+        navbar &&
+        !navbar.contains(event.target) &&
+        mobileMenu &&
+        !mobileMenu.contains(event.target)
+      ) {
+        setIsMobileMenuOpen(false);
+      }
+    }
+
+    if (isMobileMenuOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [isMobileMenuOpen]);
+
   useEffect(() => {
     document.documentElement.className = theme;
     document.documentElement.setAttribute("data-theme", theme);
@@ -74,29 +116,52 @@ export default function Navbar() {
             <span className="logo-text">Floods Insights</span>
           </div>
 
-          <ul className="navbar-links">
+          <ul
+            className={`navbar-links ${isMobileMenuOpen ? "mobile-open" : ""}`}
+          >
             <li>
-              <NavLink to="/" className="nav-link" end>
+              <NavLink
+                to="/"
+                className="nav-link"
+                end
+                onClick={closeMobileMenu}
+              >
                 Home
               </NavLink>
             </li>
             <li>
-              <NavLink to="/history" className="nav-link">
+              <NavLink
+                to="/history"
+                className="nav-link"
+                onClick={closeMobileMenu}
+              >
                 History of Floods
               </NavLink>
             </li>
             <li>
-              <NavLink to="/analyze" className="nav-link">
+              <NavLink
+                to="/analyze"
+                className="nav-link"
+                onClick={closeMobileMenu}
+              >
                 Analyze
               </NavLink>
             </li>
             <li>
-              <NavLink to="/learn" className="nav-link">
+              <NavLink
+                to="/learn"
+                className="nav-link"
+                onClick={closeMobileMenu}
+              >
                 Learn
               </NavLink>
             </li>
             <li>
-              <NavLink to="/about" className="nav-link">
+              <NavLink
+                to="/about"
+                className="nav-link"
+                onClick={closeMobileMenu}
+              >
                 About Us
               </NavLink>
             </li>
@@ -159,6 +224,15 @@ export default function Navbar() {
                 </div>
               )}
             </div>
+
+            {/* Hamburger Menu Button */}
+            <button
+              className="hamburger-menu"
+              onClick={toggleMobileMenu}
+              aria-label="Toggle menu"
+            >
+              {isMobileMenuOpen ? <X /> : <Menu />}
+            </button>
           </div>
         </div>
       </nav>
