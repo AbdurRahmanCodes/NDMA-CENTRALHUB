@@ -102,11 +102,11 @@
 @media (max-width: 768px) {
   .notfound-page .page-container {
     flex-direction: column;
-    gap: 2rem;
+    gap: 0rem;
   }
 
   .notfound-page img {
-    max-width: 350px;
+    max-width: 250px;
   }
 
   .notfound-content {
