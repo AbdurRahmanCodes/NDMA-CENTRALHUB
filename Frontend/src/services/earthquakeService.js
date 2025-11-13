@@ -23,7 +23,6 @@ export async function fetchEarthquakes(daysBack = 30, minMagnitude = 2.5) {
     };
 
     const { data } = await axios.get(USGS_FDSN_BASE, { params });
-    console.log(`Fetched ${data.features?.length || 0} earthquakes`);
     return data;
   } catch (error) {
     console.error("Error fetching earthquake data:", error);

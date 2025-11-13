@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Thermometer,
   Wind,
@@ -10,9 +10,6 @@ import {
 } from "lucide-react";
 import "./WeatherPanel.css";
 
-/**
- * WeatherPanel Component - Weather data display for selected location
- */
 function WeatherPanel({
   selectedPoint,
   weatherData,
@@ -89,7 +86,7 @@ function WeatherPanel({
 
   return (
     <div className="weather-panel">
-      <h2 className="panel-title">Weather Details</h2>
+      <h2 className="panel-title">Weather & Earthquakes Details</h2>
 
       {/* Search Bar */}
       <form onSubmit={handleSearch} className="search-form">
@@ -113,14 +110,15 @@ function WeatherPanel({
           <MapPin size={20} className="location-icon" />
           <div className="location-info">
             <h3 className="location-name">
-              {locationName ||
-                (selectedPoint
-                  ? `${selectedPoint.latitude.toFixed(
-                      4
-                    )}, ${selectedPoint.longitude.toFixed(4)}`
-                  : "No location selected")}
+              {locationName || "No location selected"}
             </h3>
-            <p className="location-label">Selected Location</p>
+            <p className="location-label">
+              {selectedPoint
+                ? `Lat: ${selectedPoint.latitude.toFixed(
+                    4
+                  )}, Lon: ${selectedPoint.longitude.toFixed(4)}`
+                : "No location selected"}
+            </p>
           </div>
         </div>
       </div>

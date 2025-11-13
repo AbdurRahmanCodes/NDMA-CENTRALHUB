@@ -79,8 +79,6 @@ function FloodMap({ onLayerLoad, onViewLoad, onCountryClick, onPointSelect }) {
 
         map.add(earthquakeLayer);
         earthquakeLayerRef.current = earthquakeLayer;
-
-        console.log("Earthquake layer added to map");
       } catch (error) {
         console.error("Failed to load earthquake data:", error);
       }
@@ -214,12 +212,6 @@ function FloodMap({ onLayerLoad, onViewLoad, onCountryClick, onPointSelect }) {
             if (onPointSelect) {
               onPointSelect({ latitude: lat, longitude: lon });
             }
-
-            console.log(
-              `Analysis point added at: Lat ${lat.toFixed(
-                6
-              )}, Lon ${lon.toFixed(6)}`
-            );
           });
         });
 

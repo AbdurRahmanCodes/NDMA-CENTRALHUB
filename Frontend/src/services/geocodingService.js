@@ -14,10 +14,7 @@ export async function reverseGeocode(lat, lon) {
 
     const { data } = await axios.get(reverseUrl, {
       params: reverseParams,
-      // Don't set User-Agent header - browsers block it as unsafe
     });
-
-    console.log("Geocoding response:", data);
 
     if (data && data.address) {
       const addr = data.address;
