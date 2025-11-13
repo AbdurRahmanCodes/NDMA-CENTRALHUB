@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useEffect, useRef } from "react";
 import Map from "@arcgis/core/Map";
 import MapView from "@arcgis/core/views/MapView";
@@ -133,7 +134,7 @@ function FloodMap({ onLayerLoad, onViewLoad, onCountryClick, onPointSelect }) {
               type: "simple-marker",
               style: "circle",
               color: [0, 122, 194, 0.25],
-              size: "48px",
+              size: "32px",
               outline: null,
             };
 
@@ -141,7 +142,7 @@ function FloodMap({ onLayerLoad, onViewLoad, onCountryClick, onPointSelect }) {
               type: "simple-marker",
               style: "circle",
               color: [0, 122, 194],
-              size: "24px",
+              size: "18px",
               outline: {
                 color: [255, 255, 255],
                 width: 1.5,

@@ -26,7 +26,7 @@ ChartJS.register(
   Filler
 );
 
-function DummyCharts() {
+function DummyCharts({ weatherData }) {
   const [theme, setTheme] = useState(
     document.documentElement.getAttribute("data-theme") || "light"
   );
@@ -56,51 +56,220 @@ function DummyCharts() {
     ? "rgba(148, 163, 184, 0.15)"
     : "rgba(148, 163, 184, 0.1)";
   const legendColor = isDark ? "#cbd5e1" : "#64748b";
-  // Dummy data for flood trend over years
-  const trendData = {
-    labels: ["2018", "2019", "2020", "2021", "2022", "2023", "2024"],
-    datasets: [
-      {
-        label: "Flood Events",
-        data: [12, 19, 15, 25, 22, 30, 28],
-        borderColor: "#2563eb",
-        backgroundColor: "rgba(37, 99, 235, 0.1)",
-        fill: true,
-        tension: 0.4,
-        borderWidth: 3,
-        pointRadius: 5,
-        pointHoverRadius: 7,
-        pointBackgroundColor: "#2563eb",
-        pointBorderColor: "#fff",
-        pointBorderWidth: 2,
-      },
-    ],
-  };
+  // Build weather charts when weatherData is available
+  let weatherCharts = null;
+  if (weatherData && weatherData.hourly) {
+    const {
+      time,
+      temperature_2m,
+      precipitation,
+      rain,
+      wind_speed_10m,
+      relative_humidity_2m,
+    } = weatherData.hourly;
+    const labels = time.slice(0, 24).map((t) =>
+      new Date(t).toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      })
+    );
 
-  // Dummy data for regions comparison
-  const barData = {
-    labels: ["Asia", "Europe", "Africa", "N. America", "S. America", "Oceania"],
-    datasets: [
-      {
-        label: "High Risk Areas",
-        data: [65, 45, 38, 28, 22, 15],
-        backgroundColor: "rgba(239, 68, 68, 0.8)",
-        borderColor: "#dc2626",
-        borderWidth: 2,
-        borderRadius: 6,
-        hoverBackgroundColor: "rgba(239, 68, 68, 1)",
+    const tempData = {
+      labels,
+      datasets: [
+        {
+          label: "Temperature (°C)",
+          data: temperature_2m.slice(0, 24),
+          borderColor: "#ef4444",
+          backgroundColor: "rgba(239,68,68,0.15)",
+          fill: true,
+          tension: 0.35,
+          borderWidth: 2,
+          pointRadius: 0,
+        },
+      ],
+    };
+
+    const precipData = {
+      labels,
+      datasets: [
+        {
+          label: "Precipitation (mm)",
+          data: precipitation.slice(0, 24),
+          backgroundColor: "rgba(37,99,235,0.6)",
+          borderColor: "#2563eb",
+          borderWidth: 1,
+          borderRadius: 4,
+        },
+        {
+          label: "Rain (mm)",
+          data: rain.slice(0, 24),
+          backgroundColor: "rgba(59,130,246,0.35)",
+          borderColor: "#3b82f6",
+          borderWidth: 1,
+          borderRadius: 4,
+        },
+      ],
+    };
+
+    const windHumData = {
+      labels,
+      datasets: [
+        {
+          type: "line",
+          label: "Wind Speed (m/s)",
+          yAxisID: "y",
+          data: wind_speed_10m.slice(0, 24),
+          borderColor: "#10b981",
+          backgroundColor: "rgba(16,185,129,0.15)",
+          fill: true,
+          tension: 0.35,
+          borderWidth: 2,
+          pointRadius: 0,
+        },
+        {
+          type: "line",
+          label: "Humidity (%)",
+          yAxisID: "y1",
+          data: relative_humidity_2m.slice(0, 24),
+          borderColor: "#f59e0b",
+          backgroundColor: "rgba(245,158,11,0.12)",
+          fill: true,
+          tension: 0.35,
+          borderWidth: 2,
+          pointRadius: 0,
+        },
+      ],
+    };
+
+    const commonLineOptions = {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: true,
+          position: "top",
+          labels: {
+            color: legendColor,
+            font: { size: 12, weight: "600" },
+            usePointStyle: true,
+            padding: 15,
+          },
+        },
+        tooltip: {
+          backgroundColor: isDark
+            ? "rgba(15,23,42,0.98)"
+            : "rgba(15,23,42,0.95)",
+          titleColor: "#fff",
+          bodyColor: "#fff",
+          borderColor: "#2563eb",
+          borderWidth: 1,
+          padding: 12,
+        },
       },
-      {
-        label: "Medium Risk Areas",
-        data: [45, 55, 42, 38, 28, 20],
-        backgroundColor: "rgba(245, 158, 11, 0.8)",
-        borderColor: "#f59e0b",
-        borderWidth: 2,
-        borderRadius: 6,
-        hoverBackgroundColor: "rgba(245, 158, 11, 1)",
+      scales: {
+        y: {
+          beginAtZero: false,
+          grid: { color: gridColor, drawBorder: false },
+          ticks: { color: textColor, font: { size: 11 } },
+        },
+        x: {
+          grid: { display: false },
+          ticks: { color: textColor, font: { size: 11 } },
+        },
       },
-    ],
-  };
+    };
+
+    const dualAxisOptions = {
+      ...commonLineOptions,
+      scales: {
+        x: commonLineOptions.scales.x,
+        y: {
+          beginAtZero: true,
+          grid: { color: gridColor, drawBorder: false },
+          ticks: { color: textColor },
+        },
+        y1: {
+          beginAtZero: true,
+          position: "right",
+          grid: { drawOnChartArea: false },
+          ticks: { color: textColor },
+        },
+      },
+    };
+
+    const precipOptions = {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: true,
+          position: "top",
+          labels: {
+            color: legendColor,
+            font: { size: 12, weight: "600" },
+            usePointStyle: true,
+            padding: 15,
+          },
+        },
+        tooltip: {
+          backgroundColor: isDark
+            ? "rgba(15,23,42,0.98)"
+            : "rgba(15,23,42,0.95)",
+          titleColor: "#fff",
+          bodyColor: "#fff",
+          borderColor: "#2563eb",
+          borderWidth: 1,
+          padding: 12,
+        },
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          grid: { color: gridColor, drawBorder: false },
+          ticks: { color: textColor, font: { size: 11 } },
+        },
+        x: {
+          grid: { display: false },
+          ticks: { color: textColor, font: { size: 11 } },
+        },
+      },
+    };
+
+    weatherCharts = (
+      <div className="dummy-charts-container">
+        <div className="chart-wrapper">
+          <div className="chart-header">
+            <h3 className="chart-title">Temperature (next 24h)</h3>
+            <p className="chart-subtitle">Open‑Meteo hourly temperature</p>
+          </div>
+          <div className="chart-canvas">
+            <Line data={tempData} options={commonLineOptions} />
+          </div>
+        </div>
+
+        <div className="chart-wrapper">
+          <div className="chart-header">
+            <h3 className="chart-title">Precipitation & Rain (next 24h)</h3>
+            <p className="chart-subtitle">Open‑Meteo precipitation amounts</p>
+          </div>
+          <div className="chart-canvas">
+            <Bar data={precipData} options={precipOptions} />
+          </div>
+        </div>
+
+        <div className="chart-wrapper">
+          <div className="chart-header">
+            <h3 className="chart-title">Wind Speed & Humidity (next 24h)</h3>
+            <p className="chart-subtitle">Open‑Meteo wind and humidity</p>
+          </div>
+          <div className="chart-canvas">
+            <Line data={windHumData} options={dualAxisOptions} />
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   const lineOptions = {
     responsive: true,
@@ -226,25 +395,26 @@ function DummyCharts() {
     },
   };
 
+  if (weatherCharts) return weatherCharts;
+
   return (
     <div className="dummy-charts-container">
       <div className="chart-wrapper">
         <div className="chart-header">
-          <h3 className="chart-title">Flood Events Trend</h3>
-          <p className="chart-subtitle">Annual flood occurrences (2018-2024)</p>
+          <h3 className="chart-title">Click on the map</h3>
+          <p className="chart-subtitle">
+            Select a point to load weather charts
+          </p>
         </div>
-        <div className="chart-canvas">
-          <Line data={trendData} options={lineOptions} />
-        </div>
-      </div>
-
-      <div className="chart-wrapper">
-        <div className="chart-header">
-          <h3 className="chart-title">Risk Distribution by Region</h3>
-          <p className="chart-subtitle">High vs Medium risk areas</p>
-        </div>
-        <div className="chart-canvas">
-          <Bar data={barData} options={barOptions} />
+        <div
+          className="chart-canvas"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <span style={{ color: "#64748b" }}>No data yet</span>
         </div>
       </div>
     </div>

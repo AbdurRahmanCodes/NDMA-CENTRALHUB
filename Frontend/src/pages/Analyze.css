@@ -15,7 +15,7 @@
   height: calc(100vh - 70px);
 
   display: grid;
-  grid-template-columns: 340px 1fr 380px;
+  grid-template-columns: 360px 1fr 360px;
 
   /* --- FIX: Replaced '600px 350px' --- */
   /* '1fr' lets the map row grow to fill the screen */
@@ -88,14 +88,14 @@
 /* --- Desktop-first adjustments for smaller desktops --- */
 @media (max-width: 1600px) {
   .dashboard-container {
-    grid-template-columns: 320px 1fr 360px;
+    grid-template-columns: 340px 1fr 340px;
     grid-template-rows: 1fr 330px; /* Adjusted bottom row */
   }
 }
 
 @media (max-width: 1400px) {
   .dashboard-container {
-    grid-template-columns: 300px 1fr 340px;
+    grid-template-columns: 320px 1fr 320px;
     grid-template-rows: 1fr 300px; /* Adjusted bottom row */
   }
 }

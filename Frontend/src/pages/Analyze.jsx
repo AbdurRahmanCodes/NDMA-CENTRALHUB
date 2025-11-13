@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
 import FloodMap from "../components/dashboard/FloodMap";
 import DummyCharts from "../components/dashboard/DummyCharts";
-import SearchPanel from "../components/dashboard/SearchPanel";
+import WeatherPanel from "../components/dashboard/WeatherPanel";
 import InfoSidebar from "../components/dashboard/InfoSidebar";
 import { queryAllCountries } from "../utils/mapHelpers";
+import { fetchOpenMeteo } from "../services/weatherService";
+import { reverseGeocode, searchLocation } from "../services/geocodingService";
 import "./Analyze.css";
 
 function Analyze() {
@@ -14,6 +16,10 @@ function Analyze() {
   const [selectedYear, setSelectedYear] = useState(2022);
   const [isLoadingCountries, setIsLoadingCountries] = useState(true);
   const [selectedPoint, setSelectedPoint] = useState(null);
+  const [weatherData, setWeatherData] = useState(null);
+  const [weatherLoading, setWeatherLoading] = useState(false);
+  const [weatherError, setWeatherError] = useState(null);
+  const [locationName, setLocationName] = useState("");
 
   useEffect(() => {
     if (dataLayer && mapView) {
@@ -33,14 +39,62 @@ function Analyze() {
   }, [dataLayer, mapView]);
 
   // Handle point selection from map
-  const handlePointSelect = (coordinates) => {
+  const handlePointSelect = async (coordinates) => {
     setSelectedPoint(coordinates);
-    console.log("Selected point for analysis:", coordinates);
-    console.log(
-      `Latitude: ${coordinates.latitude}, Longitude: ${coordinates.longitude}`
-    );
-    // TODO: Call your API here with coordinates.latitude and coordinates.longitude
-    // Example: fetchAnalysisData(coordinates.latitude, coordinates.longitude);
+    setWeatherLoading(true);
+    setWeatherError(null);
+    try {
+      const data = await fetchOpenMeteo(
+        coordinates.latitude,
+        coordinates.longitude
+      );
+      setWeatherData(data);
+      // Reverse geocode to human-readable place name via Open‑Meteo Geocoding API
+      try {
+        const label = await reverseGeocode(
+          coordinates.latitude,
+          coordinates.longitude
+        );
+        setLocationName(label);
+      } catch (e) {
+        console.warn("Reverse geocode failed:", e);
+        const latStr = coordinates.latitude?.toFixed
+          ? coordinates.latitude.toFixed(4)
+          : String(coordinates.latitude);
+        const lonStr = coordinates.longitude?.toFixed
+          ? coordinates.longitude.toFixed(4)
+          : String(coordinates.longitude);
+        setLocationName(`${latStr}, ${lonStr}`);
+      }
+    } catch (err) {
+      console.error("Failed to fetch weather data:", err);
+      setWeatherError("Failed to fetch weather data");
+      setWeatherData(null);
+    } finally {
+      setWeatherLoading(false);
+    }
+  };
+
+  // Handle location search
+  const handleSearch = async (query) => {
+    try {
+      const location = await searchLocation(query);
+      // Center map on searched location
+      if (mapView) {
+        mapView.goTo({
+          center: [location.longitude, location.latitude],
+          zoom: 10,
+        });
+      }
+      // Trigger point selection for the searched location
+      await handlePointSelect({
+        latitude: location.latitude,
+        longitude: location.longitude,
+      });
+    } catch (error) {
+      console.error("Search failed:", error);
+      setWeatherError("Location not found. Please try another search.");
+    }
   };
 
   return (
@@ -48,38 +102,38 @@ function Analyze() {
       <div className="dashboard-container">
         {/* Left Sidebar - Info & Stats */}
         <div className="left-sidebar-section">
-          <InfoSidebar selectedPoint={selectedPoint} />
+          <InfoSidebar
+            selectedPoint={selectedPoint}
+            weatherData={weatherData}
+            weatherLoading={weatherLoading}
+            weatherError={weatherError}
+            locationName={locationName}
+          />
         </div>
 
         {/* Main Map Area */}
         <div className="map-section">
           <FloodMap
-            onMapReady={(layer, view) => {
-              setDataLayer(layer);
-              setMapView(view);
-            }}
+            onViewLoad={(view) => setMapView(view)}
             onPointSelect={handlePointSelect}
-            selectedYear={selectedYear}
           />
         </div>
 
-        {/* Right Sidebar - Search & Controls */}
+        {/* Right Sidebar - Weather Panel */}
         <div className="right-sidebar-section">
-          <SearchPanel
-            dataLayer={dataLayer}
-            mapView={mapView}
-            countries={countries}
-            selectedCountry={selectedCountry}
-            setSelectedCountry={setSelectedCountry}
-            selectedYear={selectedYear}
-            setSelectedYear={setSelectedYear}
-            isLoadingCountries={isLoadingCountries}
+          <WeatherPanel
+            selectedPoint={selectedPoint}
+            weatherData={weatherData}
+            weatherLoading={weatherLoading}
+            weatherError={weatherError}
+            locationName={locationName}
+            onSearch={handleSearch}
           />
         </div>
 
         {/* Bottom Charts Section */}
         <div className="charts-section">
-          <DummyCharts />
+          <DummyCharts weatherData={weatherData} />
         </div>
       </div>
     </div>

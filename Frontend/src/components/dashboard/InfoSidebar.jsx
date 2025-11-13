@@ -1,7 +1,13 @@
 import { BarChart3, TrendingUp, AlertTriangle, MapPin } from "lucide-react";
 import "./InfoSidebar.css";
 
-function InfoSidebar() {
+function InfoSidebar({
+  selectedPoint,
+  weatherData,
+  weatherLoading,
+  weatherError,
+  locationName,
+}) {
   // Dummy statistics data
   const stats = [
     {
@@ -40,14 +46,30 @@ function InfoSidebar() {
     { region: "West Africa", severity: "Low", time: "1 day ago" },
   ];
 
+  // Left sidebar now focuses on Flood Analysis only (placeholder)
+
   return (
     <div className="info-sidebar">
       <div className="info-sidebar-header">
-        <h2 className="info-sidebar-title">Dashboard Overview</h2>
-        <p className="info-sidebar-subtitle">Real-time flood analytics</p>
+        <h2 className="info-sidebar-title">Floods Analysis</h2>
+        <p className="info-sidebar-subtitle">Insights coming soon</p>
       </div>
 
-      {/* Statistics Cards */}
+      {/* Flood Analysis placeholder */}
+      <div className="alerts-section" style={{ marginBottom: "1rem" }}>
+        <h3 className="section-title">Overview</h3>
+        <div className="alerts-list">
+          <div className="alert-item">
+            <div className="alert-header">
+              <span className="alert-region">Risk Assessment</span>
+              <span className="alert-badge">N/A</span>
+            </div>
+            <div className="alert-time">Model output will appear here.</div>
+          </div>
+        </div>
+      </div>
+
+      {/* Statistics Cards (dummy, kept as requested) */}
       <div className="stats-grid">
         {stats.map((stat, index) => {
           const Icon = stat.icon;
@@ -71,7 +93,7 @@ function InfoSidebar() {
         })}
       </div>
 
-      {/* Recent Alerts Section */}
+      {/* Recent Alerts (dummy) */}
       <div className="alerts-section">
         <h3 className="section-title">Recent Alerts</h3>
         <div className="alerts-list">
@@ -91,7 +113,7 @@ function InfoSidebar() {
         </div>
       </div>
 
-      {/* Quick Info */}
+      {/* Quick Info (dummy) */}
       <div className="quick-info">
         <h3 className="section-title">System Status</h3>
         <div className="status-items">
