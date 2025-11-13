@@ -6,6 +6,7 @@ import {
   MapPin,
   Clock,
   Search,
+  Activity,
 } from "lucide-react";
 import "./WeatherPanel.css";
 
@@ -19,6 +20,7 @@ function WeatherPanel({
   weatherError,
   locationName,
   onSearch,
+  earthquakeData,
 }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [searching, setSearching] = useState(false);
@@ -178,6 +180,45 @@ function WeatherPanel({
               {rainNow !== null ? `${rainNow} mm` : "N/A"}
             </div>
           </div>
+
+          {/* Earthquake Info */}
+          {earthquakeData && (
+            <div className="weather-card earthquake-card">
+              <div className="weather-card-header">
+                <Activity size={20} className="weather-icon" />
+                <span className="weather-metric-label">Earthquake Nearby</span>
+              </div>
+              <div className="weather-metric-value">
+                {earthquakeData.magnitude
+                  ? `M ${earthquakeData.magnitude.toFixed(1)}`
+                  : "N/A"}
+              </div>
+              <div className="earthquake-details">
+                <p className="earthquake-info">
+                  {earthquakeData.distance} km away
+                </p>
+                {earthquakeData.place && (
+                  <p className="earthquake-place">{earthquakeData.place}</p>
+                )}
+              </div>
+            </div>
+          )}
+
+          {!earthquakeData && (
+            <div className="weather-card no-earthquake-card">
+              <div className="weather-card-header">
+                <Activity size={20} className="weather-icon" />
+                <span className="weather-metric-label">Earthquake</span>
+              </div>
+              <div
+                className="weather-metric-value"
+                style={{ fontSize: "1.25rem" }}
+              >
+                No recent activity
+              </div>
+              <p className="earthquake-info">Within 100 km</p>
+            </div>
+          )}
         </div>
       )}
 

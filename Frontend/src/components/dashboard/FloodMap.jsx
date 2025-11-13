@@ -3,12 +3,15 @@ import { useEffect, useRef } from "react";
 import Map from "@arcgis/core/Map";
 import MapView from "@arcgis/core/views/MapView";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
+import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
 import GraphicsLayer from "@arcgis/core/layers/GraphicsLayer";
 import Graphic from "@arcgis/core/Graphic";
+import HeatmapRenderer from "@arcgis/core/renderers/HeatmapRenderer";
 import Home from "@arcgis/core/widgets/Home";
 import ScaleBar from "@arcgis/core/widgets/ScaleBar";
 import Zoom from "@arcgis/core/widgets/Zoom";
 import { zoomToCountry } from "../../utils/mapHelpers";
+import { fetchEarthquakes } from "../../services/earthquakeService";
 import "./FloodMap.css";
 import "@arcgis/core/assets/esri/themes/light/main.css";
 // import "@arcgis/core/assets/esri/themes/dark/main.css";
@@ -19,6 +22,7 @@ function FloodMap({ onLayerLoad, onViewLoad, onCountryClick, onPointSelect }) {
   const mapRef = useRef(null);
   const isInitialized = useRef(false);
   const pointGraphicsLayerRef = useRef(null);
+  const earthquakeLayerRef = useRef(null);
 
   useEffect(() => {
     if (!mapDiv.current || isInitialized.current) return;
@@ -39,6 +43,50 @@ function FloodMap({ onLayerLoad, onViewLoad, onCountryClick, onPointSelect }) {
     });
     map.add(pointGraphicsLayer);
     pointGraphicsLayerRef.current = pointGraphicsLayer;
+
+    // Create earthquake heatmap layer
+    const createEarthquakeLayer = async () => {
+      try {
+        const earthquakeData = await fetchEarthquakes(30, 2.5);
+
+        // Create a blob URL for the GeoJSON data
+        const blob = new Blob([JSON.stringify(earthquakeData)], {
+          type: "application/json",
+        });
+        const url = URL.createObjectURL(blob);
+
+        const quakeHeatRenderer = new HeatmapRenderer({
+          field: "mag",
+          radius: 20,
+          maxDensity: 0.06,
+          colorStops: [
+            { ratio: 0, color: "rgba(0,0,0,0)" },
+            { ratio: 0.2, color: "rgba(0,150,255,0.35)" },
+            { ratio: 0.5, color: "rgba(255,200,0,0.45)" },
+            { ratio: 0.8, color: "rgba(255,120,0,0.7)" },
+            { ratio: 1, color: "rgba(255,30,30,1)" },
+          ],
+        });
+
+        const earthquakeLayer = new GeoJSONLayer({
+          url: url,
+          title: "Recent Earthquakes",
+          id: "earthquakeLayer",
+          renderer: quakeHeatRenderer,
+          opacity: 0.7,
+          popupEnabled: false,
+        });
+
+        map.add(earthquakeLayer);
+        earthquakeLayerRef.current = earthquakeLayer;
+
+        console.log("Earthquake layer added to map");
+      } catch (error) {
+        console.error("Failed to load earthquake data:", error);
+      }
+    };
+
+    createEarthquakeLayer();
 
     const view = new MapView({
       container: mapDiv.current,
@@ -95,37 +143,35 @@ function FloodMap({ onLayerLoad, onViewLoad, onCountryClick, onPointSelect }) {
 
           // Check if user clicked on an existing feature or empty space
           view.hitTest(event).then((response) => {
-            // Check if clicked on the graphics layer (analysis point)
-            const pointLayerHit = response.results.find(
-              (result) =>
-                result.graphic.layer && result.graphic.layer.id === "pointLayer"
+            const results = response?.results || [];
+            // 1) Ignore clicks on existing analysis point
+            const pointLayerHit = results.some(
+              (r) => r.graphic.layer && r.graphic.layer.id === "pointLayer"
             );
+            if (pointLayerHit) return;
 
-            if (pointLayerHit) {
-              // Clicked on existing point - do nothing or handle differently
+            // 2) Ignore clicks on earthquake heatmap layer
+            const quakeLayerHit = results.some(
+              (r) => r.graphic.layer && r.graphic.layer.id === "earthquakeLayer"
+            );
+            // We intentionally do nothing special for quake hits; fall through to add point
+
+            // 3) Handle country clicks only when a feature has COUNTRY attribute
+            const countryHit = results.find(
+              (r) =>
+                r.graphic?.attributes &&
+                Object.prototype.hasOwnProperty.call(
+                  r.graphic.attributes,
+                  "COUNTRY"
+                )
+            );
+            if (countryHit) {
+              const countryName = countryHit.graphic.attributes.COUNTRY;
+              if (onCountryClick && countryName) onCountryClick(countryName);
+              zoomToCountry(view, countryHit.graphic.geometry).catch((error) =>
+                console.error("Error zooming to clicked country:", error)
+              );
               return;
-            }
-
-            // Check if clicked on a country feature
-            if (response.results.length > 0) {
-              const graphic = response.results[0].graphic;
-
-              if (
-                graphic.layer &&
-                graphic.layer.title !== "World Hillshade" &&
-                graphic.layer.id !== "pointLayer"
-              ) {
-                const countryName = graphic.attributes.COUNTRY;
-
-                if (onCountryClick && countryName) {
-                  onCountryClick(countryName);
-                }
-
-                zoomToCountry(view, graphic.geometry).catch((error) => {
-                  console.error("Error zooming to clicked country:", error);
-                });
-                return;
-              }
             }
 
             pointGraphicsLayer.removeAll();

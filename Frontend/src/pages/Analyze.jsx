@@ -6,6 +6,10 @@ import InfoSidebar from "../components/dashboard/InfoSidebar";
 import { queryAllCountries } from "../utils/mapHelpers";
 import { fetchOpenMeteo } from "../services/weatherService";
 import { reverseGeocode, searchLocation } from "../services/geocodingService";
+import {
+  fetchEarthquakes,
+  findNearestEarthquake,
+} from "../services/earthquakeService";
 import "./Analyze.css";
 
 function Analyze() {
@@ -20,6 +24,8 @@ function Analyze() {
   const [weatherLoading, setWeatherLoading] = useState(false);
   const [weatherError, setWeatherError] = useState(null);
   const [locationName, setLocationName] = useState("");
+  const [earthquakeData, setEarthquakeData] = useState(null);
+  const [nearestQuake, setNearestQuake] = useState(null);
 
   useEffect(() => {
     if (dataLayer && mapView) {
@@ -38,6 +44,34 @@ function Analyze() {
     }
   }, [dataLayer, mapView]);
 
+  // Fetch earthquake data on mount
+  useEffect(() => {
+    const loadEarthquakes = async () => {
+      try {
+        const data = await fetchEarthquakes(30, 2.5);
+        setEarthquakeData(data.features);
+      } catch (error) {
+        console.error("Failed to load earthquake data:", error);
+      }
+    };
+    loadEarthquakes();
+  }, []);
+
+  // Recompute nearest earthquake whenever selected point or dataset changes
+  useEffect(() => {
+    if (!selectedPoint || !earthquakeData) {
+      setNearestQuake(null);
+      return;
+    }
+    const nearest = findNearestEarthquake(
+      selectedPoint.latitude,
+      selectedPoint.longitude,
+      earthquakeData,
+      250 // expand search radius to 250km for better coverage
+    );
+    setNearestQuake(nearest);
+  }, [selectedPoint, earthquakeData]);
+
   // Handle point selection from map
   const handlePointSelect = async (coordinates) => {
     setSelectedPoint(coordinates);
@@ -49,6 +83,18 @@ function Analyze() {
         coordinates.longitude
       );
       setWeatherData(data);
+
+      // Find nearest earthquake
+      if (earthquakeData) {
+        const nearest = findNearestEarthquake(
+          coordinates.latitude,
+          coordinates.longitude,
+          earthquakeData,
+          100 // 100km radius
+        );
+        setNearestQuake(nearest);
+      }
+
       // Reverse geocode to human-readable place name via Open‑Meteo Geocoding API
       try {
         const label = await reverseGeocode(
@@ -87,6 +133,10 @@ function Analyze() {
         });
       }
       // Trigger point selection for the searched location
+      setSelectedPoint({
+        latitude: location.latitude,
+        longitude: location.longitude,
+      });
       await handlePointSelect({
         latitude: location.latitude,
         longitude: location.longitude,
@@ -128,6 +178,7 @@ function Analyze() {
             weatherError={weatherError}
             locationName={locationName}
             onSearch={handleSearch}
+            earthquakeData={nearestQuake}
           />
         </div>
 
