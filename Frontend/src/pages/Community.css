@@ -721,6 +721,15 @@
   align-items: center;
 }
 
+.disaster-select {
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  margin-bottom: 10px;
+  width: 100%;
+  font-size: 14px;
+}
+
 .upload-label {
   display: inline-flex;
   align-items: center;

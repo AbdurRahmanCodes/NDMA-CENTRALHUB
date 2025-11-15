@@ -18,7 +18,7 @@ function Register() {
       await register(name, email, password);
       navigate("/");
     } catch (err) {
-      setError("Registration failed. Please try again.");
+      setError("Registration failed. Please try again. " + err.message);
     }
   };
 

@@ -23,6 +23,7 @@ function FloodMap({ onLayerLoad, onViewLoad, onCountryClick, onPointSelect }) {
   const isInitialized = useRef(false);
   const pointGraphicsLayerRef = useRef(null);
   const earthquakeLayerRef = useRef(null);
+  const floodLayerRef = useRef(null);
 
   useEffect(() => {
     if (!mapDiv.current || isInitialized.current) return;
@@ -85,6 +86,37 @@ function FloodMap({ onLayerLoad, onViewLoad, onCountryClick, onPointSelect }) {
     };
 
     createEarthquakeLayer();
+
+    const floodLayer = new FeatureLayer({
+      url: "https://services3.arcgis.com/UDCw00RKDRKPqASe/arcgis/rest/services/FLOODS_PONTS2/FeatureServer/0",
+      id: "floodLayer",
+      title: "Flood Points",
+      outFields: ["*"],
+      popupEnabled: true,
+      popupTemplate: {
+        title: "Flood Observation",
+        content: [
+          {
+            type: "fields",
+            fieldInfos: [
+              { name: "OBJECTID", label: "ID" },
+              { name: "Latitude", label: "Latitude" },
+              { name: "Longitude", label: "Longitude" },
+              {
+                name: "date",
+                label: "Date",
+                format: { dateFormat: "short-date" },
+              },
+              { name: "flood_duration", label: "Flood Duration (days)" },
+              { name: "flood_intensity", label: "Flood Intensity" },
+            ],
+          },
+        ],
+      },
+    });
+
+    map.add(floodLayer);
+    floodLayerRef.current = floodLayer;
 
     const view = new MapView({
       container: mapDiv.current,
@@ -153,6 +185,61 @@ function FloodMap({ onLayerLoad, onViewLoad, onCountryClick, onPointSelect }) {
               (r) => r.graphic.layer && r.graphic.layer.id === "earthquakeLayer"
             );
             // We intentionally do nothing special for quake hits; fall through to add point
+
+            // 2.5) If a flood feature was clicked, show popup and select it
+            const floodHit = results.find(
+              (r) => r.graphic?.layer && r.graphic.layer.id === "floodLayer"
+            );
+            if (floodHit) {
+              const attrs = floodHit.graphic.attributes || {};
+              const featPoint = floodHit.graphic.geometry;
+              // Open the popup on the feature
+              view.popup.open({
+                features: [floodHit.graphic],
+                location: featPoint,
+              });
+
+              // Place analysis marker at this feature and notify parent
+              pointGraphicsLayer.removeAll();
+              const haloSymbol = {
+                type: "simple-marker",
+                style: "circle",
+                color: [0, 122, 194, 0.25],
+                size: "32px",
+                outline: null,
+              };
+              const pointSymbol = {
+                type: "simple-marker",
+                style: "circle",
+                color: [0, 122, 194],
+                size: "18px",
+                outline: { color: [255, 255, 255], width: 1.5 },
+              };
+              pointGraphicsLayer.addMany([
+                new Graphic({ geometry: featPoint, symbol: haloSymbol }),
+                new Graphic({
+                  geometry: featPoint,
+                  symbol: pointSymbol,
+                  attributes: {
+                    latitude: attrs?.Latitude,
+                    longitude: attrs?.Longitude,
+                  },
+                }),
+              ]);
+
+              if (
+                onPointSelect &&
+                attrs?.Latitude != null &&
+                attrs?.Longitude != null
+              ) {
+                onPointSelect({
+                  latitude: attrs.Latitude,
+                  longitude: attrs.Longitude,
+                });
+              }
+              // Flood details are shown in the popup; analysis marker is set and onPointSelect called above
+              return;
+            }
 
             // 3) Handle country clicks only when a feature has COUNTRY attribute
             const countryHit = results.find(

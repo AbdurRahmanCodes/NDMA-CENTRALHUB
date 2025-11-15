@@ -152,13 +152,7 @@ function Analyze() {
       <div className="dashboard-container">
         {/* Left Sidebar - Info & Stats */}
         <div className="left-sidebar-section">
-          <InfoSidebar
-            selectedPoint={selectedPoint}
-            weatherData={weatherData}
-            weatherLoading={weatherLoading}
-            weatherError={weatherError}
-            locationName={locationName}
-          />
+          <InfoSidebar />
         </div>
 
         {/* Main Map Area */}

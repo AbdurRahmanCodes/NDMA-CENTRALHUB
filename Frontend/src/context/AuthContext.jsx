@@ -15,7 +15,9 @@ export function AuthProvider({ children }) {
         const parsed = JSON.parse(saved);
         setUser(parsed.user || null);
         setToken(parsed.token || null);
-      } catch {}
+      } catch {
+        // ignore parsing errors
+      }
     }
   }, []);
 
@@ -45,10 +47,10 @@ export function AuthProvider({ children }) {
     }
   };
 
-  const register = async (name, email, password) => {
+  const register = async (name, email, password, role = "admin") => {
     setLoading(true);
     try {
-      const res = await registerApi({ name, email, password });
+      const res = await registerApi({ name, email, password, role });
       console.log("Register API response:", res);
       const next = {
         user: res.data?.user || res.user || { name, email },
@@ -73,6 +75,7 @@ export function AuthProvider({ children }) {
         await logoutApi(token);
       }
     } catch (e) {
+      console.error("Logout error:", e);
       // ignore network/auth errors on logout to ensure client clears state
     } finally {
       setUser(null);

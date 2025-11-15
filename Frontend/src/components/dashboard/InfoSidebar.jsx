@@ -1,116 +1,174 @@
-import { BarChart3, TrendingUp, AlertTriangle, MapPin } from "lucide-react";
+import { BarChart3, TrendingUp, Calendar, Clock } from "lucide-react";
 import "./InfoSidebar.css";
+import { useEffect, useState } from "react";
 
-function InfoSidebar({
-  selectedPoint,
-  weatherData,
-  weatherLoading,
-  weatherError,
-  locationName,
-}) {
-  // Dummy statistics data
-  const stats = [
-    {
-      icon: AlertTriangle,
-      label: "High Risk Areas",
-      value: "47",
-      color: "#ef4444",
-      bgColor: "rgba(239, 68, 68, 0.1)",
-    },
-    {
-      icon: MapPin,
-      label: "Monitored Regions",
-      value: "156",
-      color: "#2563eb",
-      bgColor: "rgba(37, 99, 235, 0.1)",
-    },
-    {
-      icon: TrendingUp,
-      label: "Flood Events (2024)",
-      value: "23",
-      color: "#f59e0b",
-      bgColor: "rgba(245, 158, 11, 0.1)",
-    },
-    {
-      icon: BarChart3,
-      label: "Data Points",
-      value: "12.5K",
-      color: "#10b981",
-      bgColor: "rgba(16, 185, 129, 0.1)",
-    },
-  ];
+function InfoSidebar() {
+  const [histStats, setHistStats] = useState(null);
+  const [statsLoading, setStatsLoading] = useState(false);
+  const [statsError, setStatsError] = useState(null);
 
-  const recentAlerts = [
-    { region: "Southeast Asia", severity: "High", time: "2 hours ago" },
-    { region: "Central Europe", severity: "Medium", time: "5 hours ago" },
-    { region: "West Africa", severity: "Low", time: "1 day ago" },
-  ];
-
-  // Left sidebar now focuses on Flood Analysis only (placeholder)
+  // Fetch general historical statistics from ArcGIS layer
+  useEffect(() => {
+    const fetchStats = async () => {
+      setStatsLoading(true);
+      setStatsError(null);
+      try {
+        const base =
+          "https://services3.arcgis.com/UDCw00RKDRKPqASe/arcgis/rest/services/FLOODS_PONTS2/FeatureServer/0/query";
+        const outStatistics = [
+          {
+            statisticType: "count",
+            onStatisticField: "OBJECTID",
+            outStatisticFieldName: "record_count",
+          },
+          {
+            statisticType: "avg",
+            onStatisticField: "flood_intensity",
+            outStatisticFieldName: "avg_intensity",
+          },
+          {
+            statisticType: "avg",
+            onStatisticField: "flood_duration",
+            outStatisticFieldName: "avg_duration",
+          },
+          {
+            statisticType: "max",
+            onStatisticField: "date",
+            outStatisticFieldName: "latest_date",
+          },
+        ];
+        const params = new URLSearchParams({
+          f: "json",
+          where: "1=1",
+          returnGeometry: "false",
+          outStatistics: JSON.stringify(outStatistics),
+        });
+        const resp = await fetch(`${base}?${params.toString()}`);
+        const json = await resp.json();
+        const attrs = json?.features?.[0]?.attributes || null;
+        setHistStats(attrs);
+      } catch {
+        setStatsError("Failed to load historical stats");
+      } finally {
+        setStatsLoading(false);
+      }
+    };
+    fetchStats();
+  }, []);
 
   return (
     <div className="info-sidebar">
       <div className="info-sidebar-header">
         <h2 className="info-sidebar-title">Floods Analysis</h2>
-        <p className="info-sidebar-subtitle">Insights coming soon</p>
+        <p className="info-sidebar-subtitle">Insights and status</p>
       </div>
 
-      {/* Flood Analysis placeholder */}
+      {/* Current Analysis (Weathering API model placeholder) */}
       <div className="alerts-section" style={{ marginBottom: "1rem" }}>
-        <h3 className="section-title">Overview</h3>
+        <h3 className="section-title">Current Analysis</h3>
         <div className="alerts-list">
           <div className="alert-item">
             <div className="alert-header">
-              <span className="alert-region">Risk Assessment</span>
-              <span className="alert-badge">N/A</span>
+              <span className="alert-region">Weathering API Model</span>
+              <span className="alert-badge">Pending</span>
             </div>
-            <div className="alert-time">Model output will appear here.</div>
+            <div className="alert-time">Predictions will appear here.</div>
           </div>
         </div>
       </div>
 
-      {/* Statistics Cards (dummy, kept as requested) */}
-      <div className="stats-grid">
-        {stats.map((stat, index) => {
-          const Icon = stat.icon;
-          return (
-            <div key={index} className="stat-card">
+      {/* Historical Overview (dataset-wide statistics) */}
+      <div className="alerts-section" style={{ marginBottom: "1rem" }}>
+        <h3 className="section-title">Historical Overview</h3>
+        {statsLoading ? (
+          <div className="alerts-list">
+            <div className="alert-item">Loading statistics…</div>
+          </div>
+        ) : statsError ? (
+          <div className="alerts-list">
+            <div className="alert-item">{statsError}</div>
+          </div>
+        ) : (
+          <div className="stats-grid">
+            <div className="stat-card">
               <div
                 className="stat-icon"
                 style={{
-                  backgroundColor: stat.bgColor,
-                  color: stat.color,
+                  backgroundColor: "rgba(16, 185, 129, 0.1)",
+                  color: "#10b981",
                 }}
               >
-                <Icon size={24} />
+                <BarChart3 size={24} />
               </div>
               <div className="stat-content">
-                <div className="stat-value">{stat.value}</div>
-                <div className="stat-label">{stat.label}</div>
+                <div className="stat-value">
+                  {histStats?.record_count ?? "–"}
+                </div>
+                <div className="stat-label">Records</div>
               </div>
             </div>
-          );
-        })}
-      </div>
 
-      {/* Recent Alerts (dummy) */}
-      <div className="alerts-section">
-        <h3 className="section-title">Recent Alerts</h3>
-        <div className="alerts-list">
-          {recentAlerts.map((alert, index) => (
-            <div key={index} className="alert-item">
-              <div className="alert-header">
-                <span className="alert-region">{alert.region}</span>
-                <span
-                  className={`alert-badge severity-${alert.severity.toLowerCase()}`}
-                >
-                  {alert.severity}
-                </span>
+            <div className="stat-card">
+              <div
+                className="stat-icon"
+                style={{
+                  backgroundColor: "rgba(37, 99, 235, 0.1)",
+                  color: "#2563eb",
+                }}
+              >
+                <TrendingUp size={24} />
               </div>
-              <div className="alert-time">{alert.time}</div>
+              <div className="stat-content">
+                <div className="stat-value">
+                  {histStats?.avg_intensity != null
+                    ? Number(histStats.avg_intensity).toFixed(1)
+                    : "–"}
+                </div>
+                <div className="stat-label">Avg Intensity</div>
+              </div>
             </div>
-          ))}
-        </div>
+
+            <div className="stat-card">
+              <div
+                className="stat-icon"
+                style={{
+                  backgroundColor: "rgba(245, 158, 11, 0.1)",
+                  color: "#f59e0b",
+                }}
+              >
+                <Clock size={24} />
+              </div>
+              <div className="stat-content">
+                <div className="stat-value">
+                  {histStats?.avg_duration != null
+                    ? Number(histStats.avg_duration).toFixed(1)
+                    : "–"}
+                </div>
+                <div className="stat-label">Avg Duration (days)</div>
+              </div>
+            </div>
+
+            <div className="stat-card">
+              <div
+                className="stat-icon"
+                style={{
+                  backgroundColor: "rgba(16, 185, 129, 0.1)",
+                  color: "#10b981",
+                }}
+              >
+                <Calendar size={24} />
+              </div>
+              <div className="stat-content">
+                <div className="stat-value">
+                  {histStats?.latest_date
+                    ? new Date(histStats.latest_date).toLocaleDateString()
+                    : "–"}
+                </div>
+                <div className="stat-label">Latest Record</div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Quick Info (dummy) */}
