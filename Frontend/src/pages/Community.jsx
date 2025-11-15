@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Heart,
@@ -82,11 +82,19 @@ export default function Community() {
     title: "",
     description: "",
     location: "",
-    category: "flood",
     author: "You",
     image: "",
   });
   const [imagePreview, setImagePreview] = useState(null);
+  const [fetchedPosts, setFetchedPosts] = useState([]);
+useEffect(()  => {
+    // Simulate fetching posts from an API
+    const fetchPosts = async () => {
+      
+      setFetchedPosts(response);
+    };
+    fetchPosts();
+  }, []);
 
   // Like handler
   const handleLike = (postId) => {
@@ -231,17 +239,6 @@ export default function Community() {
                 setNewPost({ ...newPost, location: e.target.value })
               }
             />
-            <select
-              value={newPost.category}
-              onChange={(e) =>
-                setNewPost({ ...newPost, category: e.target.value })
-              }
-            >
-              <option value="flood">Flood</option>
-              <option value="earthquake">Earthquake</option>
-              <option value="general">General</option>
-            </select>
-
             {imagePreview && (
               <img src={imagePreview} alt="Preview" className="image-preview" />
             )}
