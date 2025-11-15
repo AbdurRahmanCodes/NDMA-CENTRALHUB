@@ -27,8 +27,16 @@
   -webkit-text-fill-color: transparent;
   background-clip: text;
   margin: 0;
-  padding-bottom: 0.5rem;
+  /* padding-bottom: 0.5rem; */
+}
+.panel-description {
   border-bottom: 2px solid #e5e7eb;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  padding-bottom: 0.5rem;
+  line-height: 1.5;
+  border-bottom-color: var(--border-color);
+  transition: all 0.3s ease;
 }
 
 [data-theme="dark"] .panel-title {
@@ -39,6 +47,9 @@
   border-bottom-color: #334155;
 }
 
+[data-theme="dark"] .panel-description {
+  border-bottom-color: #334155;
+}
 /* Search Form */
 .search-form {
   margin-bottom: 12px;

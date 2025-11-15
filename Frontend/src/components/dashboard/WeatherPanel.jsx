@@ -87,7 +87,7 @@ function WeatherPanel({
   return (
     <div className="weather-panel">
       <h2 className="panel-title">Weather & Earthquakes Details</h2>
-
+      <p className="panel-description">Location-Based Insights</p>
       {/* Search Bar */}
       <form onSubmit={handleSearch} className="search-form">
         <div className="search-input-wrapper">
