@@ -94,24 +94,15 @@ function FloodMap({ onLayerLoad, onViewLoad, onCountryClick, onPointSelect }) {
       outFields: ["*"],
       popupEnabled: true,
       popupTemplate: {
-        title: "Flood Observation",
-        content: [
-          {
-            type: "fields",
-            fieldInfos: [
-              { name: "OBJECTID", label: "ID" },
-              { name: "Latitude", label: "Latitude" },
-              { name: "Longitude", label: "Longitude" },
-              {
-                name: "date",
-                label: "Date",
-                format: { dateFormat: "short-date" },
-              },
-              { name: "flood_duration", label: "Flood Duration (days)" },
-              { name: "flood_intensity", label: "Flood Intensity" },
-            ],
-          },
-        ],
+        title: "Flood Observation #{OBJECTID}",
+        content:
+          "<ul style='margin:0;padding-left:1rem'>" +
+          "<li><b>Latitude:</b> {Latitude}</li>" +
+          "<li><b>Longitude:</b> {Longitude}</li>" +
+          "<li><b>Date:</b> {date}</li>" +
+          "<li><b>Duration (days):</b> {flood_duration}</li>" +
+          "<li><b>Intensity:</b> {flood_intensity}</li>" +
+          "</ul>",
       },
     });
 
@@ -191,53 +182,12 @@ function FloodMap({ onLayerLoad, onViewLoad, onCountryClick, onPointSelect }) {
               (r) => r.graphic?.layer && r.graphic.layer.id === "floodLayer"
             );
             if (floodHit) {
-              const attrs = floodHit.graphic.attributes || {};
               const featPoint = floodHit.graphic.geometry;
-              // Open the popup on the feature
+              // Only open the popup. Do not place analysis marker to avoid overlap.
               view.popup.open({
                 features: [floodHit.graphic],
                 location: featPoint,
               });
-
-              // Place analysis marker at this feature and notify parent
-              pointGraphicsLayer.removeAll();
-              const haloSymbol = {
-                type: "simple-marker",
-                style: "circle",
-                color: [0, 122, 194, 0.25],
-                size: "32px",
-                outline: null,
-              };
-              const pointSymbol = {
-                type: "simple-marker",
-                style: "circle",
-                color: [0, 122, 194],
-                size: "18px",
-                outline: { color: [255, 255, 255], width: 1.5 },
-              };
-              pointGraphicsLayer.addMany([
-                new Graphic({ geometry: featPoint, symbol: haloSymbol }),
-                new Graphic({
-                  geometry: featPoint,
-                  symbol: pointSymbol,
-                  attributes: {
-                    latitude: attrs?.Latitude,
-                    longitude: attrs?.Longitude,
-                  },
-                }),
-              ]);
-
-              if (
-                onPointSelect &&
-                attrs?.Latitude != null &&
-                attrs?.Longitude != null
-              ) {
-                onPointSelect({
-                  latitude: attrs.Latitude,
-                  longitude: attrs.Longitude,
-                });
-              }
-              // Flood details are shown in the popup; analysis marker is set and onPointSelect called above
               return;
             }
 

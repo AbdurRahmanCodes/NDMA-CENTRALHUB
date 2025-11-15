@@ -136,6 +136,11 @@
   padding: 1rem;
 }
 
+/* Generic spacing helper for sections previously using inline styles */
+.section-block {
+  margin-bottom: 1rem;
+}
+
 .alerts-list {
   display: flex;
   flex-direction: column;
@@ -186,6 +191,7 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  border: 1px solid transparent;
 }
 
 .alert-badge.severity-high {
@@ -201,6 +207,28 @@
 .alert-badge.severity-low {
   background: #dbeafe;
   color: #2563eb;
+}
+
+/* Risk badge classes (replaces inline computed styles) */
+.alert-badge.risk-high {
+  background: rgba(239, 68, 68, 0.12);
+  color: #ef4444;
+  border-color: #ef4444;
+}
+.alert-badge.risk-medium {
+  background: rgba(245, 158, 11, 0.12);
+  color: #f59e0b;
+  border-color: #f59e0b;
+}
+.alert-badge.risk-low {
+  background: rgba(16, 185, 129, 0.12);
+  color: #10b981;
+  border-color: #10b981;
+}
+.alert-badge.risk-unknown {
+  background: rgba(107, 114, 128, 0.12);
+  color: #6b7280;
+  border-color: #6b7280;
 }
 
 [data-theme="dark"] .alert-badge.severity-high {
@@ -221,6 +249,20 @@
 .alert-time {
   font-size: 0.75rem;
   color: var(--text-secondary);
+}
+
+/* Stat icon color variants (replaces inline styles) */
+.stat-icon--success {
+  background-color: rgba(16, 185, 129, 0.1);
+  color: #10b981;
+}
+.stat-icon--warning {
+  background-color: rgba(245, 158, 11, 0.1);
+  color: #f59e0b;
+}
+.stat-icon--danger {
+  background-color: rgba(239, 68, 68, 0.12);
+  color: #ef4444;
 }
 
 /* Quick Info */

@@ -1,11 +1,14 @@
-import { BarChart3, TrendingUp, Calendar, Clock } from "lucide-react";
+import { BarChart3, AlertTriangle, Calendar, Clock } from "lucide-react";
 import "./InfoSidebar.css";
 import { useEffect, useState } from "react";
 
-function InfoSidebar() {
+function InfoSidebar({ selectedPoint }) {
   const [histStats, setHistStats] = useState(null);
   const [statsLoading, setStatsLoading] = useState(false);
   const [statsError, setStatsError] = useState(null);
+  const [predLoading, setPredLoading] = useState(false);
+  const [predError, setPredError] = useState(null);
+  const [prediction, setPrediction] = useState(null);
 
   // Fetch general historical statistics from ArcGIS layer
   useEffect(() => {
@@ -56,6 +59,47 @@ function InfoSidebar() {
     fetchStats();
   }, []);
 
+  // Fetch flood prediction when a point is selected
+  useEffect(() => {
+    const fetchPrediction = async () => {
+      if (
+        !selectedPoint ||
+        selectedPoint.latitude == null ||
+        selectedPoint.longitude == null
+      ) {
+        setPrediction(null);
+        return;
+      }
+      setPredLoading(true);
+      setPredError(null);
+      try {
+        const url = new URL("http://localhost:5000/api/predict");
+        url.searchParams.set("lat", String(selectedPoint.latitude));
+        url.searchParams.set("lon", String(selectedPoint.longitude));
+        const resp = await fetch(url.toString());
+        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+        const json = await resp.json();
+        setPrediction(json?.flood_prediction || null);
+      } catch (e) {
+        console.error("Prediction fetch failed:", e);
+        setPrediction(null);
+        setPredError("Failed to load prediction");
+      } finally {
+        setPredLoading(false);
+      }
+    };
+    fetchPrediction();
+  }, [selectedPoint]);
+
+  // Risk badge class helper (replaces inline styles)
+  const riskBadgeClass = (risk) => {
+    const level = (risk || "").toLowerCase();
+    if (level === "high") return "risk-high";
+    if (level === "medium" || level === "moderate") return "risk-medium";
+    if (level === "low") return "risk-low";
+    return "risk-unknown";
+  };
+
   return (
     <div className="info-sidebar">
       <div className="info-sidebar-header">
@@ -63,22 +107,57 @@ function InfoSidebar() {
         <p className="info-sidebar-subtitle">Insights and status</p>
       </div>
 
-      {/* Current Analysis (Weathering API model placeholder) */}
-      <div className="alerts-section" style={{ marginBottom: "1rem" }}>
+      {/* Current Analysis (Prediction from Weathering API) */}
+      <div className="alerts-section section-block">
         <h3 className="section-title">Current Analysis</h3>
-        <div className="alerts-list">
-          <div className="alert-item">
-            <div className="alert-header">
-              <span className="alert-region">Weathering API Model</span>
-              <span className="alert-badge">Pending</span>
+        {!selectedPoint ? (
+          <div className="alerts-list">
+            <div className="alert-item">
+              <div className="alert-header">
+                <span className="alert-region">Select a location</span>
+                <span className="alert-badge">Idle</span>
+              </div>
+              <div className="alert-time">Click the map to analyze risk.</div>
             </div>
-            <div className="alert-time">Predictions will appear here.</div>
           </div>
-        </div>
+        ) : predLoading ? (
+          <div className="alerts-list">
+            <div className="alert-item">Analyzing risk…</div>
+          </div>
+        ) : predError ? (
+          <div className="alerts-list">
+            <div className="alert-item">{predError}</div>
+          </div>
+        ) : prediction ? (
+          <div className="alerts-list">
+            <div className="alert-item">
+              <div className="alert-header">
+                <span className="alert-region">Flood Risk</span>
+                <span
+                  className={`alert-badge ${riskBadgeClass(
+                    prediction.risk_level
+                  )}`}
+                >
+                  {prediction.risk_level || "Unknown"}
+                </span>
+              </div>
+              <div className="alert-time">
+                {prediction.message || "Prediction"} •{" "}
+                {prediction.probability != null
+                  ? `${(prediction.probability * 100).toFixed(1)}%`
+                  : "N/A"}
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="alerts-list">
+            <div className="alert-item">No prediction available.</div>
+          </div>
+        )}
       </div>
 
       {/* Historical Overview (dataset-wide statistics) */}
-      <div className="alerts-section" style={{ marginBottom: "1rem" }}>
+      <div className="alerts-section section-block">
         <h3 className="section-title">Historical Overview</h3>
         {statsLoading ? (
           <div className="alerts-list">
@@ -91,13 +170,7 @@ function InfoSidebar() {
         ) : (
           <div className="stats-grid">
             <div className="stat-card">
-              <div
-                className="stat-icon"
-                style={{
-                  backgroundColor: "rgba(16, 185, 129, 0.1)",
-                  color: "#10b981",
-                }}
-              >
+              <div className="stat-icon stat-icon--success">
                 <BarChart3 size={24} />
               </div>
               <div className="stat-content">
@@ -109,14 +182,8 @@ function InfoSidebar() {
             </div>
 
             <div className="stat-card">
-              <div
-                className="stat-icon"
-                style={{
-                  backgroundColor: "rgba(37, 99, 235, 0.1)",
-                  color: "#2563eb",
-                }}
-              >
-                <TrendingUp size={24} />
+              <div className="stat-icon stat-icon--danger">
+                <AlertTriangle size={24} />
               </div>
               <div className="stat-content">
                 <div className="stat-value">
@@ -129,13 +196,7 @@ function InfoSidebar() {
             </div>
 
             <div className="stat-card">
-              <div
-                className="stat-icon"
-                style={{
-                  backgroundColor: "rgba(245, 158, 11, 0.1)",
-                  color: "#f59e0b",
-                }}
-              >
+              <div className="stat-icon stat-icon--warning">
                 <Clock size={24} />
               </div>
               <div className="stat-content">
@@ -149,13 +210,7 @@ function InfoSidebar() {
             </div>
 
             <div className="stat-card">
-              <div
-                className="stat-icon"
-                style={{
-                  backgroundColor: "rgba(16, 185, 129, 0.1)",
-                  color: "#10b981",
-                }}
-              >
+              <div className="stat-icon stat-icon--success">
                 <Calendar size={24} />
               </div>
               <div className="stat-content">
@@ -171,7 +226,7 @@ function InfoSidebar() {
         )}
       </div>
 
-      {/* Quick Info (dummy) */}
+      {/* Quick Info */}
       <div className="quick-info">
         <h3 className="section-title">System Status</h3>
         <div className="status-items">
@@ -182,10 +237,6 @@ function InfoSidebar() {
           <div className="status-item">
             <span className="status-dot active"></span>
             <span className="status-text">Models Updated</span>
-          </div>
-          <div className="status-item">
-            <span className="status-dot warning"></span>
-            <span className="status-text">2 Alerts Pending</span>
           </div>
         </div>
       </div>
