@@ -15,10 +15,32 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// CORS configuration (place BEFORE helmet/ratelimiter)
+const allowedOrigins = ["http://localhost:5173", "http://127.0.0.1:5173"];
+
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    return callback(new Error("Not allowed by CORS"));
+  },
+  credentials: true,
+  methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Authorization", "Content-Type"],
+  optionsSuccessStatus: 204,
+};
+
 // معدل الحد للطلبات
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 100,
+  // Dev can spike due to React StrictMode/effects; higher ceiling
+  max: process.env.NODE_ENV === "production" ? 300 : 2000,
+  standardHeaders: true,
+  legacyHeaders: false,
+  // Skip preflight OPTIONS and optionally disable in non-prod
+  skip: (req) =>
+    req.method === "OPTIONS" || process.env.NODE_ENV !== "production",
   message: {
     success: false,
     message: "❌ Too many requests from this IP",
@@ -26,9 +48,12 @@ const limiter = rateLimit({
 });
 
 // middleware الأساسية
+// CORS first so all responses (including errors) include CORS headers
+app.use(cors(corsOptions));
+// Handle preflight for all routes (regex path to avoid path-to-regexp "*" error)
+app.options(/.*/, cors(corsOptions));
 app.use(helmet());
 app.use(limiter);
-app.use(cors());
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
 

@@ -2,9 +2,10 @@ import React, { useState } from "react";
 import { Image as ImageIcon, Send } from "lucide-react";
 import "./AddPostForm.css";
 import { useAuth } from "../../context/AuthContext";
+import { API_BASE } from "../../config/api";
 
 export default function AddPostForm({ onAddPost }) {
-  const { token } = useAuth();
+  const { token, user } = useAuth();
   const [form, setForm] = useState({
     title: "",
     description: "",
@@ -56,6 +57,8 @@ export default function AddPostForm({ onAddPost }) {
       imageFiles.forEach((file) => fd.append("images", file));
     }
 
+    // Do NOT append author fields here; backend derives author from JWT
+
     try {
       if (onAddPost) {
         // delegate submission to parent which returns the created/ formatted post
@@ -94,14 +97,11 @@ export default function AddPostForm({ onAddPost }) {
       const headers = {};
       if (token) headers["Authorization"] = `Bearer ${token}`;
 
-      const resp = await fetch(
-        "https://kartak-demo-od0f.onrender.com/api/reports",
-        {
-          method: "POST",
-          headers,
-          body: fd,
-        }
-      );
+      const resp = await fetch(`${API_BASE}/api/reports`, {
+        method: "POST",
+        headers,
+        body: fd,
+      });
       const json = await resp.json();
       if (!json?.success) {
         console.error("Add post failed:", json);

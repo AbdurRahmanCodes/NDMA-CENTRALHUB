@@ -6,6 +6,7 @@ import {
   Share2,
   Clock,
   MapPin,
+  Trash2,
 } from "lucide-react";
 import CommentsSection from "./CommentsSection";
 const getCategoryBadge = (category) => {
@@ -25,6 +26,8 @@ export default function PostCard({
   onSave,
   onToggleComments,
   onAddComment,
+  isOwner,
+  onDelete,
 }) {
   const badge = getCategoryBadge(post.category);
   return (
@@ -90,6 +93,15 @@ export default function PostCard({
         >
           <Share2 size={20} />
         </button>
+        {isOwner && (
+          <button
+            className={`action-button delete-button`}
+            onClick={onDelete}
+            title="Delete post"
+          >
+            <Trash2 size={18} />
+          </button>
+        )}
       </div>
       {commentsExpanded && (
         <CommentsSection comments={post.comments} onAddComment={onAddComment} />

@@ -1,6 +1,7 @@
 import axios from "axios";
+import { API_BASE } from "../config/api";
 
-const BASE = "https://kartak-demo-od0f.onrender.com/api/auth";
+const BASE = `${API_BASE}/api/auth`;
 
 export async function loginApi(payload) {
   const { data } = await axios.post(`${BASE}/login`, payload, {

@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef, useCallback } from "react";
 import axios from "axios";
+import { API_BASE } from "../config/api";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import AddPostForm from "../components/Community/AddPostForm";
@@ -7,14 +8,6 @@ import PostCard from "../components/Community/PostCard";
 import Sidebar from "../components/Community/Sidebar";
 import "./Community.css";
 import RequireAuth from "../components/Auth/RequireAuth";
-// API hosts: keep both local and remote here so we can switch easily
-const API_HOSTS = {
-  local: "http://localhost:5000",
-  onrender: "https://kartak-demo-od0f.onrender.com",
-};
-
-// Active base URL — change to API_HOSTS.onrender to use the remote API
-const API_BASE = API_HOSTS.local;
 
 export default function Community() {
   const navigate = useNavigate();
@@ -35,9 +28,7 @@ export default function Community() {
     setFetchError(null);
     try {
       const res = await axios.get(`${API_BASE}/api/reports`);
-
       const data = res.data;
-
       if (!mountedRef.current) return;
 
       if (data?.success) {
@@ -48,6 +39,9 @@ export default function Community() {
           location: item.location_name,
           category: item.disaster_type,
           author: item.author_name,
+          authorId: String(
+            item.author_id ?? item.authorId ?? item.user_id ?? item.userId ?? ""
+          ),
           timestamp: new Date(item.created_at).toLocaleString(),
           likes: Number(item.likes_count) || 0,
           comments: [], // will populate immediately after
@@ -56,7 +50,6 @@ export default function Community() {
 
         setPosts(apiPosts);
 
-        // Fetch comments for each post so counts are available immediately
         try {
           const commentFetches = apiPosts.map((p) =>
             axios
@@ -155,6 +148,27 @@ export default function Community() {
     };
   }, [fetchPosts]);
 
+  // helper to determine ownership across multiple possible id fields
+  const isOwnerOf = (post) => {
+    if (!user) return false;
+    const uid = String(
+      user.id ?? user.user_id ?? user.userId ?? user._id ?? ""
+    ).trim();
+    const aid = String(
+      post.authorId ?? post.author_id ?? post.user_id ?? post.userId ?? ""
+    ).trim();
+    if (uid && aid && uid === aid) return true;
+    // fallback: match by display name if IDs are not available/consistent
+    const uname = String(
+      user.name ?? user.username ?? user.user_name ?? ""
+    ).trim();
+    const pauthor = String(
+      post.author ?? post.author_name ?? post.user_name ?? ""
+    ).trim();
+    if (uname && pauthor && uname === pauthor) return true;
+    return false;
+  };
+
   const handleAddPost = async (formData) => {
     try {
       // Accept either FormData (from AddPostForm) or a plain object
@@ -180,6 +194,7 @@ export default function Community() {
           formData.latitude ? String(formData.latitude) : "0"
         );
         fd.append("status", formData.status || "active");
+        // Do not append author fields; backend derives author from token
         fd.append("link", formData.link || "");
         if (formData.images && Array.isArray(formData.images)) {
           formData.images.forEach((f) => fd.append("images", f));
@@ -210,7 +225,14 @@ export default function Community() {
             (user && (user.name || user.username)) ||
             newPost.author_name ||
             "You",
-          authorId: user?.id ?? newPost.author_id ?? null,
+          authorId: String(
+            user?.id ??
+              newPost.author_id ??
+              newPost.authorId ??
+              newPost.user_id ??
+              newPost.userId ??
+              ""
+          ),
           author_profile: user ?? null,
           timestamp: new Date(newPost.created_at).toLocaleString(),
           likes: Number(newPost.likes_count) || 0,
@@ -228,7 +250,37 @@ export default function Community() {
       throw new Error(data?.message || "Failed to create post");
     } catch (error) {
       console.error("Error adding post:", error);
+      if (error?.response?.data)
+        console.error("Server response:", error.response.data);
       throw error;
+    }
+  };
+
+  const handleDelete = async (postId) => {
+    if (!user || !token) {
+      navigate("/login", { state: { from: location } });
+      return;
+    }
+
+    const ok = window.confirm(
+      "Are you sure you want to delete this post? This cannot be undone."
+    );
+    if (!ok) return;
+
+    try {
+      // call DELETE endpoint
+      await axios.delete(`${API_BASE}/api/reports/${postId}`, {
+        headers: {
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+      });
+
+      // remove from UI
+      setPosts((prev) => prev.filter((p) => p.id !== postId));
+    } catch (err) {
+      console.error("Error deleting post:", err);
+      // show a user-friendly message
+      alert("Failed to delete post. Please try again.");
     }
   };
   // Handlers (will map to API calls later)
@@ -444,28 +496,29 @@ export default function Community() {
         </header>
         <div className="community-container">
           <main className="posts-section">
-            {/* Loading / error / posts */}
-            {loading ? (
-              <div className="posts-loading">Loading posts…</div>
-            ) : fetchError ? (
+            <AddPostForm onAddPost={handleAddPost} />
+
+            {/* Loading / error: placed after AddPostForm so loader appears below the form */}
+            {loading && (
+              <div className="loader-row">
+                <div className="spinner" aria-hidden="true"></div>
+                <div className="loader-text">Loading posts…</div>
+              </div>
+            )}
+
+            {fetchError && (
               <div className="posts-error">
                 <p>Failed to load posts: {fetchError}</p>
-                <button
-                  className="refresh-button"
-                  onClick={() => {
-                    fetchPosts();
-                  }}
-                >
+                <button className="refresh-button" onClick={() => fetchPosts()}>
                   Refresh
                 </button>
               </div>
-            ) : null}
+            )}
 
             {!loading && !fetchError && posts.length === 0 && (
               <div className="no-posts">No posts yet.</div>
             )}
 
-            <AddPostForm onAddPost={handleAddPost} />
             {posts.map((post) => (
               <PostCard
                 key={post.id}
@@ -473,6 +526,8 @@ export default function Community() {
                 isLiked={likedPosts.has(post.id)}
                 isSaved={savedPosts.has(post.id)}
                 commentsExpanded={expandedComments.has(post.id)}
+                isOwner={isOwnerOf(post)}
+                onDelete={() => handleDelete(post.id)}
                 onLike={() => handleLike(post.id)}
                 onSave={() => handleSave(post.id)}
                 onToggleComments={() => toggleComments(post.id)}
