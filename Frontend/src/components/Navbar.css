@@ -400,7 +400,7 @@
 
   .navbar-links {
     position: fixed;
-    top: 68px;
+    top: 55px;
     left: 0;
     right: 0;
     background: var(--navbar-bg);

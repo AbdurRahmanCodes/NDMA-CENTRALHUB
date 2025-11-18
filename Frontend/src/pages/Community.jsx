@@ -6,6 +6,8 @@ import { useAuth } from "../context/AuthContext";
 import AddPostForm from "../components/Community/AddPostForm";
 import PostCard from "../components/Community/PostCard";
 import Sidebar from "../components/Community/Sidebar";
+import ConfirmModal from "../components/UI/ConfirmModal";
+import { useToast } from "../components/UI/ToastProvider";
 import "./Community.css";
 import RequireAuth from "../components/Auth/RequireAuth";
 
@@ -22,6 +24,7 @@ export default function Community() {
   const location = useLocation();
 
   const mountedRef = useRef(true);
+  const { showToast } = useToast();
 
   const fetchPosts = useCallback(async () => {
     setLoading(true);
@@ -244,6 +247,7 @@ export default function Community() {
         };
 
         setPosts((prev) => [formatted, ...prev]);
+        showToast({ message: "Post added", type: "success", duration: 3000 });
         return formatted;
       }
 
@@ -252,35 +256,47 @@ export default function Community() {
       console.error("Error adding post:", error);
       if (error?.response?.data)
         console.error("Server response:", error.response.data);
+      showToast({
+        message: "Failed to add post",
+        type: "error",
+        duration: 3000,
+      });
       throw error;
     }
   };
 
-  const handleDelete = async (postId) => {
+  // confirmation modal state
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [postToDelete, setPostToDelete] = useState(null);
+
+  const openConfirmDelete = (postId) => {
     if (!user || !token) {
       navigate("/login", { state: { from: location } });
       return;
     }
+    setPostToDelete(postId);
+    setConfirmOpen(true);
+  };
 
-    const ok = window.confirm(
-      "Are you sure you want to delete this post? This cannot be undone."
-    );
-    if (!ok) return;
-
+  const handleConfirmDelete = async () => {
+    const postId = postToDelete;
+    setConfirmOpen(false);
+    setPostToDelete(null);
     try {
-      // call DELETE endpoint
       await axios.delete(`${API_BASE}/api/reports/${postId}`, {
         headers: {
           ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
       });
-
-      // remove from UI
       setPosts((prev) => prev.filter((p) => p.id !== postId));
+      showToast({ message: "Post deleted", type: "error", duration: 3000 });
     } catch (err) {
       console.error("Error deleting post:", err);
-      // show a user-friendly message
-      alert("Failed to delete post. Please try again.");
+      showToast({
+        message: "Failed to delete post",
+        type: "error",
+        duration: 3000,
+      });
     }
   };
   // Handlers (will map to API calls later)
@@ -498,7 +514,6 @@ export default function Community() {
           <main className="posts-section">
             <AddPostForm onAddPost={handleAddPost} />
 
-            {/* Loading / error: placed after AddPostForm so loader appears below the form */}
             {loading && (
               <div className="loader-row">
                 <div className="spinner" aria-hidden="true"></div>
@@ -527,7 +542,7 @@ export default function Community() {
                 isSaved={savedPosts.has(post.id)}
                 commentsExpanded={expandedComments.has(post.id)}
                 isOwner={isOwnerOf(post)}
-                onDelete={() => handleDelete(post.id)}
+                onDelete={() => openConfirmDelete(post.id)}
                 onLike={() => handleLike(post.id)}
                 onSave={() => handleSave(post.id)}
                 onToggleComments={() => toggleComments(post.id)}
@@ -542,6 +557,15 @@ export default function Community() {
             />
           </aside>
         </div>
+        <ConfirmModal
+          open={confirmOpen}
+          title="Delete post"
+          description="Are you sure you want to delete this post? This cannot be undone."
+          confirmText="Delete"
+          cancelText="Cancel"
+          onConfirm={handleConfirmDelete}
+          onCancel={() => setConfirmOpen(false)}
+        />
       </div>
     </RequireAuth>
   );

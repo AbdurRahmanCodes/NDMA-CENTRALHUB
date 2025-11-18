@@ -9,6 +9,8 @@ function InfoSidebar({ selectedPoint }) {
   const [predLoading, setPredLoading] = useState(false);
   const [predError, setPredError] = useState(null);
   const [prediction, setPrediction] = useState(null);
+  const [openMeteoStatus, setOpenMeteoStatus] = useState("checking");
+  const [weatheringStatus, setWeatheringStatus] = useState("checking");
 
   // Fetch general historical statistics from ArcGIS layer
   useEffect(() => {
@@ -110,6 +112,72 @@ function InfoSidebar({ selectedPoint }) {
     if (level === "low") return "risk-low";
     return "risk-unknown";
   };
+
+  // Quick availability checks for external services (run on mount)
+  useEffect(() => {
+    let abortOpen = new AbortController();
+    let abortWeather = new AbortController();
+
+    const timeout = (ms, signal) =>
+      new Promise((_, rej) => {
+        const id = setTimeout(() => rej(new Error("timeout")), ms);
+        signal.addEventListener("abort", () => {
+          clearTimeout(id);
+          rej(new Error("aborted"));
+        });
+      });
+
+    const checkOpenMeteo = async () => {
+      try {
+        const url =
+          "https://api.open-meteo.com/v1/forecast?latitude=0&longitude=0&current_weather=true";
+        const resPromise = fetch(url, { signal: abortOpen.signal });
+        const res = await Promise.race([
+          resPromise,
+          timeout(4000, abortOpen.signal),
+        ]);
+        if (res && res.ok) setOpenMeteoStatus("up");
+        else setOpenMeteoStatus("down");
+      } catch {
+        setOpenMeteoStatus("down");
+      }
+    };
+
+    const checkWeathering = async () => {
+      try {
+        // Try the prediction endpoint with dummy coords to detect if backend responds
+        const url = "http://localhost:5000/api/predict?lat=0&lon=0";
+        const resPromise = fetch(url, {
+          method: "GET",
+          signal: abortWeather.signal,
+        });
+        const res = await Promise.race([
+          resPromise,
+          timeout(4000, abortWeather.signal),
+        ]);
+        if (res && res.ok) setWeatheringStatus("up");
+        else setWeatheringStatus("down");
+      } catch {
+        setWeatheringStatus("down");
+      }
+    };
+
+    checkOpenMeteo();
+    checkWeathering();
+
+    return () => {
+      try {
+        abortOpen.abort();
+      } catch {
+        /* ignore */
+      }
+      try {
+        abortWeather.abort();
+      } catch {
+        /* ignore */
+      }
+    };
+  }, []);
 
   return (
     <div className="info-sidebar">
@@ -243,12 +311,30 @@ function InfoSidebar({ selectedPoint }) {
         <h3 className="section-title">System Status</h3>
         <div className="status-items">
           <div className="status-item">
-            <span className="status-dot active"></span>
-            <span className="status-text">Data Feed Active</span>
+            <span
+              className={`status-dot ${
+                openMeteoStatus === "up"
+                  ? "active"
+                  : openMeteoStatus === "down"
+                  ? "warning"
+                  : "checking"
+              }`}
+              aria-hidden
+            ></span>
+            <span className="status-text">Data Feed (Open‑Meteo)</span>
           </div>
           <div className="status-item">
-            <span className="status-dot active"></span>
-            <span className="status-text">Models Updated</span>
+            <span
+              className={`status-dot ${
+                weatheringStatus === "up"
+                  ? "active"
+                  : weatheringStatus === "down"
+                  ? "warning"
+                  : "checking"
+              }`}
+              aria-hidden
+            ></span>
+            <span className="status-text">Model API (Weathering)</span>
           </div>
         </div>
       </div>

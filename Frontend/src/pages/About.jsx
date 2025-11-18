@@ -1,15 +1,19 @@
 import "./About.css";
+import TeamSection from "../components/about/TeamSection";
 
 export default function About() {
   return (
     <div className="about-page">
-      <div className="page-container">
-        <h1 className="page-title">About Us</h1>
-        <p className="page-description">
-          Learn more about our mission to protect communities from natural
-          disasters
-        </p>
-      </div>
+      <header className="about-header">
+        <div className="page-container header-content">
+          <h1 className="page-title">Meet Our Team</h1>
+          <p className="page-description">
+            The five developers behind Floods Insights.
+          </p>
+        </div>
+      </header>
+
+      <TeamSection />
     </div>
   );
 }

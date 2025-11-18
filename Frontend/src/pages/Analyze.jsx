@@ -43,7 +43,7 @@ function Analyze() {
       selectedPoint.latitude,
       selectedPoint.longitude,
       earthquakeData,
-      150 
+      150
     );
     setNearestQuake(nearest);
   }, [selectedPoint, earthquakeData]);

@@ -1,0 +1,55 @@
+.ci-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1200;
+}
+.ci-modal {
+  width: 92%;
+  max-width: 420px;
+  background: var(--card, var(--bg, #fff));
+  color: var(--text, #111);
+  border-radius: 10px;
+  padding: 18px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+}
+.ci-modal-title {
+  margin: 0 0 6px 0;
+  font-size: 1.05rem;
+}
+.ci-modal-desc {
+  margin: 0 0 14px 0;
+  color: var(--muted, #555);
+}
+.ci-modal-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+.ci-modal-btn {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.12s ease, box-shadow 0.12s ease, opacity 0.12s ease;
+}
+.ci-modal-cancel {
+  background: transparent;
+  color: var(--muted, #444);
+}
+.ci-modal-cancel:hover {
+  background: rgba(0, 0, 0, 0.04);
+  transform: translateY(-1px);
+}
+.ci-modal-confirm {
+  background: var(--danger, var(--accent, #d9534f));
+  color: #fff;
+}
+.ci-modal-confirm:hover {
+  filter: brightness(0.95);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+}

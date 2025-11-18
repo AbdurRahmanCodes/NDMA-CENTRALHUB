@@ -244,3 +244,9 @@ button {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--primary-dark);
 }
+
+@media (max-width: 820px) {
+  :root {
+    font-size: 13px;
+  }
+}

@@ -5,6 +5,8 @@ import { API_BASE } from "../config/api";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import PostCard from "../components/Community/PostCard";
+import ConfirmModal from "../components/UI/ConfirmModal";
+import { useToast } from "../components/UI/ToastProvider";
 import RequireAuth from "../components/Auth/RequireAuth";
 
 export default function Saved() {
@@ -141,15 +143,23 @@ export default function Saved() {
     return uid !== "" && aid !== "" && uid === aid;
   };
 
-  const handleDelete = async (postId) => {
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [postToDelete, setPostToDelete] = useState(null);
+  const { showToast } = useToast();
+
+  const openConfirmDelete = (postId) => {
     if (!user || !token) {
       navigate("/login", { state: { from: location } });
       return;
     }
-    const ok = window.confirm(
-      "Are you sure you want to delete this post? This cannot be undone."
-    );
-    if (!ok) return;
+    setPostToDelete(postId);
+    setConfirmOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    const postId = postToDelete;
+    setConfirmOpen(false);
+    setPostToDelete(null);
     try {
       await axios.delete(`${API_BASE}/api/reports/${postId}`, {
         headers: {
@@ -157,9 +167,14 @@ export default function Saved() {
         },
       });
       setPosts((prev) => prev.filter((p) => p.id !== postId));
+      showToast({ message: "Post deleted", type: "error", duration: 3000 });
     } catch (err) {
       console.error("Error deleting post:", err);
-      alert("Failed to delete post. Please try again.");
+      showToast({
+        message: "Failed to delete post",
+        type: "error",
+        duration: 3000,
+      });
     }
   };
 
@@ -381,7 +396,7 @@ export default function Saved() {
                   isSaved={savedPosts.has(post.id)}
                   commentsExpanded={expandedComments.has(post.id)}
                   isOwner={isOwnerOf(post)}
-                  onDelete={() => handleDelete(post.id)}
+                  onDelete={() => openConfirmDelete(post.id)}
                   onLike={() => handleLike(post.id)}
                   onSave={() => handleSave(post.id)}
                   onToggleComments={() => toggleComments(post.id)}
@@ -391,6 +406,15 @@ export default function Saved() {
             )}
           </main>
         </div>
+        <ConfirmModal
+          open={confirmOpen}
+          title="Delete post"
+          description="Are you sure you want to delete this post? This cannot be undone."
+          confirmText="Delete"
+          cancelText="Cancel"
+          onConfirm={handleConfirmDelete}
+          onCancel={() => setConfirmOpen(false)}
+        />
       </div>
     </RequireAuth>
   );

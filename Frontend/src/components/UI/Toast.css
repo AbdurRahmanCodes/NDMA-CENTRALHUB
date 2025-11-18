@@ -1,0 +1,74 @@
+.ci-toast {
+  position: fixed;
+  right: 16px;
+  top: 20px;
+  min-width: 180px;
+  max-width: 360px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.16);
+  z-index: 1600;
+  color: #fff;
+  transform: translateY(-6px);
+  animation: ci-toast-in 0.18s ease-out forwards;
+}
+.ci-toast-message {
+  flex: 1;
+  font-size: 0.95rem;
+}
+.ci-toast-icon {
+  width: 18px;
+  height: 18px;
+  opacity: 0.95;
+}
+.ci-toast-info {
+  background: var(--accent, #2d6cdf);
+}
+.ci-toast-success {
+  background: var(--success, #28a745);
+}
+.ci-toast-error {
+  background: var(--danger, #d9534f);
+}
+.ci-toast-close {
+  background: transparent;
+  border: none;
+  color: inherit;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 0 6px;
+}
+
+@keyframes ci-toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.ci-toast-exit {
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: all 0.18s ease-out;
+}
+.ci-toast-enter {
+  opacity: 1;
+  transform: translateY(0);
+  transition: all 0.18s ease-out;
+}
+
+.ci-toast-stack {
+  position: fixed;
+  right: 16px;
+  top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 1600;
+}

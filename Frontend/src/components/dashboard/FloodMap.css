@@ -5,6 +5,17 @@
   position: relative;
 }
 
+/* Ensure ArcGIS internal elements always fill the container */
+.map-view .esri-view-root,
+.map-view .esri-view-surface,
+.map-view .esri-view-surface__container,
+.map-view .esri-view-surface canvas {
+  width: 100% !important;
+  height: 100% !important;
+  position: absolute !important;
+  inset: 0 !important;
+}
+
 /* Ensure ArcGIS widgets are visible */
 .esri-ui-corner {
   z-index: 1;

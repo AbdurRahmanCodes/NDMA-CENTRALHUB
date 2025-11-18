@@ -236,7 +236,7 @@
 
 /* Post Actions */
 .post-actions {
-  padding: 1rem 1.5rem;
+  padding: 1rem;
   border-top: 2px solid #f1f5f9;
   display: flex;
   gap: 1rem;
@@ -250,7 +250,7 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.625rem 1rem;
+  padding: 0.625rem;
   background: transparent;
   border: 2px solid #e2e8f0;
   border-radius: 8px;
@@ -670,13 +670,15 @@
   .post-title {
     font-size: 1.25rem;
   }
-
+}
+@media (max-width: 400px) {
   .post-actions {
     flex-wrap: wrap;
+    gap: 0.5rem;
   }
 
   .action-button {
-    flex: 1;
+    flex: 1 1 auto;
     min-width: calc(50% - 0.5rem);
   }
 }

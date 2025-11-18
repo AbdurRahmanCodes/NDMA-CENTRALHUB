@@ -11,8 +11,8 @@
   width: 100%;
   height: calc(100vh - 70px);
   display: grid;
-  grid-template-columns: 360px 1fr 360px;
-  grid-template-rows: 1fr 350px;
+  grid-template-columns: 300px 1fr 300px;
+  grid-template-rows: 1fr 300px;
   grid-template-areas:
     "left-sidebar map right-sidebar"
     "left-sidebar charts right-sidebar";
@@ -27,7 +27,6 @@
   overflow-x: hidden;
   background: var(--section-bg);
   box-shadow: 4px 0 20px rgba(0, 0, 0, 0.08);
-  z-index: 10;
 }
 
 [data-theme="dark"] .left-sidebar-section {
@@ -49,7 +48,6 @@
   overflow-x: hidden;
   background: var(--section-bg);
   box-shadow: -4px 0 20px rgba(0, 0, 0, 0.08);
-  z-index: 10;
 }
 
 [data-theme="dark"] .right-sidebar-section {
@@ -67,14 +65,16 @@
 
 @media (max-width: 1600px) {
   .dashboard-container {
-    grid-template-columns: 340px 1fr 340px;
-    grid-template-rows: 1fr 330px;
+    grid-template-columns: 300px 1fr 300px;
+    /* keep a fixed viewport-based height for the map row so ArcGIS canvas
+       can size correctly on small devices */
+    grid-template-rows: 500px auto auto auto;
   }
 }
 
 @media (max-width: 1400px) {
   .dashboard-container {
-    grid-template-columns: 320px 1fr 320px;
+    grid-template-columns: 300px 1fr 300px;
     grid-template-rows: 1fr 300px;
   }
 }
@@ -85,7 +85,7 @@
     min-height: calc(100vh - 70px);
 
     grid-template-columns: 1fr 1fr;
-    grid-template-rows: 440px auto auto;
+    grid-template-rows: 400px auto auto;
     grid-template-areas:
       "map map"
       "left-sidebar right-sidebar"
@@ -109,19 +109,19 @@
 
   .map-section {
     border-bottom: 1px solid var(--border-color);
-    min-height: 440px;
+    min-height: 350px;
   }
 
   .charts-section {
     border-top: 1px solid var(--border-color);
-    min-height: 420px;
+    min-height: 350px;
   }
 }
 
 @media (max-width: 768px) {
   .dashboard-container {
     grid-template-columns: 1fr;
-    grid-template-rows: 38vh auto auto auto;
+    grid-template-rows: 350px auto auto auto;
     grid-template-areas:
       "map"
       "left-sidebar"
@@ -130,6 +130,7 @@
   }
 
   .map-section {
+    height: 300px;
     min-height: 0;
     border-bottom: 1px solid var(--border-color);
   }
@@ -141,6 +142,12 @@
     min-height: 300px;
     border-top: 1px solid var(--border-color);
     box-shadow: none;
+    position: relative;
+    margin-top: 0;
+    background: var(--section-bg);
+  }
+  .left-sidebar-section .info-sidebar {
+    border: none;
   }
 
   .right-sidebar-section {
@@ -150,6 +157,9 @@
     border-top: 1px solid var(--border-color);
     border-bottom: 1px solid var(--border-color);
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  }
+  .right-sidebar-section .weather-panel {
+    border: none;
   }
 
   [data-theme="dark"] .right-sidebar-section {
@@ -165,7 +175,7 @@
 
 @media (max-width: 480px) {
   .dashboard-container {
-    grid-template-rows: 35vh auto auto;
+    grid-template-rows: 300px auto auto;
   }
 
   .right-sidebar-section {

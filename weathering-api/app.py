@@ -6,6 +6,8 @@ import numpy as np
 import logging
 from datetime import datetime
 from config import Config
+import math
+from datetime import timedelta
 
 # Setup logging
 logging.basicConfig(level=logging.INFO)
@@ -73,31 +75,103 @@ def get_ai_weather_data(latitude, longitude):
     weather_data = get_weather_from_api(latitude, longitude)
     hourly = weather_data['hourly']
     
-    # Calculate averages
+    # Calculate averages and additional precipitation statistics
     def calculate_average(data_array):
-        return sum(data_array) / len(data_array)
-    
+        return sum(data_array) / len(data_array) if data_array else 0.0
+
     # Calculate temperature extremes
-    temp_data = hourly['temperature_2m']
-    temp_max = max(temp_data)
-    temp_min = min(temp_data)
-    
+    temp_data = hourly.get('temperature_2m', [])
+    temp_max = max(temp_data) if temp_data else 0.0
+    temp_min = min(temp_data) if temp_data else 0.0
+
+    # precipitation arrays (hourly)
+    precip_hours = hourly.get('precipitation', [])
+    rain_hours = hourly.get('rain', [])
+    snowfall_hours = hourly.get('snowfall', [])
+
+    # helper to sum last N hours (assume arrays are chronological)
+    def sum_last_hours(arr, hours):
+        if not arr:
+            return 0.0
+        return sum(arr[-hours:]) if len(arr) >= hours else sum(arr)
+
     # Calculate all averages
     averages = {
         'temperature_2m': calculate_average(temp_data),
-        'rain': calculate_average(hourly['rain']),
-        'snowfall': calculate_average(hourly['snowfall']),
-        'precipitation': calculate_average(hourly['precipitation']),
-        'surface_pressure': calculate_average(hourly['surface_pressure']),
-        'wind_speed_10m': calculate_average(hourly['wind_speed_10m']),
-        'cloud_cover': calculate_average(hourly['cloud_cover']),
-        'relative_humidity_2m': calculate_average(hourly['relative_humidity_2m'])
+        'rain': calculate_average(rain_hours),
+        'snowfall': calculate_average(snowfall_hours),
+        'precipitation': calculate_average(precip_hours),
+        'surface_pressure': calculate_average(hourly.get('surface_pressure', [])),
+        'wind_speed_10m': calculate_average(hourly.get('wind_speed_10m', [])),
+        'cloud_cover': calculate_average(hourly.get('cloud_cover', [])),
+        'relative_humidity_2m': calculate_average(hourly.get('relative_humidity_2m', []))
     }
+
+    # Precipitation / intensity metrics (last 24h, 72h, and max hourly)
+    precip_24h = sum_last_hours(precip_hours, 24)
+    precip_72h = sum_last_hours(precip_hours, 72)
+    max_hourly_precip = max(precip_hours) if precip_hours else 0.0
     
     # Calculate season from the first date in the data
     first_date = hourly['time'][0]
     season = calculate_season_from_date(first_date)
     elevation = weather_data['elevation']
+
+    # Simple antecedent precipitation index (API) - weighted recent rainfall
+    # give higher weight to the most recent 24h
+    api = (precip_24h * 0.6) + (precip_72h - precip_24h) * 0.3 + (averages['precipitation'] * 0.1)
+
+    # Fetch recent earthquakes near location and compute a simple quake score
+    def haversine_km(lat1, lon1, lat2, lon2):
+        R = 6371.0
+        phi1 = math.radians(lat1)
+        phi2 = math.radians(lat2)
+        dphi = math.radians(lat2 - lat1)
+        dlambda = math.radians(lon2 - lon1)
+        a = math.sin(dphi/2)**2 + math.cos(phi1)*math.cos(phi2)*math.sin(dlambda/2)**2
+        return R * (2 * math.atan2(math.sqrt(a), math.sqrt(1 - a)))
+
+    def fetch_recent_earthquakes(lat, lon, days=7, maxradius_km=100):
+        try:
+            end = datetime.utcnow()
+            start = end - timedelta(days=days)
+            url = "https://earthquake.usgs.gov/fdsnws/event/1/query"
+            params = {
+                'format': 'geojson',
+                'starttime': start.strftime('%Y-%m-%d'),
+                'endtime': end.strftime('%Y-%m-%d'),
+                'latitude': lat,
+                'longitude': lon,
+                'maxradiuskm': maxradius_km
+            }
+            r = requests.get(url, params=params, timeout=6)
+            if r.status_code != 200:
+                return []
+            data = r.json()
+            events = data.get('features', [])
+            quakes = []
+            for ev in events:
+                props = ev.get('properties', {})
+                coords = ev.get('geometry', {}).get('coordinates', [None, None])
+                if coords[1] is None:
+                    continue
+                qlon, qlat = coords[0], coords[1]
+                dist = haversine_km(lat, lon, qlat, qlon)
+                mag = props.get('mag', 0) or 0
+                quakes.append({'mag': mag, 'distance_km': dist})
+            return quakes
+        except Exception:
+            return []
+
+    quakes = fetch_recent_earthquakes(latitude, longitude, days=7, maxradius_km=100)
+    # Simple quake score: magnitude-weighted proximity score
+    quake_score = 0.0
+    for q in quakes:
+        d = max(q['distance_km'], 1.0)
+        m = q['mag']
+        # weight by magnitude and inverse distance (smaller distance higher weight)
+        quake_score += max(0.0, (m - 2.0)) / (1 + d/50.0)
+
     
     # Format for AI model
     ai_input = {
@@ -198,26 +272,36 @@ def calculate_flood_risk_equation(weather_features):
     season = int(f('season', 0))
     temp_max = f('temp_max')
     temp_min = f('temp_min')
+    precip_24h = f('precip_24h')
+    precip_72h = f('precip_72h')
+    max_hourly_precip = f('max_hourly_precip')
+    quake_score = f('quake_score')
 
-    # Max points allocation (sum = 100)
+    # Max points allocation (sum approx = 100)
     MAX = {
-        'precip': 35,
-        'rain': 25,
-        'snow': 10,
-        'humidity': 8,
-        'pressure': 6,
-        'wind': 5,
+        'precip': 30,
+        'precip_24h': 20,
+        'rain': 12,
+        'max_hourly': 8,
+        'snow': 6,
+        'humidity': 6,
+        'pressure': 5,
+        'wind': 4,
         'elevation': 6,
-        'season': 5
+        'season': 3,
+        'quake': 6
     }
 
     breakdown = {}
 
-    # Precipitation: scale to MAX['precip'] assuming ~50mm is very high
+    # Precipitation: combine long-term average and 72h accumulation
     breakdown['precip_points'] = min(MAX['precip'], (precip / 50.0) * MAX['precip'])
+    # Recent 24h precipitation adds significant risk
+    breakdown['precip24_points'] = min(MAX['precip_24h'], (precip_24h / 50.0) * MAX['precip_24h'])
 
-    # Rain intensity: scale assuming 20mm is strong
+    # Rain intensity (average) and max hourly intensity
     breakdown['rain_points'] = min(MAX['rain'], (rain / 20.0) * MAX['rain'])
+    breakdown['max_hourly_points'] = min(MAX['max_hourly'], (max_hourly_precip / 20.0) * MAX['max_hourly'])
 
     # Snow melt risk: if snowfall significant and temp allows melting
     if snowfall > 5 and temp_max > 0:
@@ -249,6 +333,9 @@ def calculate_flood_risk_equation(weather_features):
 
     # Season: simple boost for spring (1)
     breakdown['season_points'] = MAX['season'] if season == 1 else 0.0
+
+    # Earthquake contribution: small but non-zero multiplier based on recent quake score
+    breakdown['quake_points'] = min(MAX['quake'], quake_score * MAX['quake'])
 
     # Sum and clamp
     total_score = sum(breakdown.values())

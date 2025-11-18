@@ -41,14 +41,12 @@ function Charts({ weatherData }) {
 
   const labels = useMemo(() => {
     if (!hourly?.time) return [];
-    return hourly.time
-      .slice(0, 24)
-      .map((t) =>
-        new Date(t).toLocaleTimeString([], {
-          hour: "2-digit",
-          minute: "2-digit",
-        })
-      );
+    return hourly.time.slice(0, 24).map((t) =>
+      new Date(t).toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      })
+    );
   }, [hourly]);
 
   const tempData = useMemo(() => {
@@ -239,8 +237,9 @@ function Charts({ weatherData }) {
     <div className="dummy-charts-container">
       <div className="chart-wrapper">
         <div className="chart-header">
-          <h3 className="chart-title">Temperature (next 24h)</h3>
-          <p className="chart-subtitle">Open‑Meteo hourly temperature</p>
+          <h3 className="chart-title">
+            Temperature <br /> <span> (next 24h)</span>
+          </h3>
         </div>
         <div className="chart-canvas">
           <Line data={tempData} options={commonLineOptions} />
@@ -249,8 +248,9 @@ function Charts({ weatherData }) {
 
       <div className="chart-wrapper">
         <div className="chart-header">
-          <h3 className="chart-title">Precipitation & Rain (next 24h)</h3>
-          <p className="chart-subtitle">Open‑Meteo precipitation amounts</p>
+          <h3 className="chart-title">
+            Precipitation & Rain <br /> <span> (next 24h)</span>
+          </h3>
         </div>
         <div className="chart-canvas">
           <Bar data={precipData} options={precipOptions} />
@@ -259,8 +259,9 @@ function Charts({ weatherData }) {
 
       <div className="chart-wrapper">
         <div className="chart-header">
-          <h3 className="chart-title">Wind Speed & Humidity (next 24h)</h3>
-          <p className="chart-subtitle">Open‑Meteo wind and humidity</p>
+          <h3 className="chart-title">
+            Wind Speed & Humidity <br /> <span> (next 24h)</span>
+          </h3>
         </div>
         <div className="chart-canvas">
           <Line data={windHumData} options={dualAxisOptions} />
