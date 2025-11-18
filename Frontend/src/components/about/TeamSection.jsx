@@ -1,8 +1,9 @@
 import { MapPin, Cpu, Code, Users, FileText } from "lucide-react";
 import "./TeamSection.css";
 import fawzyPhoto from "../../assets/team/Fawzy.jpg";
-import marwanPhoto from "../../assets/team/Marwan.jpeg";
+import marwanPhoto from "../../assets/team/Marwan.jpg";
 import nourPhoto from "../../assets/team/Nour.jpg";
+import sultanPhoto from "../../assets/team/Sultan.png";
 
 const teamMembers = [
   {
@@ -27,7 +28,7 @@ const teamMembers = [
     role: "Spatial Data Analyst",
     bio: "Manages data lifecycle, including acquisition, cleaning, validation, and integration of satellite and sensor feeds.",
     icon: FileText,
-    // imagePath: hossamPhoto,
+    imagePath: sultanPhoto,
     details:
       "Ensures the integrity و reliability of all geospatial data sources.",
   },
@@ -42,11 +43,11 @@ const teamMembers = [
   },
   {
     name: "Ahmed Fawzy Fawzy",
-    role: "Lead GIS Developer",
-    bio: "Pioneering the spatial architecture, focusing on flood modeling accuracy and ArcGIS/GeoServer deployment.",
+    role: "Coordinate System",
+    bio: "",
     icon: MapPin,
     imagePath: fawzyPhoto,
-    details: "Expert in complex spatial algorithms and Web GIS visualization.",
+    details: "",
   },
 ];
 export default function TeamSection() {
