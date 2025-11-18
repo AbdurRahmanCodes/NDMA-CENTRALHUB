@@ -10,7 +10,6 @@ const teamMembers = [
     name: "Nour Eldeen Okbi",
     role: "Front-End Developer",
     bio: "Responsible for the responsive UI/UX, built using React.js.",
-    icon: Code,
     imagePath: nourPhoto,
     details: "Focuses on performance optimization.",
   },
@@ -18,16 +17,14 @@ const teamMembers = [
     name: "Marwan El-mehy",
     role: "AI/ML Engineer",
     bio: "Developing deep learning models (TensorFlow/OpenCV) for predictive risk assessment and automated recognition systems.",
-    icon: Cpu,
     imagePath: marwanPhoto,
     details:
       "Specializes in integrating AI outputs with emergency decision-making tools.",
   },
   {
-    name: "Hossam Raouf",
-    role: "Spatial Data Analyst",
+    name: "Mohamed Sultan",
+    role: "Data Scientist",
     bio: "Manages data lifecycle, including acquisition, cleaning, validation, and integration of satellite and sensor feeds.",
-    icon: FileText,
     imagePath: sultanPhoto,
     details:
       "Ensures the integrity و reliability of all geospatial data sources.",
@@ -36,7 +33,6 @@ const teamMembers = [
     name: "Magdy Adel",
     role: "Project & Operations Lead",
     bio: "Overseeing the strategic roadmap, team coordination, and system deployment.",
-    icon: Users,
     // imagePath: magdyPhoto,
     details:
       "A dedicated leader focused on turning technology into real-world impact.",
@@ -45,7 +41,6 @@ const teamMembers = [
     name: "Ahmed Fawzy Fawzy",
     role: "Coordinate System",
     bio: "",
-    icon: MapPin,
     imagePath: fawzyPhoto,
     details: "",
   },
