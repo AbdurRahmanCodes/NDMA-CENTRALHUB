@@ -356,7 +356,10 @@
 
 /* Download report button */
 .download-report-btn {
-  display: inline-block;
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: center;
   width: 100%;
   padding: 0.6rem 0.75rem;
   background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
@@ -371,5 +374,6 @@
 }
 .download-report-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 26px rgba(37, 99, 235, 0.18);
+  background: linear-gradient(135deg, #5987eb 0%, #3b82f6 100%);
+  box-shadow: 0 10px 26px rgba(37, 81, 139, 0.18);
 }

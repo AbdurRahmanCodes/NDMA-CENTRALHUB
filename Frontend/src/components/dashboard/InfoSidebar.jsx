@@ -1,4 +1,4 @@
-import { BarChart3, AlertTriangle, Calendar, Clock } from "lucide-react";
+import { BarChart3, AlertTriangle, Calendar, Clock, Download } from "lucide-react";
 import "./InfoSidebar.css";
 import { useEffect, useState } from "react";
 import generatePdfReport from "../../utils/generateReportClean";
@@ -267,6 +267,7 @@ function InfoSidebar({
                 }
               }}
             >
+              <Download />
               {exporting
                 ? "Generating…"
                 : predLoading || !prediction

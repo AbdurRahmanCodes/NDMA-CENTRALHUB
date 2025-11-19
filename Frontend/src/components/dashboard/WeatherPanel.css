@@ -504,19 +504,20 @@
 }
 
 /* Responsive */
-@media (max-width: 1200px) {
+/* Tablet: 3 columns (roughly 768px - 1199px) */
+@media (min-width: 768px) and (max-width: 1199px) {
   .weather-panel {
     padding: 18px;
     gap: 16px;
   }
 
   .weather-metrics {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 12px;
   }
 
   .weather-metric-value {
-    font-size: 2.5rem;
+    font-size: 2.25rem;
   }
 
   .location-name {
@@ -528,7 +529,8 @@
   }
 }
 
-@media (max-width: 768px) {
+/* Small / Mobile: 2 columns for narrower screens, 1 column for very small devices */
+@media (max-width: 767px) {
   .weather-panel {
     padding: 16px;
     gap: 14px;
@@ -539,17 +541,17 @@
   }
 
   .weather-metrics {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
     gap: 12px;
   }
 
   .weather-card {
-    padding: 16px;
+    padding: 14px;
   }
 
   .weather-metric-value {
-    font-size: 2.25rem;
-    margin-left: 38px;
+    font-size: 2rem;
+    margin-left: 0;
   }
 
   .weather-metric-label {
@@ -565,12 +567,27 @@
   }
 
   .weather-icon {
-    width: 24px;
-    height: 24px;
+    width: 22px;
+    height: 22px;
   }
 
   .location-icon {
     width: 20px;
     height: 20px;
+  }
+}
+
+@media (max-width: 420px) {
+  .weather-metrics {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .weather-metric-value {
+    font-size: 1.8rem;
+  }
+
+  .weather-card {
+    padding: 12px;
   }
 }

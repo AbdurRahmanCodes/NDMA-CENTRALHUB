@@ -9,7 +9,7 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background-color: #2563eb;
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
   color: var(--text-primary);
   border: 1px solid var(--text-primary);
   font-size: 16px;
@@ -19,7 +19,7 @@
   box-shadow: var(--shadow-md);
   cursor: pointer;
   z-index: 10000;
-  transition: background-color 0.18s, transform 0.12s, box-shadow 0.18s;
+  transition: background 0.18s, transform 0.12s, box-shadow 0.18s;
 }
 
 .chat-toggle-btn:hover {

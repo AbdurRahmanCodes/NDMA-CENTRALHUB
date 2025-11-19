@@ -1,4 +1,3 @@
-import { MapPin, Cpu, Code, Users, FileText } from "lucide-react";
 import "./TeamSection.css";
 import fawzyPhoto from "../../assets/team/Fawzy.jpg";
 import marwanPhoto from "../../assets/team/Marwan.jpg";
@@ -6,12 +5,29 @@ import nourPhoto from "../../assets/team/Nour.jpg";
 import sultanPhoto from "../../assets/team/Sultan.png";
 
 const teamMembers = [
+  // {
+  //   name: "Nour Eldeen Okbi",
+  //   role: "Front-End Developer",
+  //   bio: "Frontend developer specializing in building responsive, data-driven web applications using React, TypeScript, and modern UI frameworks.",
+  //   imagePath: nourPhoto,
+  //   details:
+  //     "Experienced in React, Next.js, Tailwind, and state management. Worked with geospatial tools like ArcGIS JS SDK and Leaflet to build interactive GIS dashboards.",
+  // },
+  // {
+  //   name: "Nour Eldeen Okbi",
+  //   role: "Front-End Developer",
+  //   bio: "Specialized in building responsive, data-driven applications using React, TypeScript, and modern UI frameworks.",
+  //   imagePath: nourPhoto,
+  //   details:
+  //     "Skilled in React, Next.js, Tailwind, and state management, with hands-on GIS experience using ArcGIS JS SDK and Leaflet.",
+  // },
   {
     name: "Nour Eldeen Okbi",
-    role: "Front-End Developer",
-    bio: "Responsible for the responsive UI/UX, built using React.js.",
+    role: "Front-End / React Developer",
+    bio: "Specialized in building responsive, data-driven applications using React, TypeScript, and modern UI frameworks.",
     imagePath: nourPhoto,
-    details: "Focuses on performance optimization.",
+    details:
+      "Skilled in React, Next.js, Tailwind, and state management, with hands-on GIS experience using ArcGIS JS SDK, Leaflet, ArcGIS Online, ArcGIS Pro, and building interactive geospatial dashboards.",
   },
   {
     name: "Marwan El-mehy",

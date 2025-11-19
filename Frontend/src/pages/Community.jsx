@@ -10,7 +10,6 @@ import ConfirmModal from "../components/UI/ConfirmModal";
 import { useToast } from "../components/UI/ToastProvider";
 import "./Community.css";
 import RequireAuth from "../components/Auth/RequireAuth";
-import INITIAL_POSTS from "../data/initialPosts";
 
 export default function Community() {
   const navigate = useNavigate();
@@ -52,7 +51,13 @@ export default function Community() {
           image: item.images?.length ? item.images[0] : null,
         }));
 
-        setPosts(apiPosts);
+        // Mark the last two API posts as pinned so they always appear at the top
+        const len = apiPosts.length;
+        const withPinned = apiPosts.map((p, idx) => ({
+          ...p,
+          pinned: idx >= len - 2,
+        }));
+        setPosts(withPinned);
 
         try {
           const commentFetches = apiPosts.map((p) =>
@@ -247,7 +252,12 @@ export default function Community() {
           longitude: String(newPost.longitude ?? newPost.lon ?? "0"),
         };
 
-        setPosts((prev) => [formatted, ...prev]);
+        // Insert the new post after pinned posts so pinned items always stay at top
+        setPosts((prev) => {
+          const pinned = prev.filter((p) => p.pinned);
+          const others = prev.filter((p) => !p.pinned);
+          return [...pinned, formatted, ...others];
+        });
         showToast({ message: "Post added", type: "success", duration: 3000 });
         return formatted;
       }
@@ -515,27 +525,29 @@ export default function Community() {
           <main className="posts-section">
             <AddPostForm onAddPost={handleAddPost} />
 
-            {/* Render pinned posts first */}
-            {INITIAL_POSTS.length > 0 && (
+            {/* Render pinned posts first (first 2 posts from API are pinned) */}
+            {posts.filter((p) => p.pinned).length > 0 && (
               <section className="pinned-section">
                 <h2 className="pinned-title">Pinned</h2>
                 <div className="pinned-list">
-                  {INITIAL_POSTS.map((post) => (
-                    <PostCard
-                      key={`pinned-${post.id}`}
-                      post={post}
-                      pinned={true}
-                      isLiked={likedPosts.has(String(post.id))}
-                      isSaved={savedPosts.has(String(post.id))}
-                      commentsExpanded={expandedComments.has(String(post.id))}
-                      isOwner={isOwnerOf(post)}
-                      onDelete={() => openConfirmDelete(post.id)}
-                      onLike={() => handleLike(post.id)}
-                      onSave={() => handleSave(post.id)}
-                      onToggleComments={() => toggleComments(post.id)}
-                      onAddComment={(text) => handleAddComment(post.id, text)}
-                    />
-                  ))}
+                  {posts
+                    .filter((p) => p.pinned)
+                    .map((post) => (
+                      <PostCard
+                        key={`pinned-${post.id}`}
+                        post={post}
+                        pinned={true}
+                        isLiked={likedPosts.has(String(post.id))}
+                        isSaved={savedPosts.has(String(post.id))}
+                        commentsExpanded={expandedComments.has(String(post.id))}
+                        isOwner={isOwnerOf(post)}
+                        onDelete={() => openConfirmDelete(post.id)}
+                        onLike={() => handleLike(post.id)}
+                        onSave={() => handleSave(post.id)}
+                        onToggleComments={() => toggleComments(post.id)}
+                        onAddComment={(text) => handleAddComment(post.id, text)}
+                      />
+                    ))}
                 </div>
               </section>
             )}
@@ -560,21 +572,23 @@ export default function Community() {
               <div className="no-posts">No posts yet.</div>
             )}
 
-            {posts.map((post) => (
-              <PostCard
-                key={post.id}
-                post={post}
-                isLiked={likedPosts.has(post.id)}
-                isSaved={savedPosts.has(post.id)}
-                commentsExpanded={expandedComments.has(post.id)}
-                isOwner={isOwnerOf(post)}
-                onDelete={() => openConfirmDelete(post.id)}
-                onLike={() => handleLike(post.id)}
-                onSave={() => handleSave(post.id)}
-                onToggleComments={() => toggleComments(post.id)}
-                onAddComment={(text) => handleAddComment(post.id, text)}
-              />
-            ))}
+            {posts
+              .filter((p) => !p.pinned)
+              .map((post) => (
+                <PostCard
+                  key={post.id}
+                  post={post}
+                  isLiked={likedPosts.has(post.id)}
+                  isSaved={savedPosts.has(post.id)}
+                  commentsExpanded={expandedComments.has(post.id)}
+                  isOwner={isOwnerOf(post)}
+                  onDelete={() => openConfirmDelete(post.id)}
+                  onLike={() => handleLike(post.id)}
+                  onSave={() => handleSave(post.id)}
+                  onToggleComments={() => toggleComments(post.id)}
+                  onAddComment={(text) => handleAddComment(post.id, text)}
+                />
+              ))}
           </main>
           <aside className="community-sidebar">
             <Sidebar

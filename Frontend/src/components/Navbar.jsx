@@ -122,7 +122,7 @@ function Navbar() {
               alt="Floods Insights Logo"
               className="logo-image"
             />
-            <span className="logo-text">Floods Insights</span>
+            <span className="logo-text">Floodix</span>
           </Link>
 
           <ul

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   Heart,
   MessageCircle,
@@ -32,6 +32,47 @@ export default function PostCard({
   pinned,
 }) {
   const badge = getCategoryBadge(post.category);
+  const [expanded, setExpanded] = useState(false);
+  const [truncated, setTruncated] = useState(false);
+  const descRef = useRef(null);
+
+  useEffect(() => {
+    const el = descRef.current;
+    if (!el) {
+      setTruncated(false);
+      return;
+    }
+
+    const check = () => {
+      try {
+        const clone = el.cloneNode(true);
+        // ensure clone is measurable and not affected by clamping
+        clone.style.position = "absolute";
+        clone.style.visibility = "hidden";
+        clone.style.height = "auto";
+        clone.style.maxHeight = "none";
+        clone.style.display = "block";
+        clone.style.WebkitLineClamp = "none";
+        clone.style.WebkitBoxOrient = "vertical";
+        clone.style.overflow = "visible";
+        clone.style.width = `${el.clientWidth}px`;
+        document.body.appendChild(clone);
+        const fullHeight = clone.scrollHeight;
+        document.body.removeChild(clone);
+
+        const cs = window.getComputedStyle(el);
+        const lineHeight = parseFloat(cs.lineHeight) || 18;
+        const maxH = lineHeight * 4;
+        setTruncated(fullHeight > maxH + 1);
+      } catch {
+        setTruncated(false);
+      }
+    };
+
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, [post.description]);
   return (
     <article className="post-card">
       <div className="post-header">
@@ -63,7 +104,34 @@ export default function PostCard({
       )}
       <div className="post-content">
         <h2 className="post-title">{post.title}</h2>
-        <p className="post-description">{post.description}</p>
+        <p
+          ref={descRef}
+          className={`post-description ${
+            !expanded && truncated ? "clamped" : ""
+          }`}
+          style={
+            !expanded && truncated
+              ? {
+                  display: "-webkit-box",
+                  WebkitLineClamp: 4,
+                  WebkitBoxOrient: "vertical",
+                  overflow: "hidden",
+                }
+              : {}
+          }
+        >
+          {post.description}
+        </p>
+        {truncated && (
+          <button
+            type="button"
+            className="see-more-btn"
+            onClick={() => setExpanded((v) => !v)}
+            aria-expanded={expanded}
+          >
+            {expanded ? "Show less" : "See more"}
+          </button>
+        )}
       </div>
       <div className="post-actions">
         <button

@@ -393,6 +393,34 @@
   gap: 1rem;
 }
 
+/* See more / Show less button for post descriptions */
+.see-more-btn {
+  display: inline-block;
+  margin-top: 10px;
+  background: transparent;
+  border: none;
+  color: #2563eb;
+  font-weight: 700;
+  font-size: 0.95rem;
+  padding: 6px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.18s ease, transform 0.08s ease;
+}
+
+.see-more-btn:hover {
+  background: rgba(37, 99, 235, 0.06);
+  transform: translateY(-1px);
+}
+
+[data-theme="dark"] .see-more-btn {
+  color: #93c5fd;
+}
+
+[data-theme="dark"] .see-more-btn:hover {
+  background: rgba(99, 102, 241, 0.06);
+}
+
 .comment {
   display: flex;
   gap: 1rem;

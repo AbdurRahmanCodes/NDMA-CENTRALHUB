@@ -6,7 +6,7 @@ export default function MapLegend({
   showQuakes = true,
   onToggle,
 }) {
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
 
   const handleToggle = (key) => {
     if (onToggle) onToggle(key);

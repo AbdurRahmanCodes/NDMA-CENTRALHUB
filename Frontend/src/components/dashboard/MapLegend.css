@@ -10,12 +10,12 @@
 
 .legend-toggle {
   position: relative;
+  right: 35px;
   min-width: 34px;
   height: 34px;
   background: var(--button-bg);
   color: var(--text-primary);
-  border: 1px solid var(--border-color);
-  border-radius: 50%;
+  border-radius: 8px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -24,6 +24,10 @@
   cursor: pointer;
   box-shadow: var(--shadow-sm);
   z-index: 35;
+  border: 2px solid var(--hover-border-color);
+}
+.legend-toggle:hover {
+  background: var(--card-bg);
 }
 
 .legend-toggle .legend-arrow {
@@ -34,43 +38,8 @@
 }
 
 .legend-toggle .legend-arrow.open {
-  transform: rotate(270deg);
+  transform: rotate(-90deg);
 }
-.legend-toggle:hover {
-  border-radius: 8px;
-  right: 35px;
-  border: 3px solid var(--hover-border-color);
-}
-.legend-toggle:hover .legend-toggle-indicator {
-  display: inline;
-}
-.legend-toggle-indicator {
-  display: none;
-}
-
-/* Hover label "Legend" appears beside the circle */
-/* .legend-toggle::after {
-  content: "Legend";
-  position: absolute;
-  left: auto;
-  right: 42px;
-  top: 50%;
-  transform: translateY(-50%);
-  background: var(--card-bg);
-  color: var(--text-primary);
-  border: 1px solid var(--border-color);
-  border-radius: 12px;
-  padding: 4px 8px;
-  font-size: 12px;
-  white-space: nowrap;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.15s ease;
-}
-
-.legend-toggle:hover::after {
-  opacity: 1;
-} */
 
 .legend-panel {
   /* panel is positioned to the left of the fixed toggle button */
@@ -83,7 +52,6 @@
   padding: 12px;
   width: 220px;
   height: 220px;
-  max-height: 220px;
   overflow-y: auto;
   overflow-x: hidden;
   box-shadow: var(--shadow-md);

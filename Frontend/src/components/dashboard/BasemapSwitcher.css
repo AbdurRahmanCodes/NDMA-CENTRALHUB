@@ -13,16 +13,19 @@
   height: 34px;
   background: var(--button-bg);
   color: var(--text-primary);
-  border: 1px solid var(--border-color);
-  border-radius: 50%;
+  border-radius: 8px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 5px;
   padding: 5px;
   cursor: pointer;
+  border: 2px solid var(--hover-border-color);
   box-shadow: var(--shadow-sm);
   z-index: 35;
+}
+.basemap-toggle:hover {
+  background: var(--card-bg);
 }
 
 .basemap-toggle .basemap-arrow {
@@ -34,17 +37,6 @@
 
 .basemap-toggle .basemap-arrow.open {
   transform: rotate(90deg);
-}
-.basemap-toggle-indicator {
-  display: none;
-}
-.basemap-toggle:hover {
-  border-radius: 8px;
-  right: 0px;
-  border: 1px solid var(--hover-border-color);
-}
-.basemap-toggle:hover .basemap-toggle-indicator {
-  display: inline;
 }
 
 .basemap-panel {

@@ -5,7 +5,7 @@ export default function BasemapSwitcher({
   current = "streets-vector",
   onChange,
 }) {
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
 
   const options = useMemo(
     () => [

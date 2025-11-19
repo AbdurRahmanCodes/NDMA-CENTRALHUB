@@ -8,7 +8,10 @@ export default function About() {
         <div className="page-container header-content">
           <h1 className="page-title">Meet Our Team</h1>
           <p className="page-description">
-            The five developers behind Floods Insights.
+            Flodix is created by a small team of developers focused on
+            delivering simple, data-driven tools for understanding flood risk.
+            Our goal is to make environmental insights accessible through a
+            clean and interactive experience.
           </p>
         </div>
       </header>
