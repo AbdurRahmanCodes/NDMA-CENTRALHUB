@@ -7,6 +7,18 @@ function safeText(doc, text, x, y, maxWidth) {
   return lines.length * 12;
 }
 
+function writeLabelValue(doc, label, value, x, y, maxWidth = 500) {
+  const lab = String(label || "");
+  const val = String(value ?? "");
+  doc.setFont("helvetica", "bold");
+  doc.text(lab, x, y);
+  const lw = doc.getTextWidth(lab) + 6;
+  doc.setFont("helvetica", "normal");
+  const lines = doc.splitTextToSize(val, Math.max(20, maxWidth - lw));
+  doc.text(lines, x + lw, y);
+  return lines.length * 12;
+}
+
 function writeTwo(
   doc,
   left,
@@ -161,19 +173,27 @@ async function generatePdfReport({
 
   doc.setFontSize(11);
   doc.setFont("helvetica", "normal");
-  safeText(
+  const locLabelHeight = writeLabelValue(
     doc,
-    `Location: ${locationName || selectedPoint?.name || "(unnamed)"}`,
+    "Location:",
+    locationName || selectedPoint?.name || "(unnamed)",
     margin,
     y,
     500
   );
-  y += 14;
+  y += locLabelHeight + 4;
 
   const lat = selectedPoint?.latitude ?? "N/A";
   const lon = selectedPoint?.longitude ?? "N/A";
-  safeText(doc, `Coordinates: ${lat}, ${lon}`, margin, y, 500);
-  y += 20;
+  const coordHeight = writeLabelValue(
+    doc,
+    "Coordinates:",
+    `${lat}, ${lon}`,
+    margin,
+    y,
+    500
+  );
+  y += coordHeight + 8;
 
   // Map screenshot (prefer ArcGIS screenshot)
   let added = false;
@@ -208,7 +228,8 @@ async function generatePdfReport({
       y = 40;
     }
     doc.addImage(chartsImg, "PNG", margin, y, 500, 220);
-    y += 230;
+    // add a little extra gap after charts so the Prediction header is separated
+    y += 250;
   }
 
   // Prediction summary (expanded)
