@@ -1,7 +1,7 @@
 import { BarChart3, AlertTriangle, Calendar, Clock } from "lucide-react";
 import "./InfoSidebar.css";
 import { useEffect, useState } from "react";
-import generatePdfReport from "../../utils/generateReport";
+import generatePdfReport from "../../utils/generateReportClean";
 
 function InfoSidebar({
   selectedPoint,
