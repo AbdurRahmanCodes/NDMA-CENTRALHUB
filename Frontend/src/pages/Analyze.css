@@ -66,16 +66,14 @@
 @media (max-width: 1600px) {
   .dashboard-container {
     grid-template-columns: 300px 1fr 300px;
-    /* keep a fixed viewport-based height for the map row so ArcGIS canvas
-       can size correctly on small devices */
-    grid-template-rows: 500px auto auto auto;
+    grid-template-rows: 350px auto auto auto;
   }
 }
 
 @media (max-width: 1400px) {
   .dashboard-container {
     grid-template-columns: 300px 1fr 300px;
-    grid-template-rows: 1fr 300px;
+    grid-template-rows: 1fr 350px;
   }
 }
 

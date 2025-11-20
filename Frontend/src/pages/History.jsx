@@ -2,6 +2,7 @@ import { useState, useCallback, useEffect, useRef } from "react";
 import "./History.css";
 import useSlideNavigation from "../hooks/useSlideNavigation";
 import SlideIndicator from "../components/history/SlideIndicator";
+import slide3Chart from "../assets/history/chart.png";
 // import NavigationArrows from "../components/history/NavigationArrows";
 
 export default function History() {
@@ -72,26 +73,74 @@ export default function History() {
         {/* Slide 1 - Introduction */}
         <div className={`slide slide-1 ${currentSlide === 0 ? "active" : ""}`}>
           <div className="slide-content">
-            <h1 className="slide-title">Floods Insights</h1>
-            <p className="slide-subtitle">
+            <h1 className="slide-title">Floods Definition and Causes</h1>
+            {/* <p className="slide-subtitle" >
               Understanding and Predicting Natural Disasters
-            </p>
+            </p> */}
             <div className="slide-description">
               <p className="intro-text-large">
-                Floods are among the most devastating natural disasters,
-                affecting millions of people worldwide each year.
+                Floods happen when water overflows onto normally dry land due to natural or human-made factors such as heavy rain, melting snow, storm surges, or dam failures. They may develop quickly or over several days and can damage homes, infrastructure, farms, and endanger lives.
               </p>
               <p>
-                Our mission is to leverage cutting-edge technology and data
-                analysis to predict, monitor, and mitigate the impact of floods
-                on communities around the globe.
+                Flooding occurs when rivers, lakes, or seas exceed their limits or when the ground cannot absorb water fast enough. Major causes include intense or long-lasting rain, rapid snowmelt, tsunamis, dam breaks, or poor drainage systems.
               </p>
             </div>
           </div>
         </div>
 
-        {/* Slide 2 - Historical Impact */}
+        {/* Slide 2 - Types of Floods */}
         <div className={`slide slide-2 ${currentSlide === 1 ? "active" : ""}`}>
+          <div className="slide-content">
+            <h1 className="slide-title">Types of Floods</h1>
+            <p className="slide-subtitle">
+              Understanding Different Flood Categories
+            </p>
+            <div className="slide-description">
+              <ul className="slide-list">
+                <li>
+                  <strong>Flash Floods:</strong> Happen rapidly, often within minutes to hours of heavy rain, leading to dangerous and sudden water rises.
+                </li>
+                <li>
+                  <strong>River Floods:</strong> When rivers or streams exceed capacity due to sustained rain or snowmelt.
+
+                </li>
+                <li>
+                  <strong>Coastal Floods:</strong> Caused by oceanic surges from tropical cyclones, tsunamis, or high tides.
+                </li>
+                <li>
+                  <strong>Urban Floods:</strong> Result from heavy rain overwhelming city drainage, regardless of proximity to rivers or seas.
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        {/* Slide 3 - Climate Change */}
+        <div className={`slide slide-3 ${currentSlide === 2 ? "active" : ""}`}>
+          <div className="slide-content">
+            <h1 className="slide-title">Climate Change Impact</h1>
+            <p className="slide-subtitle">Rising Risks and Challenges</p>
+            <div className="slide-description">
+              <p className="slide-intro-text">
+                Climate change strongly affects how often and how severely floods
+                occur. Warmer global temperatures allow the atmosphere to hold
+                more moisture, resulting in heavier and more intense rainfall that
+                can overwhelm rivers, drainage systems, and flood defenses,
+                increasing both river and flash floods.
+              </p>
+              <p>
+                Rising sea levels—caused by melting glaciers and the expansion of
+                warmer seawater—also worsen coastal flooding by enabling storm
+                surges and high tides to reach farther inland. In addition, climate
+                change makes precipitation patterns more unpredictable and
+                variable.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Slide 4 - Historical Impact */}
+        <div className={`slide slide-4 ${currentSlide === 3 ? "active" : ""}`}>
           <div className="slide-content slide-2-layout">
             {/* Left Side - Image */}
             <div className="slide-2-image-wrapper">
@@ -136,8 +185,8 @@ export default function History() {
           </div>
         </div>
 
-        {/* Slide 3 - Modern Solutions */}
-        <div className={`slide slide-3 ${currentSlide === 2 ? "active" : ""}`}>
+        {/* Slide 5 - Modern Solutions */}
+        <div className={`slide slide-5 ${currentSlide === 4 ? "active" : ""}`}>
           <div className="slide-content">
             <h1 className="slide-title">Modern Solutions</h1>
             <p className="slide-subtitle">
@@ -163,69 +212,6 @@ export default function History() {
                   <strong>Smart Infrastructure:</strong> Adaptive drainage
                   systems and flood barriers that respond to real-time
                   conditions
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
-        {/* Slide 4 - Climate Change */}
-        <div className={`slide slide-4 ${currentSlide === 3 ? "active" : ""}`}>
-          <div className="slide-content">
-            <h1 className="slide-title">Climate Change Impact</h1>
-            <p className="slide-subtitle">Rising Risks and Challenges</p>
-            <div className="slide-description">
-              <p className="slide-intro-text">
-                Climate change is intensifying flood risks across the globe.
-                Rising sea levels, extreme weather patterns, and increased
-                precipitation are creating unprecedented challenges.
-              </p>
-              <ul className="slide-list">
-                <li>
-                  Sea levels rising at 3.3mm per year, accelerating coastal
-                  flooding
-                </li>
-                <li>
-                  100-year floods now occurring every 10-15 years in many
-                  regions
-                </li>
-                <li>
-                  Urban areas face increased risk due to impermeable surfaces
-                </li>
-                <li>Projected 20% increase in flood frequency by 2050</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
-        {/* Slide 5 - Types of Floods */}
-        <div className={`slide slide-5 ${currentSlide === 4 ? "active" : ""}`}>
-          <div className="slide-content">
-            <h1 className="slide-title">Types of Floods</h1>
-            <p className="slide-subtitle">
-              Understanding Different Flood Categories
-            </p>
-            <div className="slide-description">
-              <ul className="slide-list">
-                <li>
-                  <strong>Flash Floods:</strong> Rapid onset within 6 hours of
-                  heavy rainfall, extremely dangerous
-                </li>
-                <li>
-                  <strong>River Floods:</strong> Gradual overflow of rivers due
-                  to prolonged precipitation or snowmelt
-                </li>
-                <li>
-                  <strong>Coastal Floods:</strong> Storm surges and high tides
-                  overwhelming coastal defenses
-                </li>
-                <li>
-                  <strong>Urban Floods:</strong> Overwhelmed drainage systems in
-                  cities with impermeable surfaces
-                </li>
-                <li>
-                  <strong>Glacial Lake Floods:</strong> Outburst floods from
-                  melting glaciers in mountain regions
                 </li>
               </ul>
             </div>
@@ -326,6 +312,21 @@ export default function History() {
                 </li>
               </ul>
             </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="history-graph-section">
+        <div className="graph-card">
+          <h2 className="graph-title">Flood Risk Trends</h2>
+          <p className="graph-subtitle">
+            Add a graph illustrating climate-driven flood changes.
+          </p>
+          <div className="graph-placeholder">
+            <img
+              src="https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?w=1200&q=80"
+              alt="Graph placeholder showing flood risk trends"
+            />
           </div>
         </div>
       </div>

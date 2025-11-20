@@ -11,7 +11,7 @@ import {
   X,
 } from "lucide-react";
 import "./Navbar.css";
-import mainLogo from "../assets/main-logo.png";
+import mainLogo from "../assets/download.jpeg";
 import { useAuth } from "../context/AuthContext";
 
 function Navbar() {
@@ -122,7 +122,7 @@ function Navbar() {
               alt="Floods Insights Logo"
               className="logo-image"
             />
-            <span className="logo-text">Floodix</span>
+            <span className="logo-text">Eye Of Habi</span>
           </Link>
 
           <ul

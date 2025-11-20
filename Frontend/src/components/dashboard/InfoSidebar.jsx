@@ -34,7 +34,7 @@ function InfoSidebar({
       setPredLoading(true);
       setPredError(null);
       try {
-        const url = new URL("http://localhost:5000/api/predict");
+        const url = new URL("http://localhost:8000/api/predict");
         url.searchParams.set("lat", String(selectedPoint.latitude));
         url.searchParams.set("lon", String(selectedPoint.longitude));
         const resp = await fetch(url.toString());

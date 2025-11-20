@@ -55,7 +55,7 @@ const teamMembers = [
   },
   {
     name: "Ahmed Fawzy Fawzy",
-    role: "Coordinate System",
+    role: "GIS Specialist",
     bio: "",
     imagePath: fawzyPhoto,
     details: "",
