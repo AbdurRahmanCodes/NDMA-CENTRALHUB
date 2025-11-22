@@ -11,7 +11,7 @@ export default function HapiSlide() {
         alignItems: "center",
       }}
     >
-      <div className="slide-5-text">
+      <div className="slide-5-text slide-description">
         <p>
           Hapi is the god of the Nile's annual flood — a deity of water and
           fertility.
