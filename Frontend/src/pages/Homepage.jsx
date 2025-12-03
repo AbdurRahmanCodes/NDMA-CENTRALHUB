@@ -1,218 +1,286 @@
-import { useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
-import "./Homepage.css";
-import heroImage from "../assets/1.jpg";
-import featuresImage from "../assets/2.jpg";
-import logo from "../assets/logo.png";
-import StatsIllustration from "../components/icons/StatsIllustration";
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import {
   Activity,
-  Waves,
-  FileText,
-  Users,
+  CloudRain,
+  Flame,
+  Droplets,
+  Phone,
   Package,
-  CheckCircle,
-  Clock,
-} from "lucide-react";
+  History,
+  Map,
+  ArrowRight,
+  Shield,
+  TrendingUp
+} from 'lucide-react';
+import { StatCard } from '../components/UI';
+import { useData } from '../hooks/useData';
+import { loadDisasterStats } from '../services/dataLoader';
 
-export default function Homepage() {
-  const observerRef = useRef(null);
-  const navigate = useNavigate();
+const HomePage = () => {
+  const { data: stats, loading } = useData(loadDisasterStats);
 
-  useEffect(() => {
-    // Create intersection observer for scroll animations
-    observerRef.current = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("animate-in");
-          }
-        });
-      },
-      {
-        threshold: 0.1,
-        rootMargin: "0px 0px -50px 0px",
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
       }
-    );
+    }
+  };
 
-    // Observe all elements with animate-on-scroll class
-    const elements = document.querySelectorAll(".animate-on-scroll");
-    elements.forEach((el) => observerRef.current.observe(el));
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 }
+  };
 
-    // Cleanup
-    return () => {
-      if (observerRef.current) {
-        observerRef.current.disconnect();
-      }
-    };
-  }, []);
+  const features = [
+    {
+      title: 'Weather Monitoring',
+      desc: 'Real-time tracking of weather patterns and severe conditions.',
+      icon: <CloudRain className="w-6 h-6" />,
+      color: 'blue',
+      link: '/dashboard/weather'
+    },
+    {
+      title: 'Fire Risk Assessment',
+      desc: 'AI-driven analysis of forest fire probabilities and hotspots.',
+      icon: <Flame className="w-6 h-6" />,
+      color: 'orange',
+      link: '/dashboard/fire-risk'
+    },
+    {
+      title: 'Flood Prediction',
+      desc: 'Early warning systems based on hydrological data.',
+      icon: <Droplets className="w-6 h-6" />,
+      color: 'blue',
+      link: '/dashboard/flood-prediction'
+    },
+    {
+      title: 'Analytics Dashboard',
+      desc: 'Comprehensive data visualization for informed decision making.',
+      icon: <TrendingUp className="w-6 h-6" />,
+      color: 'green',
+      link: '/dashboard/analytics'
+    },
+    {
+      title: 'Emergency Contacts',
+      desc: 'Direct access to NDMA, PDMA, and rescue services.',
+      icon: <Phone className="w-6 h-6" />,
+      color: 'red',
+      link: '/dashboard'
+    },
+    {
+      title: 'Relief Stocks',
+      desc: 'Inventory tracking of essential relief materials.',
+      icon: <Package className="w-6 h-6" />,
+      color: 'yellow',
+      link: '/dashboard'
+    },
+    {
+      title: 'Historical Data',
+      desc: 'Archive of past disasters for pattern analysis.',
+      icon: <History className="w-6 h-6" />,
+      color: 'secondary',
+      link: '/history/floods'
+    },
+    {
+      title: 'Provincial Insights',
+      desc: 'Detailed vulnerability reports for each province.',
+      icon: <Map className="w-6 h-6" />,
+      color: 'green',
+      link: '/dashboard'
+    }
+  ];
 
   return (
-    <div className="homepage">
-      <section
-        className="hero"
-        style={{ backgroundImage: `url(${heroImage})` }}
-      >
-        <div className="hero-overlay"></div>
-        <div className="hero-container">
-          <div className="hero-content">
-            <h1 className="hero-title">
-              Predicting Natural Disasters,
-              <span className="gradient-text"> Protecting Lives</span>
+    <div className="min-h-screen bg-background text-white overflow-hidden">
+      {/* Hero Section */}
+      <section className="relative pt-32 pb-20 px-4 sm:px-6 lg:px-8">
+        {/* Background Effects */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full max-w-7xl pointer-events-none">
+          <div className="absolute top-20 left-10 w-72 h-72 bg-primary/20 rounded-full blur-[100px] animate-pulse-slow" />
+          <div className="absolute bottom-20 right-10 w-96 h-96 bg-secondary/20 rounded-full blur-[100px] animate-pulse-slow delay-1000" />
+        </div>
+
+        <div className="max-w-7xl mx-auto relative z-10 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+          >
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-md mb-8">
+              <span className="w-2 h-2 rounded-full bg-risk-critical animate-pulse" />
+              <span className="text-sm font-medium text-gray-300">Live Disaster Monitoring System</span>
+            </div>
+            
+            <h1 className="text-5xl md:text-7xl font-bold font-heading tracking-tight mb-6 bg-clip-text text-transparent bg-gradient-to-r from-white via-gray-200 to-gray-400">
+              One Platform. <br />
+              <span className="text-primary">Every Disaster.</span> <br />
+              Real-Time Intelligence.
             </h1>
-            <p className="hero-description">
-              Advanced AI-powered analysis of earthquakes and floods to provide
-              actionable insights. Get comprehensive PDF reports with risk
-              assessments and safety instructions tailored for emergency
-              response agencies.
+            
+            <p className="text-xl text-gray-400 max-w-3xl mx-auto mb-10 font-body leading-relaxed">
+              Empowering Pakistan with data-driven insights for disaster preparedness, 
+              response, and recovery. Integrated with NDMA and PDMA networks.
             </p>
-            <div className="hero-buttons">
-              <button
-                className="btn btn-primary"
-                onClick={() => navigate("/analyze")}
+
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <Link
+                to="/dashboard"
+                className="group relative px-8 py-4 bg-primary hover:bg-primary-dark text-white rounded-xl font-semibold transition-all shadow-neon hover:shadow-lg hover:-translate-y-1 flex items-center gap-2"
               >
-                Start Analysis
-              </button>
-              <button
-                className="btn btn-secondary"
-                onClick={() => navigate("/community")}
+                Launch Dashboard
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </Link>
+              <Link
+                to="/about"
+                className="px-8 py-4 bg-white/5 hover:bg-white/10 border border-white/10 text-white rounded-xl font-semibold transition-all backdrop-blur-md hover:-translate-y-1"
               >
                 Learn More
-              </button>
+              </Link>
             </div>
-          </div>
-        </div>
-      </section>
-
-      <section
-        className="features"
-        style={{ backgroundImage: `url(${featuresImage})` }}
-      >
-        <div className="features-overlay"></div>
-        <div className="features-container">
-          <h2 className="section-title animate-on-scroll">How We Help</h2>
-          <p className="section-description animate-on-scroll">
-            Comprehensive disaster analysis and reporting for emergency agencies
-          </p>
-
-          <div className="features-grid">
-            <div className="feature-card animate-on-scroll">
-              <div className="feature-icon earthquake">
-                <Activity size={32} />
-              </div>
-              <h3 className="feature-title">Earthquake Analysis</h3>
-              <p className="feature-description">
-                Real-time seismic data analysis with historical pattern
-                recognition to predict potential earthquake zones and their
-                magnitude impacts.
-              </p>
-            </div>
-
-            <div className="feature-card animate-on-scroll">
-              <div className="feature-icon flood">
-                <Waves size={32} />
-              </div>
-              <h3 className="feature-title">Flood Risk Mapping</h3>
-              <p className="feature-description">
-                Advanced geographic analysis identifying high-risk flood zones
-                with weather pattern integration and terrain evaluation.
-              </p>
-            </div>
-
-            <div className="feature-card animate-on-scroll">
-              <div className="feature-icon report">
-                <FileText size={32} />
-              </div>
-              <h3 className="feature-title">PDF Reports</h3>
-              <p className="feature-description">
-                Generate detailed PDF reports with risk assessments, evacuation
-                routes, and actionable safety instructions for agencies.
-              </p>
-            </div>
-
-            <div className="feature-card animate-on-scroll">
-              <div className="feature-icon agencies">
-                <Users size={32} />
-              </div>
-              <h3 className="feature-title">Agency Coordination</h3>
-              <p className="feature-description">
-                Share insights directly with emergency response teams, enabling
-                faster decision-making and coordinated disaster response
-                efforts.
-              </p>
-            </div>
-          </div>
+          </motion.div>
         </div>
       </section>
 
       {/* Stats Section */}
-      <section
-        className="stats"
-        style={{ backgroundImage: `url(${featuresImage})` }}
-      >
-        <div className="stats-content">
-          <div className="stats-illustration animate-on-scroll">
-            <StatsIllustration />
-          </div>
-
-          <div className="stats-grid animate-on-scroll">
-            <div className="stat-item">
-              <div className="stat-icon">
-                <Package size={32} />
-              </div>
-              <h3 className="stat-number">10K+</h3>
-              <p className="stat-label">Areas Analyzed</p>
-            </div>
-
-            <div className="stat-item">
-              <div className="stat-icon">
-                <FileText size={32} />
-              </div>
-              <h3 className="stat-number">500+</h3>
-              <p className="stat-label">Reports Generated</p>
-            </div>
-
-            <div className="stat-item">
-              <div className="stat-icon">
-                <CheckCircle size={32} />
-              </div>
-              <h3 className="stat-number">98%</h3>
-              <p className="stat-label">Accuracy Rate</p>
-            </div>
-
-            <div className="stat-item">
-              <div className="stat-icon">
-                <Clock size={32} />
-              </div>
-              <h3 className="stat-number">24/7</h3>
-              <p className="stat-label">Monitoring</p>
-            </div>
-          </div>
+      <section className="py-12 px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="max-w-7xl mx-auto">
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
+          >
+            <StatCard
+              value={stats?.summary?.total_disasters || "61"}
+              label="Total Disasters"
+              icon={<Activity />}
+              color="blue"
+            />
+            <StatCard
+              value={stats?.summary?.total_deaths?.toLocaleString() || "6,790"}
+              label="Total Deaths"
+              icon={<Shield />}
+              color="red"
+            />
+            <StatCard
+              value={stats?.summary?.people_affected || "43.46M"}
+              label="People Affected"
+              icon={<UsersIcon />}
+              color="orange"
+            />
+            <StatCard
+              value={stats?.summary?.economic_loss || "$35B"}
+              label="Economic Loss"
+              icon={<DollarSignIcon />}
+              color="yellow"
+            />
+          </motion.div>
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section
-        className="cta"
-        style={{ backgroundImage: `url(${featuresImage})` }}
-      >
-        <div className="cta-content animate-on-scroll">
-          <div className="cta-logo-watermark">
-            <img src={logo} alt="" className="cta-logo-image" />
+      {/* Features Grid */}
+      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-background-light/30 backdrop-blur-sm border-t border-white/5">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold font-heading mb-4">Comprehensive Monitoring</h2>
+            <p className="text-gray-400 max-w-2xl mx-auto">
+              Advanced tools and analytics designed to keep you informed and prepared for any situation.
+            </p>
           </div>
-          <h2 className="cta-title">Ready to Analyze Your Region?</h2>
-          <p className="cta-description">
-            Start using our advanced tools to protect your community from
-            natural disasters
-          </p>
-          <button
-            className="btn btn-primary btn-large"
-            onClick={() => navigate("/analyze")}
+
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
           >
-            Get Started Now
-          </button>
+            {features.map((feature, index) => (
+              <motion.div key={index} variants={itemVariants}>
+                <Link
+                  to={feature.link}
+                  className="block h-full p-6 rounded-2xl bg-background border border-white/5 hover:border-primary/50 transition-all hover:shadow-neon group"
+                >
+                  <div className={`w-12 h-12 rounded-xl bg-${feature.color}-500/20 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}>
+                    <div className={`text-${feature.color}-400`}>{feature.icon}</div>
+                  </div>
+                  <h3 className="text-xl font-bold font-heading mb-2 group-hover:text-primary transition-colors">
+                    {feature.title}
+                  </h3>
+                  <p className="text-gray-400 text-sm leading-relaxed">
+                    {feature.desc}
+                  </p>
+                </Link>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Mission Section */}
+      <section className="py-20 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-primary/5 pointer-events-none" />
+        <div className="max-w-4xl mx-auto text-center relative z-10">
+          <h2 className="text-3xl md:text-4xl font-bold font-heading mb-8">Our Mission</h2>
+          <p className="text-xl text-gray-300 leading-relaxed mb-10 font-light">
+            "To build a resilient Pakistan by leveraging technology, data, and community engagement. 
+            We aim to minimize the impact of natural disasters through timely information and 
+            proactive planning."
+          </p>
+          <div className="flex justify-center gap-8 opacity-50">
+            <div className="h-8 w-32 bg-white/10 rounded animate-pulse" />
+            <div className="h-8 w-32 bg-white/10 rounded animate-pulse delay-100" />
+            <div className="h-8 w-32 bg-white/10 rounded animate-pulse delay-200" />
+          </div>
         </div>
       </section>
     </div>
   );
-}
+};
+
+// Simple icon wrappers to avoid import errors if lucide icons are missing
+const UsersIcon = (props) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    {...props}
+  >
+    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+    <circle cx="9" cy="7" r="4" />
+    <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+    <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+  </svg>
+);
+
+const DollarSignIcon = (props) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    {...props}
+  >
+    <line x1="12" x2="12" y1="2" y2="22" />
+    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+  </svg>
+);
+
+export default HomePage;

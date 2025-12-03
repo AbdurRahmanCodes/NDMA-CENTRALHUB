@@ -1,0 +1,183 @@
+{
+  "Punjab": {
+    "monsoon_2025_casualties": {
+      "deaths": 304,
+      "injured": 661
+    },
+    "houses_damaged": {
+      "full": 234,
+      "partial": 238,
+      "total": 472
+    },
+    "relief_distributed": {
+      "tents": 42944,
+      "blankets": 700,
+      "rescue_operations": 4749
+    },
+    "vulnerable_districts": [
+      "Attock",
+      "Mianwali",
+      "Muzaffargarh",
+      "Rajanpur",
+      "DG Khan",
+      "Sialkot",
+      "Jhang",
+      "Sheikhupura"
+    ],
+    "flood_victims_2009_2022": 17699281,
+    "relief_stocks": {
+      "tents": 20344,
+      "blankets": 15622,
+      "boats": 20,
+      "pumps": 908
+    }
+  },
+  "Sindh": {
+    "monsoon_2025_casualties": {
+      "deaths": 80,
+      "injured": 87
+    },
+    "houses_damaged": {
+      "full": 224,
+      "partial": 57,
+      "total": 281
+    },
+    "relief_distributed": {
+      "tents": 9520,
+      "blankets": 0,
+      "rescue_operations": 753
+    },
+    "vulnerable_districts": [
+      "Karachi",
+      "Hyderabad",
+      "Thatta",
+      "Badin",
+      "Sukkur",
+      "Larkana",
+      "Jacobabad",
+      "Dadu"
+    ],
+    "low_lying_areas": 309,
+    "flood_victims_2009_2022": 35806605,
+    "relief_stocks": {
+      "tents": 268739,
+      "blankets": 278156,
+      "boats": 44
+    }
+  },
+  "KP": {
+    "monsoon_2025_casualties": {
+      "deaths": 504,
+      "injured": 218
+    },
+    "houses_damaged": {
+      "full": 701,
+      "partial": 2521,
+      "total": 3222
+    },
+    "relief_distributed": {
+      "tents": 3869,
+      "blankets": 3921,
+      "rescue_operations": 211
+    },
+    "vulnerable_districts": [
+      "Abbottabad",
+      "Mansehra",
+      "Swat",
+      "Dir",
+      "Chitral",
+      "Peshawar",
+      "Charsadda",
+      "Kohat"
+    ],
+    "flood_victims_2009_2022": 8516736,
+    "relief_stocks": {
+      "tents": 11127,
+      "blankets": 58138
+    }
+  },
+  "Balochistan": {
+    "monsoon_2025_casualties": {
+      "deaths": 30,
+      "injured": 5
+    },
+    "houses_damaged": {
+      "full": 2080,
+      "partial": 3006,
+      "total": 5086
+    },
+    "vulnerable_districts": [
+      "Khuzdar",
+      "Lasbela",
+      "Quetta",
+      "Zhob",
+      "Jaffarabad"
+    ],
+    "drought_affected_districts": 15,
+    "flood_victims_2009_2022": 10909421,
+    "relief_stocks": {
+      "tents": 8333,
+      "blankets": 75000
+    }
+  },
+  "GB": {
+    "monsoon_2025_casualties": {
+      "deaths": 41,
+      "injured": 52
+    },
+    "houses_damaged": {
+      "full": 779,
+      "partial": 481,
+      "total": 1260
+    },
+    "vulnerable_districts": [
+      "Skardu",
+      "Gilgit",
+      "Hunza",
+      "Astore",
+      "Ghanche"
+    ],
+    "glof_risk": "High",
+    "flood_victims_2009_2022": 200911,
+    "relief_stocks": {
+      "tents": 3416,
+      "blankets": 9376
+    }
+  },
+  "AJ&K": {
+    "monsoon_2025_casualties": {
+      "deaths": 38,
+      "injured": 37
+    },
+    "houses_damaged": {
+      "full": 339,
+      "partial": 2078,
+      "total": 2417
+    },
+    "vulnerable_districts": [
+      "Muzaffarabad",
+      "Neelum",
+      "Rawalakot",
+      "Bagh",
+      "Poonch"
+    ],
+    "vulnerable_nullahs": 66,
+    "flood_victims_2009_2022": 301574,
+    "relief_stocks": {
+      "tents": 108,
+      "blankets": 632
+    }
+  },
+  "ICT": {
+    "monsoon_2025_casualties": {
+      "deaths": 9,
+      "injured": 3
+    },
+    "houses_damaged": {
+      "full": 1,
+      "partial": 64,
+      "total": 65
+    },
+    "flood_victims_2009_2022": 12
+  }
+}

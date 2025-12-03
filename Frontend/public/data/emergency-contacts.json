@@ -1,0 +1,39 @@
+{
+  "national": {
+    "NDMA_Helpline": "051-9087133",
+    "NDMA_Emergency": "051-9205532",
+    "National_Emergency": "1122",
+    "Police": "15",
+    "Ambulance": "115"
+  },
+  "provincial": {
+    "Punjab": {
+      "PDMA": "042-99203773",
+      "Emergency": "1122",
+      "Rescue_Services": "042-99204064"
+    },
+    "Sindh": {
+      "PDMA": "021-99203429",
+      "Emergency": "1122",
+      "Rescue_Services": "021-99213015"
+    },
+    "KP": {
+      "PDMA": "091-9212828",
+      "Emergency": "1122",
+      "Rescue_Services": "091-9212870"
+    },
+    "Balochistan": {
+      "PDMA": "081-9202292",
+      "Emergency": "1122",
+      "Rescue_Services": "081-9202364"
+    },
+    "GB": {
+      "GBDMA": "05811-920012",
+      "Emergency": "1122"
+    },
+    "AJK": {
+      "SDMA": "05822-920202",
+      "Emergency": "1122"
+    }
+  }
+}

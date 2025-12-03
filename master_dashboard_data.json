@@ -1,0 +1,555 @@
+{
+  "metadata": {
+    "generated_at": "2025-12-03T18:24:49.070524",
+    "version": "1.0",
+    "sources": [
+      "NDMA SITREP #86 (Sept 2025)",
+      "NDMA Contingency Plan 2025",
+      "Overview PDF (2015-2025)",
+      "PAKISTAN_FLOODS.pdf",
+      "Displacement Data (92 records)"
+    ]
+  },
+  "displacement_trends": [
+    {
+      "year": 2009,
+      "flood_displacements": 84000,
+      "other_displacements": 0,
+      "total": 84000
+    },
+    {
+      "year": 2010,
+      "flood_displacements": 11000000,
+      "other_displacements": 60000,
+      "total": 11060000
+    },
+    {
+      "year": 2011,
+      "flood_displacements": 300000,
+      "other_displacements": 0,
+      "total": 300000
+    },
+    {
+      "year": 2012,
+      "flood_displacements": 1857000,
+      "other_displacements": 0,
+      "total": 1857000
+    },
+    {
+      "year": 2014,
+      "flood_displacements": 740000,
+      "other_displacements": 0,
+      "total": 740000
+    },
+    {
+      "year": 2015,
+      "flood_displacements": 330000,
+      "other_displacements": 666000,
+      "total": 996000
+    },
+    {
+      "year": 2016,
+      "flood_displacements": 1700,
+      "other_displacements": 0,
+      "total": 1700
+    },
+    {
+      "year": 2019,
+      "flood_displacements": 22000,
+      "other_displacements": 55000,
+      "total": 77000
+    },
+    {
+      "year": 2020,
+      "flood_displacements": 810000,
+      "other_displacements": 0,
+      "total": 810000
+    },
+    {
+      "year": 2021,
+      "flood_displacements": 0,
+      "other_displacements": 68000,
+      "total": 68000
+    },
+    {
+      "year": 2022,
+      "flood_displacements": 7900000,
+      "other_displacements": 0,
+      "total": 7900000
+    }
+  ],
+  "provincial_data": {
+    "Punjab": {
+      "monsoon_2025_casualties": {
+        "deaths": 304,
+        "injured": 661
+      },
+      "houses_damaged": {
+        "full": 234,
+        "partial": 238,
+        "total": 472
+      },
+      "relief_distributed": {
+        "tents": 42944,
+        "blankets": 700,
+        "rescue_operations": 4749
+      },
+      "vulnerable_districts": [
+        "Attock",
+        "Mianwali",
+        "Muzaffargarh",
+        "Rajanpur",
+        "DG Khan",
+        "Sialkot",
+        "Jhang",
+        "Sheikhupura"
+      ],
+      "flood_victims_2009_2022": 17699281,
+      "relief_stocks": {
+        "tents": 20344,
+        "blankets": 15622,
+        "boats": 20,
+        "pumps": 908
+      }
+    },
+    "Sindh": {
+      "monsoon_2025_casualties": {
+        "deaths": 80,
+        "injured": 87
+      },
+      "houses_damaged": {
+        "full": 224,
+        "partial": 57,
+        "total": 281
+      },
+      "relief_distributed": {
+        "tents": 9520,
+        "blankets": 0,
+        "rescue_operations": 753
+      },
+      "vulnerable_districts": [
+        "Karachi",
+        "Hyderabad",
+        "Thatta",
+        "Badin",
+        "Sukkur",
+        "Larkana",
+        "Jacobabad",
+        "Dadu"
+      ],
+      "low_lying_areas": 309,
+      "flood_victims_2009_2022": 35806605,
+      "relief_stocks": {
+        "tents": 268739,
+        "blankets": 278156,
+        "boats": 44
+      }
+    },
+    "KP": {
+      "monsoon_2025_casualties": {
+        "deaths": 504,
+        "injured": 218
+      },
+      "houses_damaged": {
+        "full": 701,
+        "partial": 2521,
+        "total": 3222
+      },
+      "relief_distributed": {
+        "tents": 3869,
+        "blankets": 3921,
+        "rescue_operations": 211
+      },
+      "vulnerable_districts": [
+        "Abbottabad",
+        "Mansehra",
+        "Swat",
+        "Dir",
+        "Chitral",
+        "Peshawar",
+        "Charsadda",
+        "Kohat"
+      ],
+      "flood_victims_2009_2022": 8516736,
+      "relief_stocks": {
+        "tents": 11127,
+        "blankets": 58138
+      }
+    },
+    "Balochistan": {
+      "monsoon_2025_casualties": {
+        "deaths": 30,
+        "injured": 5
+      },
+      "houses_damaged": {
+        "full": 2080,
+        "partial": 3006,
+        "total": 5086
+      },
+      "vulnerable_districts": [
+        "Khuzdar",
+        "Lasbela",
+        "Quetta",
+        "Zhob",
+        "Jaffarabad"
+      ],
+      "drought_affected_districts": 15,
+      "flood_victims_2009_2022": 10909421,
+      "relief_stocks": {
+        "tents": 8333,
+        "blankets": 75000
+      }
+    },
+    "GB": {
+      "monsoon_2025_casualties": {
+        "deaths": 41,
+        "injured": 52
+      },
+      "houses_damaged": {
+        "full": 779,
+        "partial": 481,
+        "total": 1260
+      },
+      "vulnerable_districts": [
+        "Skardu",
+        "Gilgit",
+        "Hunza",
+        "Astore",
+        "Ghanche"
+      ],
+      "glof_risk": "High",
+      "flood_victims_2009_2022": 200911,
+      "relief_stocks": {
+        "tents": 3416,
+        "blankets": 9376
+      }
+    },
+    "AJ&K": {
+      "monsoon_2025_casualties": {
+        "deaths": 38,
+        "injured": 37
+      },
+      "houses_damaged": {
+        "full": 339,
+        "partial": 2078,
+        "total": 2417
+      },
+      "vulnerable_districts": [
+        "Muzaffarabad",
+        "Neelum",
+        "Rawalakot",
+        "Bagh",
+        "Poonch"
+      ],
+      "vulnerable_nullahs": 66,
+      "flood_victims_2009_2022": 301574,
+      "relief_stocks": {
+        "tents": 108,
+        "blankets": 632
+      }
+    },
+    "ICT": {
+      "monsoon_2025_casualties": {
+        "deaths": 9,
+        "injured": 3
+      },
+      "houses_damaged": {
+        "full": 1,
+        "partial": 64,
+        "total": 65
+      },
+      "flood_victims_2009_2022": 12
+    }
+  },
+  "monsoon_2025_actual": {
+    "period": "June 26 - Sept 19, 2025",
+    "status": "Completed",
+    "total_deaths": 1006,
+    "total_injured": 1063,
+    "total_rescued": 3020130,
+    "houses_damaged": 12569,
+    "livestock_perished": 6509,
+    "roads_damaged_km": 1981.37,
+    "bridges_damaged": 239,
+    "relief_camps": 949,
+    "people_in_camps": 152252,
+    "by_province": {
+      "Punjab": {
+        "deaths": 304,
+        "injured": 661,
+        "rescued": 2819767
+      },
+      "KP": {
+        "deaths": 504,
+        "injured": 218,
+        "rescued": 14317
+      },
+      "Sindh": {
+        "deaths": 80,
+        "injured": 87,
+        "rescued": 184011
+      },
+      "Balochistan": {
+        "deaths": 30,
+        "injured": 5,
+        "rescued": 19
+      },
+      "GB": {
+        "deaths": 41,
+        "injured": 52,
+        "rescued": 1027
+      },
+      "AJ&K": {
+        "deaths": 38,
+        "injured": 37,
+        "rescued": 940
+      },
+      "ICT": {
+        "deaths": 9,
+        "injured": 3,
+        "rescued": 49
+      }
+    }
+  },
+  "historical_stats": {
+    "period": "2015-2025",
+    "total_disasters": 61,
+    "total_deaths": 6790,
+    "total_affected": 43460000,
+    "total_injured": 83060,
+    "total_homeless": 8140000,
+    "disaster_distribution": [
+      {
+        "type": "Hydrological",
+        "count": 35,
+        "percentage": 57.38
+      },
+      {
+        "type": "Meteorological",
+        "count": 13,
+        "percentage": 21.31
+      },
+      {
+        "type": "Geophysical",
+        "count": 9,
+        "percentage": 14.75
+      },
+      {
+        "type": "Biological",
+        "count": 3,
+        "percentage": 4.92
+      },
+      {
+        "type": "Climatological",
+        "count": 1,
+        "percentage": 1.64
+      }
+    ],
+    "major_events": [
+      {
+        "year": 1950,
+        "deaths": 2900,
+        "type": "Monsoon floods",
+        "region": "Pakistan"
+      },
+      {
+        "year": 2005,
+        "deaths": 73000,
+        "type": "Kashmir earthquake",
+        "region": "Kashmir"
+      },
+      {
+        "year": 2010,
+        "deaths": 1985,
+        "affected": 20359496,
+        "type": "Super Floods",
+        "region": "All Pakistan"
+      },
+      {
+        "year": 2022,
+        "deaths": 1739,
+        "affected": 33012865,
+        "type": "Monsoon Floods",
+        "region": "Sindh/Balochistan"
+      }
+    ]
+  },
+  "locations": [
+    {
+      "name": "Islamabad",
+      "lat": 33.6844,
+      "lon": 73.0479,
+      "province": "ICT"
+    },
+    {
+      "name": "Lahore",
+      "lat": 31.5497,
+      "lon": 74.3436,
+      "province": "Punjab"
+    },
+    {
+      "name": "Karachi",
+      "lat": 24.8607,
+      "lon": 67.0011,
+      "province": "Sindh"
+    },
+    {
+      "name": "Peshawar",
+      "lat": 34.0151,
+      "lon": 71.5249,
+      "province": "KP"
+    },
+    {
+      "name": "Quetta",
+      "lat": 30.1798,
+      "lon": 66.975,
+      "province": "Balochistan"
+    },
+    {
+      "name": "Azad Kashmir",
+      "lat": 33.9259,
+      "lon": 73.781,
+      "province": "AJ&K"
+    },
+    {
+      "name": "Sindh",
+      "lat": 25.8943,
+      "lon": 68.5247,
+      "province": "Sindh"
+    },
+    {
+      "name": "Punjab",
+      "lat": 31.1704,
+      "lon": 72.7097,
+      "province": "Punjab"
+    },
+    {
+      "name": "KPK",
+      "lat": 34.9526,
+      "lon": 72.3311,
+      "province": "KP"
+    },
+    {
+      "name": "Balochistan",
+      "lat": 28.4896,
+      "lon": 65.096,
+      "province": "Balochistan"
+    },
+    {
+      "name": "Gilgit Baltistan",
+      "lat": 35.8879,
+      "lon": 74.4653,
+      "province": "GB"
+    },
+    {
+      "name": "Chitral",
+      "lat": 35.8513,
+      "lon": 71.7864,
+      "province": "KP"
+    },
+    {
+      "name": "Jammu Kashmir",
+      "lat": 33.9259,
+      "lon": 73.781,
+      "province": "AJ&K"
+    },
+    {
+      "name": "NWFP",
+      "lat": 34.9526,
+      "lon": 72.3311,
+      "province": "KP"
+    }
+  ],
+  "emergency_contacts": {
+    "national": {
+      "NDMA": "051-9087133",
+      "NEOC": "051-9087133",
+      "Rescue_1122": "1122",
+      "PMD": "Weather Forecasts",
+      "FFD": "Flood Forecasts"
+    },
+    "provincial": {
+      "Punjab": "PDMA Punjab HQ, Lahore",
+      "Sindh": "PDMA Sindh HQ, Karachi",
+      "KP": "PDMA KP HQ, Peshawar",
+      "Balochistan": "PDMA Balochistan HQ, Quetta",
+      "GB": "GBDMA HQ, Gilgit",
+      "AJ&K": "SDMA HQ, Muzaffarabad"
+    }
+  },
+  "climate_data": {
+    "co2_emissions": [
+      {
+        "year": 2009,
+        "metric_tons_per_capita": 0.8
+      },
+      {
+        "year": 2015,
+        "metric_tons_per_capita": 0.85
+      },
+      {
+        "year": 2021,
+        "metric_tons_per_capita": 0.9
+      }
+    ],
+    "forest_loss": {
+      "annual_rate": "-1.0%",
+      "period": "2010-2020"
+    },
+    "climate_risk_index": {
+      "rank": 8,
+      "score": 29,
+      "year": 2025
+    },
+    "temperature_trends": [
+      {
+        "month": "Jan",
+        "growth_percent": 0.2
+      },
+      {
+        "month": "Feb",
+        "growth_percent": 0.5
+      },
+      {
+        "month": "Mar",
+        "growth_percent": 0.8
+      },
+      {
+        "month": "Apr",
+        "growth_percent": 1.2
+      },
+      {
+        "month": "May",
+        "growth_percent": 1.6
+      },
+      {
+        "month": "Jun",
+        "growth_percent": 1.8
+      },
+      {
+        "month": "Jul",
+        "growth_percent": 1.5
+      },
+      {
+        "month": "Aug",
+        "growth_percent": 1.3
+      },
+      {
+        "month": "Sep",
+        "growth_percent": 1.0
+      },
+      {
+        "month": "Oct",
+        "growth_percent": 0.7
+      },
+      {
+        "month": "Nov",
+        "growth_percent": 0.4
+      },
+      {
+        "month": "Dec",
+        "growth_percent": 0.3
+      }
+    ]
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "national_stocks": {
+    "tents": 83333,
+    "blankets": 250000,
+    "life_jackets": 5000,
+    "boats": 417,
+    "water_pumps": 111,
+    "ration_bags": 150000,
+    "medical_kits": 8500
+  },
+  "provincial_stocks": {
+    "Punjab": {
+      "tents": 20344,
+      "blankets": 15622,
+      "boats": 20,
+      "water_pumps": 908
+    },
+    "Sindh": {
+      "tents": 19487,
+      "blankets": 68923,
+      "boats": 250,
+      "water_pumps": 750
+    },
+    "KP": {
+      "tents": 15678,
+      "blankets": 45000,
+      "boats": 50,
+      "water_pumps": 320
+    },
+    "Balochistan": {
+      "tents": 18234,
+      "blankets": 89300,
+      "boats": 30,
+      "water_pumps": 456
+    },
+    "GB": {
+      "tents": 5000,
+      "blankets": 15000,
+      "boats": 35,
+      "water_pumps": 120
+    },
+    "AJK": {
+      "tents": 4590,
+      "blankets": 16155,
+      "boats": 32,
+      "water_pumps": 89
+    }
+  }
+}

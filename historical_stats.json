@@ -1,0 +1,63 @@
+{
+  "period": "2015-2025",
+  "total_disasters": 61,
+  "total_deaths": 6790,
+  "total_affected": 43460000,
+  "total_injured": 83060,
+  "total_homeless": 8140000,
+  "disaster_distribution": [
+    {
+      "type": "Hydrological",
+      "count": 35,
+      "percentage": 57.38
+    },
+    {
+      "type": "Meteorological",
+      "count": 13,
+      "percentage": 21.31
+    },
+    {
+      "type": "Geophysical",
+      "count": 9,
+      "percentage": 14.75
+    },
+    {
+      "type": "Biological",
+      "count": 3,
+      "percentage": 4.92
+    },
+    {
+      "type": "Climatological",
+      "count": 1,
+      "percentage": 1.64
+    }
+  ],
+  "major_events": [
+    {
+      "year": 1950,
+      "deaths": 2900,
+      "type": "Monsoon floods",
+      "region": "Pakistan"
+    },
+    {
+      "year": 2005,
+      "deaths": 73000,
+      "type": "Kashmir earthquake",
+      "region": "Kashmir"
+    },
+    {
+      "year": 2010,
+      "deaths": 1985,
+      "affected": 20359496,
+      "type": "Super Floods",
+      "region": "All Pakistan"
+    },
+    {
+      "year": 2022,
+      "deaths": 1739,
+      "affected": 33012865,
+      "type": "Monsoon Floods",
+      "region": "Sindh/Balochistan"
+    }
+  ]
+}

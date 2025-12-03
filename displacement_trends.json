@@ -1,0 +1,68 @@
+[
+  {
+    "year": 2009,
+    "flood_displacements": 84000,
+    "other_displacements": 0,
+    "total": 84000
+  },
+  {
+    "year": 2010,
+    "flood_displacements": 11000000,
+    "other_displacements": 60000,
+    "total": 11060000
+  },
+  {
+    "year": 2011,
+    "flood_displacements": 300000,
+    "other_displacements": 0,
+    "total": 300000
+  },
+  {
+    "year": 2012,
+    "flood_displacements": 1857000,
+    "other_displacements": 0,
+    "total": 1857000
+  },
+  {
+    "year": 2014,
+    "flood_displacements": 740000,
+    "other_displacements": 0,
+    "total": 740000
+  },
+  {
+    "year": 2015,
+    "flood_displacements": 330000,
+    "other_displacements": 666000,
+    "total": 996000
+  },
+  {
+    "year": 2016,
+    "flood_displacements": 1700,
+    "other_displacements": 0,
+    "total": 1700
+  },
+  {
+    "year": 2019,
+    "flood_displacements": 22000,
+    "other_displacements": 55000,
+    "total": 77000
+  },
+  {
+    "year": 2020,
+    "flood_displacements": 810000,
+    "other_displacements": 0,
+    "total": 810000
+  },
+  {
+    "year": 2021,
+    "flood_displacements": 0,
+    "other_displacements": 68000,
+    "total": 68000
+  },
+  {
+    "year": 2022,
+    "flood_displacements": 7900000,
+    "other_displacements": 0,
+    "total": 7900000
+  }
+]

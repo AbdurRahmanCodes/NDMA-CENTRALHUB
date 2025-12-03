@@ -1,0 +1,86 @@
+[
+  {
+    "name": "Islamabad",
+    "lat": 33.6844,
+    "lon": 73.0479,
+    "province": "ICT"
+  },
+  {
+    "name": "Lahore",
+    "lat": 31.5497,
+    "lon": 74.3436,
+    "province": "Punjab"
+  },
+  {
+    "name": "Karachi",
+    "lat": 24.8607,
+    "lon": 67.0011,
+    "province": "Sindh"
+  },
+  {
+    "name": "Peshawar",
+    "lat": 34.0151,
+    "lon": 71.5249,
+    "province": "KP"
+  },
+  {
+    "name": "Quetta",
+    "lat": 30.1798,
+    "lon": 66.975,
+    "province": "Balochistan"
+  },
+  {
+    "name": "Azad Kashmir",
+    "lat": 33.9259,
+    "lon": 73.781,
+    "province": "AJ&K"
+  },
+  {
+    "name": "Sindh",
+    "lat": 25.8943,
+    "lon": 68.5247,
+    "province": "Sindh"
+  },
+  {
+    "name": "Punjab",
+    "lat": 31.1704,
+    "lon": 72.7097,
+    "province": "Punjab"
+  },
+  {
+    "name": "KPK",
+    "lat": 34.9526,
+    "lon": 72.3311,
+    "province": "KP"
+  },
+  {
+    "name": "Balochistan",
+    "lat": 28.4896,
+    "lon": 65.096,
+    "province": "Balochistan"
+  },
+  {
+    "name": "Gilgit Baltistan",
+    "lat": 35.8879,
+    "lon": 74.4653,
+    "province": "GB"
+  },
+  {
+    "name": "Chitral",
+    "lat": 35.8513,
+    "lon": 71.7864,
+    "province": "KP"
+  },
+  {
+    "name": "Jammu Kashmir",
+    "lat": 33.9259,
+    "lon": 73.781,
+    "province": "AJ&K"
+  },
+  {
+    "name": "NWFP",
+    "lat": 34.9526,
+    "lon": 72.3311,
+    "province": "KP"
+  }
+]

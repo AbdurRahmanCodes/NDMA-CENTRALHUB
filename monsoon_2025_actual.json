@@ -1,0 +1,50 @@
+{
+  "period": "June 26 - Sept 19, 2025",
+  "status": "Completed",
+  "total_deaths": 1006,
+  "total_injured": 1063,
+  "total_rescued": 3020130,
+  "houses_damaged": 12569,
+  "livestock_perished": 6509,
+  "roads_damaged_km": 1981.37,
+  "bridges_damaged": 239,
+  "relief_camps": 949,
+  "people_in_camps": 152252,
+  "by_province": {
+    "Punjab": {
+      "deaths": 304,
+      "injured": 661,
+      "rescued": 2819767
+    },
+    "KP": {
+      "deaths": 504,
+      "injured": 218,
+      "rescued": 14317
+    },
+    "Sindh": {
+      "deaths": 80,
+      "injured": 87,
+      "rescued": 184011
+    },
+    "Balochistan": {
+      "deaths": 30,
+      "injured": 5,
+      "rescued": 19
+    },
+    "GB": {
+      "deaths": 41,
+      "injured": 52,
+      "rescued": 1027
+    },
+    "AJ&K": {
+      "deaths": 38,
+      "injured": 37,
+      "rescued": 940
+    },
+    "ICT": {
+      "deaths": 9,
+      "injured": 3,
+      "rescued": 49
+    }
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "provinces": {
+    "Punjab": {
+      "vulnerable_districts": ["Attock", "Mianwali", "Rajanpur", "DG Khan", "Sialkot", "Gujranwala", "Jhang", "Muzaffargarh"],
+      "high_risk_areas": ["River Indus", "River Chenab", "River Ravi"],
+      "population_at_risk": 5600000,
+      "alert_level": "Medium"
+    },
+    "Sindh": {
+      "vulnerable_districts": ["Dadu", "Jacobabad", "Kashmore", "Larkana", "Shikarpur", "Sukkur", "Thatta", "Badin"],
+      "high_risk_areas": ["River Indus", "Coastal areas"],
+      "population_at_risk": 8900000,
+      "alert_level": "High"
+    },
+    "KP": {
+      "vulnerable_districts": ["Charsadda", "Nowshera", "Swat", "Dir", "Chitral", "Kohistan"],
+      "high_risk_areas": ["River Kabul", "River Swat", "GLOF zones"],
+      "population_at_risk": 3400000,
+      "alert_level": "High"
+    },
+    "Balochistan": {
+      "vulnerable_districts": ["Jaffarabad", "Nasirabad", "Jhal Magsi", "Lasbela", "Qilla Saifullah"],
+      "high_risk_areas": ["Hill torrents", "Flash flood areas"],
+      "population_at_risk": 2100000,
+      "alert_level": "Medium"
+    },
+    "GB": {
+      "vulnerable_districts": ["Ghizer", "Gilgit", "Hunza", "Nagar", "Skardu"],
+      "high_risk_areas": ["GLOF zones", "Glacial lakes"],
+      "population_at_risk": 450000,
+      "alert_level": "High"
+    },
+    "AJK": {
+      "vulnerable_districts": ["Muzaffarabad", "Neelum", "Jhelum Valley", "Poonch"],
+      "high_risk_areas": ["Landslide zones", "Flash flood areas"],
+      "population_at_risk": 650000,
+      "alert_level": "Medium"
+    }
+  },
+  "current_alerts": [
+    {
+      "province": "Sindh",
+      "district": "Dadu",
+      "alert_type": "Flood Warning",
+      "severity": "High",
+      "issued_date": "2025-12-01",
+      "message": "Heavy rainfall expected in next 48 hours"
+    },
+    {
+      "province": "KP",
+      "district": "Swat",
+      "alert_type": "Flash Flood Watch",
+      "severity": "Medium",
+      "issued_date": "2025-12-02",
+      "message": "Glacier melt and precipitation may cause flash floods"
+    }
+  ]
+}

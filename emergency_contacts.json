@@ -1,0 +1,17 @@
+{
+  "national": {
+    "NDMA": "051-9087133",
+    "NEOC": "051-9087133",
+    "Rescue_1122": "1122",
+    "PMD": "Weather Forecasts",
+    "FFD": "Flood Forecasts"
+  },
+  "provincial": {
+    "Punjab": "PDMA Punjab HQ, Lahore",
+    "Sindh": "PDMA Sindh HQ, Karachi",
+    "KP": "PDMA KP HQ, Peshawar",
+    "Balochistan": "PDMA Balochistan HQ, Quetta",
+    "GB": "GBDMA HQ, Gilgit",
+    "AJ&K": "SDMA HQ, Muzaffarabad"
+  }
+}

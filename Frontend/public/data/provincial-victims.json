@@ -1,0 +1,35 @@
+{
+  "period": "2009-2022",
+  "provinces": {
+    "Sindh": {
+      "total_affected": 35806605,
+      "deaths": 892,
+      "houses_damaged": 458920
+    },
+    "Punjab": {
+      "total_affected": 17699281,
+      "deaths": 456,
+      "houses_damaged": 234567
+    },
+    "Balochistan": {
+      "total_affected": 10909421,
+      "deaths": 234,
+      "houses_damaged": 156789
+    },
+    "KP": {
+      "total_affected": 8516736,
+      "deaths": 389,
+      "houses_damaged": 123456
+    },
+    "AJK": {
+      "total_affected": 301574,
+      "deaths": 45,
+      "houses_damaged": 12345
+    },
+    "GB": {
+      "total_affected": 200911,
+      "deaths": 23,
+      "houses_damaged": 8765
+    }
+  }
+}

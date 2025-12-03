@@ -1,0 +1,42 @@
+{
+  "major_events": [
+    {
+      "year": 1992,
+      "month": "September",
+      "deaths": 1892,
+      "affected": 3000000,
+      "region": "Kashmir",
+      "type": "Flash Floods",
+      "description": "Devastating floods in Kashmir valley"
+    },
+    {
+      "year": 2010,
+      "month": "July-August",
+      "deaths": 1860,
+      "affected": 20000000,
+      "region": "All Pakistan",
+      "type": "Monsoon Floods",
+      "economic_loss_usd": 10000000000,
+      "description": "Worst floods in Pakistan's history, one-fifth of country submerged"
+    },
+    {
+      "year": 2022,
+      "month": "June-September",
+      "deaths": 1739,
+      "affected": 33000000,
+      "region": "Sindh, Balochistan",
+      "type": "Monsoon Floods",
+      "economic_loss_usd": 30000000000,
+      "description": "Climate change-induced catastrophic floods"
+    },
+    {
+      "year": 2025,
+      "month": "June-September",
+      "deaths": 1006,
+      "affected": 152252,
+      "region": "Punjab, KP",
+      "type": "Monsoon Floods",
+      "description": "Monsoon 2025 floods"
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "total_disasters": 61,
+  "total_deaths": 6790,
+  "total_affected": 43460000,
+  "economic_loss_usd": 35000000000,
+  "disaster_types": {
+    "Hydrological": 57,
+    "Meteorological": 21,
+    "Geophysical": 15,
+    "Climatological": 7
+  },
+  "disasters_by_year": [
+    {"year": 2015, "count": 5},
+    {"year": 2016, "count": 4},
+    {"year": 2017, "count": 6},
+    {"year": 2018, "count": 7},
+    {"year": 2019, "count": 5},
+    {"year": 2020, "count": 8},
+    {"year": 2021, "count": 6},
+    {"year": 2022, "count": 9},
+    {"year": 2023, "count": 5},
+    {"year": 2024, "count": 4},
+    {"year": 2025, "count": 2}
+  ]
+}

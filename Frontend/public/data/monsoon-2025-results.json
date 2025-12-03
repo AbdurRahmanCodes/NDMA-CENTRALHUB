@@ -1,0 +1,39 @@
+{
+  "period": "June 26 - September 19, 2025",
+  "summary": {
+    "total_deaths": 1006,
+    "total_injured": 1063,
+    "houses_damaged": 12569,
+    "people_rescued": 3020130,
+    "active_relief_camps": 949,
+    "people_in_camps": 152252
+  },
+  "by_province": {
+    "Punjab": {
+      "deaths": 304,
+      "injured": 661,
+      "houses_damaged": 6234
+    },
+    "KP": {
+      "deaths": 504,
+      "injured": 218,
+      "houses_damaged": 4567
+    },
+    "Sindh": {
+      "deaths": 123,
+      "injured": 98,
+      "houses_damaged": 1234
+    },
+    "Balochistan": {
+      "deaths": 75,
+      "injured": 86,
+      "houses_damaged": 534
+    }
+  },
+  "relief_distributed": {
+    "tents": 59337,
+    "ration_bags": 1933,
+    "blankets": 87650,
+    "tarpaulins": 12456
+  }
+}
