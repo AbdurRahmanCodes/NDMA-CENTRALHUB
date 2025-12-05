@@ -71,9 +71,9 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
   const a =
     Math.sin(dLat / 2) * Math.sin(dLat / 2) +
     Math.cos(toRad(lat1)) *
-      Math.cos(toRad(lat2)) *
-      Math.sin(dLon / 2) *
-      Math.sin(dLon / 2);
+    Math.cos(toRad(lat2)) *
+    Math.sin(dLon / 2) *
+    Math.sin(dLon / 2);
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   return R * c;
 }
@@ -85,11 +85,11 @@ function toRad(degrees) {
 /**
  * Fetch earthquakes near a specific location
  */
-export async function fetchEarthquakesNearLocation(lat, lon, radiusKm = 500, daysBack = 30) {
+export async function fetchEarthquakesNearLocation(lat, lon, radiusKm = 100, daysBack = 7) {
   try {
     // Fetch all recent earthquakes
     const data = await fetchEarthquakes(daysBack, 2.5);
-    
+
     if (!data || !data.features) {
       return [];
     }
@@ -99,7 +99,7 @@ export async function fetchEarthquakesNearLocation(lat, lon, radiusKm = 500, day
       .map(quake => {
         const [quakeLon, quakeLat, depth] = quake.geometry.coordinates;
         const distance = calculateDistance(lat, lon, quakeLat, quakeLon);
-        
+
         return {
           id: quake.id,
           magnitude: quake.properties.mag,
@@ -150,7 +150,7 @@ export function getEarthquakeActivitySummary(earthquakes) {
   // Increase risk if there was a recent strong earthquake (within 7 days)
   const sevenDaysAgo = new Date();
   sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-  const recentStrong = earthquakes.filter(q => 
+  const recentStrong = earthquakes.filter(q =>
     q.time >= sevenDaysAgo && q.magnitude >= 4.0
   );
 

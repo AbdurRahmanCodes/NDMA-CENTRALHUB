@@ -9,7 +9,7 @@ import { fetchEarthquakesNearLocation, getEarthquakeActivitySummary } from '../s
  * @param {number} refreshInterval - Refresh interval in milliseconds (default: 10 minutes)
  * @returns {object} { earthquakes, summary, loading, error, refresh, lastUpdated }
  */
-export function useEarthquakeData(latitude, longitude, radiusKm = 500, refreshInterval = 10 * 60 * 1000) {
+export function useEarthquakeData(latitude, longitude, radiusKm = 100, refreshInterval = 10 * 60 * 1000) {
   const [earthquakes, setEarthquakes] = useState([]);
   const [summary, setSummary] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -29,11 +29,11 @@ export function useEarthquakeData(latitude, longitude, radiusKm = 500, refreshIn
     try {
       const data = await fetchEarthquakesNearLocation(latitude, longitude, radiusKm);
       setEarthquakes(data);
-      
+
       // Calculate summary
       const activitySummary = getEarthquakeActivitySummary(data);
       setSummary(activitySummary);
-      
+
       setLastUpdated(new Date());
       setError(null);
     } catch (err) {

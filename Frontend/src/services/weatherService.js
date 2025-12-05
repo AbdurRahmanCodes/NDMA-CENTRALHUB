@@ -57,7 +57,7 @@ export function pickCurrentHourly(data) {
 export async function fetchWeatherForLocation(lat, lon) {
   try {
     const data = await fetchOpenMeteo(lat, lon);
-    
+
     if (!data || !data.current_weather) {
       throw new Error('Invalid weather data received');
     }
@@ -133,27 +133,32 @@ function extractForecast24h(data) {
 
   const hourly = data.hourly;
   const times = hourly.time || [];
-  const now = new Date();
-  
-  // Get next 24 hours
+
+  if (times.length === 0) return [];
+
+  // Get current hour index
+  const currentIndex = pickCurrentHourly(data);
+  if (currentIndex === null || currentIndex < 0) return [];
+
+  // Get next 24 hours starting from current hour
   const forecast = [];
-  for (let i = 0; i < Math.min(24, times.length); i++) {
-    const time = new Date(times[i]);
-    if (time >= now) {
-      forecast.push({
-        time: times[i],
-        hour: time.getHours(),
-        temperature: hourly.temperature_2m?.[i] || null,
-        humidity: hourly.relative_humidity_2m?.[i] || null,
-        windSpeed: hourly.wind_speed_10m?.[i] || null,
-        precipitation: hourly.precipitation?.[i] || 0,
-        rain: hourly.rain?.[i] || 0,
-        cloudCover: hourly.cloud_cover?.[i] || null,
-      });
-    }
+  for (let i = 0; i < 24 && (currentIndex + i) < times.length; i++) {
+    const index = currentIndex + i;
+    const time = new Date(times[index]);
+
+    forecast.push({
+      time: times[index],
+      hour: time.getHours(),
+      temperature: hourly.temperature_2m?.[index] || null,
+      humidity: hourly.relative_humidity_2m?.[index] || null,
+      windSpeed: hourly.wind_speed_10m?.[index] || null,
+      precipitation: hourly.precipitation?.[index] || 0,
+      rain: hourly.rain?.[index] || 0,
+      cloudCover: hourly.cloud_cover?.[index] || null,
+    });
   }
 
-  return forecast.slice(0, 24);
+  return forecast;
 }
 
 /**

@@ -1,260 +1,159 @@
 import React, { useState, useEffect } from 'react';
-import { ChartContainer } from '../../components/UI';
+import { Activity, Menu, X } from 'lucide-react';
+import MapSelector from '../../components/dashboard/MapSelector';
+import WeatherSidebar from '../../components/dashboard/WeatherSidebar';
+import ChartsPanel from '../../components/dashboard/ChartsPanel';
 import { useRealTimeWeather } from '../../hooks/useRealTimeWeather';
 import { useEarthquakeData } from '../../hooks/useEarthquakeData';
+import { useAirQuality } from '../../hooks/useAirQuality';
 import { fetchMultipleCities } from '../../services/weatherService';
-import { PAKISTAN_CITIES } from '../../data/pakistanCities';
-import LocationSearch from '../../components/dashboard/LocationSearch';
-import MapSelector from '../../components/dashboard/MapSelector';
-import WeatherCard from '../../components/dashboard/WeatherCard';
-import { 
-  TemperatureForecastChart, 
-  HumidityWindChart, 
-  PrecipitationChart 
-} from '../../components/dashboard/WeatherCharts';
-import { MapPin, RefreshCw, Clock } from 'lucide-react';
-import { reverseGeocode } from '../../services/geocodingService';
+import { PAKISTAN_CITIES, PAKISTAN_BOUNDS } from '../../data/pakistanCities';
+import { motion, AnimatePresence } from 'framer-motion';
 
+/**
+ * WeatherMonitoring - Professional Dashboard with Advanced Animations
+ */
 const WeatherMonitoring = () => {
-  // Selected location state
   const [selectedLocation, setSelectedLocation] = useState({
-    latitude: 33.6844, // Default: Islamabad
-    longitude: 73.0479,
-    name: 'Islamabad'
+    latitude: PAKISTAN_BOUNDS.center.latitude,
+    longitude: PAKISTAN_BOUNDS.center.longitude,
+    name: 'Pakistan Center'
   });
 
-  // Pakistan cities weather data
   const [citiesWeather, setCitiesWeather] = useState([]);
-  const [citiesLoading, setCitiesLoading] = useState(true);
-  const [lastCitiesUpdate, setLastCitiesUpdate] = useState(null);
+  const [chartsVisible, setChartsVisible] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true); // For mobile responsiveness if needed
 
-  // Get real-time weather for selected location
-  const { 
-    weatherData, 
-    loading: weatherLoading, 
+  // Custom hooks for data
+  const {
+    weatherData,
+    loading: weatherLoading,
     error: weatherError,
-    refresh: refreshWeather,
-    lastUpdated: weatherLastUpdated
+    lastUpdated: weatherLastUpdated,
+    refetch: refetchWeather
   } = useRealTimeWeather(selectedLocation.latitude, selectedLocation.longitude);
 
-  // Get earthquake data for selected location
   const {
     summary: earthquakeSummary,
-    loading: earthquakeLoading,
-    error: earthquakeError,
+    loading: earthquakeLoading
   } = useEarthquakeData(selectedLocation.latitude, selectedLocation.longitude);
 
-  // Fetch weather for all Pakistan cities
-  const fetchCitiesWeather = async () => {
-    setCitiesLoading(true);
-    try {
-      const data = await fetchMultipleCities(PAKISTAN_CITIES);
-      setCitiesWeather(data);
-      setLastCitiesUpdate(new Date());
-    } catch (error) {
-      console.error('Error fetching cities weather:', error);
-    } finally {
-      setCitiesLoading(false);
-    }
-  };
+  const {
+    airQuality,
+    loading: airQualityLoading
+  } = useAirQuality(selectedLocation.latitude, selectedLocation.longitude);
 
-  // Initial fetch and auto-refresh for cities
+  // Fetch weather for major cities
   useEffect(() => {
-    fetchCitiesWeather();
+    const fetchCitiesData = async () => {
+      const majorCities = PAKISTAN_CITIES.filter(city =>
+        ['Karachi', 'Lahore', 'Islamabad', 'Peshawar', 'Quetta', 'Multan', 'Faisalabad', 'Rawalpindi'].includes(city.name)
+      );
 
-    // Refresh cities every 5 minutes
-    const interval = setInterval(fetchCitiesWeather, 5 * 60 * 1000);
+      try {
+        const weatherPromises = majorCities.map(city =>
+          fetchMultipleCities([city])
+            .then(results => ({ ...city, weather: results[0] }))
+            .catch(() => ({ ...city, weather: null }))
+        );
 
+        const results = await Promise.all(weatherPromises);
+        setCitiesWeather(results);
+      } catch (error) {
+        console.error('Error fetching cities weather:', error);
+      }
+    };
+
+    fetchCitiesData();
+    const interval = setInterval(fetchCitiesData, 300000); // 5 min
     return () => clearInterval(interval);
   }, []);
 
-  // Handle location selection from search or map
-  const handleLocationSelect = async (latitude, longitude, name = null) => {
-    let locationName = name;
-
-    // If no name provided, reverse geocode
-    if (!locationName) {
-      try {
-        locationName = await reverseGeocode(latitude, longitude);
-      } catch (error) {
-        locationName = `${latitude.toFixed(4)}, ${longitude.toFixed(4)}`;
-      }
-    }
-
-    setSelectedLocation({
-      latitude,
-      longitude,
-      name: locationName
-    });
-  };
-
-  const formatLastUpdate = (date) => {
-    if (!date) return 'Never';
-    const now = new Date();
-    const diff = Math.floor((now - date) / 1000); // seconds
-
-    if (diff < 60) return 'Just now';
-    if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
-    if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
-    return date.toLocaleTimeString();
+  const handleLocationSelect = (latitude, longitude, name) => {
+    setSelectedLocation({ latitude, longitude, name: name || 'Selected Location' });
   };
 
   return (
-    <div className="p-6 space-y-6">
-      {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-white mb-2">Real-Time Weather Monitoring</h1>
-        <p className="text-gray-400">Live weather data and climate analysis for Pakistan</p>
-      </div>
-
-      {/* Location Selection Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Search Location */}
-        <div className="space-y-3">
-          <h2 className="text-xl font-semibold text-white flex items-center gap-2">
-            <MapPin className="w-5 h-5 text-blue-400" />
-            Search Location
-          </h2>
-          <LocationSearch
-            onLocationSelect={handleLocationSelect}
-            selectedLocation={selectedLocation}
-          />
+    <div className="flex flex-col h-screen bg-gray-950 overflow-hidden font-sans text-gray-100 selection:bg-blue-500/30">
+      {/* Premium Header */}
+      <motion.header
+        initial={{ y: -20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.5 }}
+        className="bg-gray-900/80 backdrop-blur-md border-b border-gray-800 px-6 py-3 flex items-center justify-between z-50 relative"
+      >
+        <div className="flex items-center gap-4">
+          <div className="relative">
+            <div className="absolute inset-0 bg-blue-500 blur-lg opacity-20 rounded-full"></div>
+            <Activity className="w-6 h-6 text-blue-400 relative z-10" />
+          </div>
+          <div>
+            <h1 className="text-lg font-bold text-white tracking-tight">Weather Monitoring <span className="text-blue-500">Pro</span></h1>
+            <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Disaster Management System</p>
+          </div>
         </div>
 
-        {/* Current Selection Info */}
-        <div className="bg-gradient-to-br from-blue-600/20 to-blue-700/20 backdrop-blur-sm border border-blue-500/30 rounded-lg p-4">
-          <h3 className="text-sm text-gray-400 mb-2">Selected Location</h3>
-          <div className="text-xl font-bold text-white mb-1">{selectedLocation.name}</div>
-          <div className="text-sm text-gray-300">
-            {selectedLocation.latitude.toFixed(4)}°, {selectedLocation.longitude.toFixed(4)}°
-          </div>
+        <div className="flex items-center gap-4">
           {weatherLastUpdated && (
-            <div className="flex items-center gap-1 text-xs text-gray-400 mt-2">
-              <Clock className="w-3 h-3" />
-              Updated {formatLastUpdate(weatherLastUpdated)}
+            <div className="flex items-center gap-2 px-3 py-1.5 bg-gray-800 rounded-full border border-gray-700">
+              <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
+              <span className="text-xs text-gray-400 font-mono">
+                LIVE: {new Date(weatherLastUpdated).toLocaleTimeString()}
+              </span>
             </div>
           )}
         </div>
-      </div>
+      </motion.header>
 
-      {/* Interactive Map */}
-      <div>
-        <h2 className="text-xl font-semibold text-white mb-3 flex items-center gap-2">
-          <MapPin className="w-5 h-5 text-blue-400" />
-          Select Location on Map
-        </h2>
-        <div className="h-96 rounded-lg overflow-hidden">
-          <MapSelector
-            onLocationSelect={handleLocationSelect}
+      {/* Main Layout */}
+      <div className="flex-1 flex overflow-hidden relative">
+        {/* Left Sidebar - Animated */}
+        <motion.aside
+          initial={{ x: -50, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="w-80 flex-shrink-0 z-40"
+        >
+          <WeatherSidebar
             selectedLocation={selectedLocation}
-          />
-        </div>
-      </div>
-
-      {/* Current Weather Display */}
-      {weatherData && (
-        <div className="bg-gradient-to-br from-blue-600/30 to-purple-600/30 backdrop-blur-sm border border-blue-500/40 rounded-lg p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-2xl font-bold text-white">Current Weather</h2>
-            <button
-              onClick={refreshWeather}
-              className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors text-white text-sm"
-              disabled={weatherLoading}
-            >
-              <RefreshCw className={`w-4 h-4 ${weatherLoading ? 'animate-spin' : ''}`} />
-              Refresh
-            </button>
-          </div>
-
-          <WeatherCard
-            city={selectedLocation.name}
-            weather={weatherData}
+            weatherData={weatherData}
+            citiesWeather={citiesWeather}
             earthquakeSummary={earthquakeSummary}
-            loading={weatherLoading}
-            error={weatherError}
+            airQuality={airQuality}
+            onLocationSelect={handleLocationSelect}
+            onCitySelect={handleLocationSelect}
+            loading={weatherLoading || earthquakeLoading || airQualityLoading}
+            lastUpdated={weatherLastUpdated}
           />
-        </div>
-      )}
+        </motion.aside>
 
-      {/* Weather Charts */}
-      {weatherData && weatherData.forecast24h && weatherData.forecast24h.length > 0 && (
-        <div className="space-y-6">
-          <h2 className="text-2xl font-bold text-white">24-Hour Forecast</h2>
+        {/* Right Section - Map + Charts */}
+        <main className="flex-1 flex flex-col overflow-hidden relative">
+          {/* Map Area */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.98 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="flex-1 relative bg-gray-900"
+          >
+            <MapSelector
+              onLocationSelect={handleLocationSelect}
+              selectedLocation={selectedLocation}
+              citiesWeather={citiesWeather}
+            />
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Temperature Forecast */}
-            <ChartContainer title="Temperature Forecast">
-              <TemperatureForecastChart forecast24h={weatherData.forecast24h} />
-            </ChartContainer>
+            {/* Overlay Gradient for smooth transition to sidebar */}
+            <div className="absolute inset-y-0 left-0 w-12 bg-gradient-to-r from-gray-900/50 to-transparent pointer-events-none z-[400]"></div>
+          </motion.div>
 
-            {/* Humidity & Wind Speed */}
-            <ChartContainer title="Humidity & Wind Speed">
-              <HumidityWindChart forecast24h={weatherData.forecast24h} />
-            </ChartContainer>
-          </div>
-
-          {/* Precipitation */}
-          <ChartContainer title="Precipitation Forecast">
-            <PrecipitationChart forecast24h={weatherData.forecast24h} />
-          </ChartContainer>
-        </div>
-      )}
-
-      {/* Pakistan Cities Weather */}
-      <div>
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-2xl font-bold text-white">Pakistan Regions Weather</h2>
-          <div className="flex items-center gap-4">
-            {lastCitiesUpdate && (
-              <div className="flex items-center gap-1 text-sm text-gray-400">
-                <Clock className="w-4 h-4" />
-                Updated {formatLastUpdate(lastCitiesUpdate)}
-              </div>
-            )}
-            <button
-              onClick={fetchCitiesWeather}
-              className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors text-white text-sm"
-              disabled={citiesLoading}
-            >
-              <RefreshCw className={`w-4 h-4 ${citiesLoading ? 'animate-spin' : ''}`} />
-              Refresh All
-            </button>
-          </div>
-        </div>
-
-        {citiesLoading && citiesWeather.length === 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
-            {[...Array(10)].map((_, i) => (
-              <div key={i} className="bg-blue-600/20 rounded-lg p-4 animate-pulse">
-                <div className="h-6 bg-blue-500/20 rounded w-2/3 mb-4"></div>
-                <div className="h-10 bg-blue-500/20 rounded w-1/2 mb-2"></div>
-                <div className="h-4 bg-blue-500/20 rounded w-3/4"></div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
-            {citiesWeather.map((cityData) => (
-              <WeatherCard
-                key={cityData.id}
-                city={cityData.name}
-                weather={cityData.weather}
-                loading={false}
-                error={cityData.error}
-                onClick={() => handleLocationSelect(cityData.latitude, cityData.longitude, cityData.name)}
-              />
-            ))}
-          </div>
-        )}
+          {/* Bottom Charts Panel */}
+          <ChartsPanel
+            weatherData={weatherData}
+            isOpen={chartsVisible}
+            onToggle={() => setChartsVisible(!chartsVisible)}
+          />
+        </main>
       </div>
-
-      {/* Error Display */}
-      {weatherError && (
-        <div className="bg-red-600/20 border border-red-500/50 rounded-lg p-4 text-red-200">
-          <p className="font-semibold">Error loading weather data:</p>
-          <p className="text-sm">{weatherError}</p>
-        </div>
-      )}
     </div>
   );
 };
