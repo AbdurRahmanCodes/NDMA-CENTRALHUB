@@ -81,3 +81,88 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
 function toRad(degrees) {
   return (degrees * Math.PI) / 180;
 }
+
+/**
+ * Fetch earthquakes near a specific location
+ */
+export async function fetchEarthquakesNearLocation(lat, lon, radiusKm = 500, daysBack = 30) {
+  try {
+    // Fetch all recent earthquakes
+    const data = await fetchEarthquakes(daysBack, 2.5);
+    
+    if (!data || !data.features) {
+      return [];
+    }
+
+    // Filter earthquakes within radius
+    const nearbyQuakes = data.features
+      .map(quake => {
+        const [quakeLon, quakeLat, depth] = quake.geometry.coordinates;
+        const distance = calculateDistance(lat, lon, quakeLat, quakeLon);
+        
+        return {
+          id: quake.id,
+          magnitude: quake.properties.mag,
+          place: quake.properties.place,
+          time: new Date(quake.properties.time),
+          depth: depth,
+          distance: Math.round(distance),
+          latitude: quakeLat,
+          longitude: quakeLon,
+          url: quake.properties.url,
+          type: quake.properties.type,
+        };
+      })
+      .filter(quake => quake.distance <= radiusKm)
+      .sort((a, b) => b.time - a.time); // Sort by most recent first
+
+    return nearbyQuakes;
+  } catch (error) {
+    console.error('Error fetching earthquakes near location:', error);
+    throw error;
+  }
+}
+
+/**
+ * Get earthquake activity summary for a location
+ */
+export function getEarthquakeActivitySummary(earthquakes) {
+  if (!earthquakes || earthquakes.length === 0) {
+    return {
+      count: 0,
+      maxMagnitude: null,
+      mostRecent: null,
+      riskLevel: 'none'
+    };
+  }
+
+  const maxMagnitude = Math.max(...earthquakes.map(q => q.magnitude));
+  const mostRecent = earthquakes[0]; // Already sorted by time
+
+  // Determine risk level based on magnitude and recency
+  let riskLevel = 'low';
+  if (maxMagnitude >= 6.0) {
+    riskLevel = 'high';
+  } else if (maxMagnitude >= 4.5) {
+    riskLevel = 'medium';
+  }
+
+  // Increase risk if there was a recent strong earthquake (within 7 days)
+  const sevenDaysAgo = new Date();
+  sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+  const recentStrong = earthquakes.filter(q => 
+    q.time >= sevenDaysAgo && q.magnitude >= 4.0
+  );
+
+  if (recentStrong.length > 0) {
+    if (riskLevel === 'low') riskLevel = 'medium';
+  }
+
+  return {
+    count: earthquakes.length,
+    maxMagnitude,
+    mostRecent,
+    riskLevel,
+    recentCount: recentStrong.length
+  };
+}

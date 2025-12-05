@@ -49,3 +49,144 @@ export function pickCurrentHourly(data) {
   }
   return idx;
 }
+
+/**
+ * Fetch comprehensive weather data for a specific location
+ * Returns formatted data ready for display
+ */
+export async function fetchWeatherForLocation(lat, lon) {
+  try {
+    const data = await fetchOpenMeteo(lat, lon);
+    
+    if (!data || !data.current_weather) {
+      throw new Error('Invalid weather data received');
+    }
+
+    const currentIndex = pickCurrentHourly(data);
+    const hourly = data.hourly || {};
+
+    // Extract current values
+    const current = {
+      temperature: data.current_weather.temperature,
+      windSpeed: data.current_weather.windspeed,
+      weatherCode: data.current_weather.weathercode,
+      time: data.current_weather.time,
+    };
+
+    // Extract hourly values at current index
+    if (currentIndex !== null && currentIndex >= 0) {
+      current.humidity = hourly.relative_humidity_2m?.[currentIndex] || null;
+      current.precipitation = hourly.precipitation?.[currentIndex] || 0;
+      current.rain = hourly.rain?.[currentIndex] || 0;
+      current.pressure = hourly.surface_pressure?.[currentIndex] || null;
+      current.cloudCover = hourly.cloud_cover?.[currentIndex] || null;
+    }
+
+    // Get 24-hour forecast data
+    const forecast24h = extractForecast24h(data);
+
+    return {
+      current,
+      forecast24h,
+      hourly: hourly,
+      elevation: data.elevation,
+      timezone: data.timezone,
+      rawData: data
+    };
+  } catch (error) {
+    console.error('Error fetching weather for location:', error);
+    throw error;
+  }
+}
+
+/**
+ * Fetch weather data for multiple cities in parallel
+ */
+export async function fetchMultipleCities(citiesArray) {
+  try {
+    const promises = citiesArray.map(city =>
+      fetchWeatherForLocation(city.latitude, city.longitude)
+        .then(weather => ({
+          ...city,
+          weather,
+          error: null
+        }))
+        .catch(error => ({
+          ...city,
+          weather: null,
+          error: error.message
+        }))
+    );
+
+    return await Promise.all(promises);
+  } catch (error) {
+    console.error('Error fetching multiple cities weather:', error);
+    throw error;
+  }
+}
+
+/**
+ * Extract 24-hour forecast from hourly data
+ */
+function extractForecast24h(data) {
+  if (!data || !data.hourly) return [];
+
+  const hourly = data.hourly;
+  const times = hourly.time || [];
+  const now = new Date();
+  
+  // Get next 24 hours
+  const forecast = [];
+  for (let i = 0; i < Math.min(24, times.length); i++) {
+    const time = new Date(times[i]);
+    if (time >= now) {
+      forecast.push({
+        time: times[i],
+        hour: time.getHours(),
+        temperature: hourly.temperature_2m?.[i] || null,
+        humidity: hourly.relative_humidity_2m?.[i] || null,
+        windSpeed: hourly.wind_speed_10m?.[i] || null,
+        precipitation: hourly.precipitation?.[i] || 0,
+        rain: hourly.rain?.[i] || 0,
+        cloudCover: hourly.cloud_cover?.[i] || null,
+      });
+    }
+  }
+
+  return forecast.slice(0, 24);
+}
+
+/**
+ * Get weather condition text from weather code
+ * https://open-meteo.com/en/docs
+ */
+export function getWeatherCondition(weatherCode) {
+  const conditions = {
+    0: 'Clear',
+    1: 'Mainly Clear',
+    2: 'Partly Cloudy',
+    3: 'Overcast',
+    45: 'Foggy',
+    48: 'Foggy',
+    51: 'Light Drizzle',
+    53: 'Drizzle',
+    55: 'Heavy Drizzle',
+    61: 'Light Rain',
+    63: 'Rain',
+    65: 'Heavy Rain',
+    71: 'Light Snow',
+    73: 'Snow',
+    75: 'Heavy Snow',
+    77: 'Snow Grains',
+    80: 'Light Showers',
+    81: 'Showers',
+    82: 'Heavy Showers',
+    85: 'Light Snow Showers',
+    86: 'Snow Showers',
+    95: 'Thunderstorm',
+    96: 'Thunderstorm with Hail',
+    99: 'Thunderstorm with Hail',
+  };
+
+  return conditions[weatherCode] || 'Unknown';
+}
