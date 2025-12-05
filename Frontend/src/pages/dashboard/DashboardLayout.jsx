@@ -44,7 +44,7 @@ const DashboardLayout = () => {
   return (
     <div className="flex min-h-screen bg-background pt-20">
       {/* Sidebar */}
-      <aside className="w-64 fixed left-0 top-20 bottom-0 bg-background-light/30 backdrop-blur-md border-r border-white/5 z-40 hidden lg:block">
+      <aside className="w-64 fixed left-0 top-20 bottom-0 bg-background-light/30 backdrop-blur-md border-r border-sidebar-border z-40 hidden lg:block">
         <div className="p-6">
           <h2 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-6 font-heading">
             Menu
@@ -62,8 +62,8 @@ const DashboardLayout = () => {
                     className={clsx(
                       'flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 relative z-10',
                       isActive
-                        ? 'text-white'
-                        : 'text-gray-400 hover:text-white hover:bg-white/5'
+                        ? 'text-text-primary'
+                        : 'text-text-secondary hover:text-text-primary hover:bg-card-bg/50'
                     )}
                   >
                     {item.icon}

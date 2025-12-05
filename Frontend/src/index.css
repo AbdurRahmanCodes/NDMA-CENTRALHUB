@@ -24,141 +24,129 @@
 }
 
 /* Light Theme Variables */
+/* Light Theme Variables */
 :root,
 .light {
-  --primary-color: #3b82f6;
-  --primary-dark: #2563eb;
-  --primary-light: #60a5fa;
+  /* Core Colors */
+  --primary-color: #0284c7; /* Sky 600 */
+  --primary-dark: #0369a1;  /* Sky 700 */
+  --primary-light: #38bdf8; /* Sky 400 */
 
-  --text-primary: #1e293b;
-  --text-secondary: #64748b;
+  --text-primary: #0f172a;   /* Slate 900 */
+  --text-secondary: #475569; /* Slate 600 */
+  --text-muted: #94a3b8;     /* Slate 400 */
 
-  --bg-primary: #ffffff;
-  --bg-secondary: #f8fafc;
+  --bg-primary: #f8fafc;    /* Slate 50 */
+  --bg-secondary: #ffffff;  /* White */
+  --bg-tertiary: #f1f5f9;   /* Slate 100 */
 
-  --navbar-bg: #ffffff;
+  --navbar-bg: rgba(255, 255, 255, 0.8);
   --card-bg: #ffffff;
   --section-bg: #f8fafc;
 
   --border-color: #e2e8f0;
-  --sidebar-border: #94a3b8;
+  --sidebar-border: #cbd5e1;
 
-  --button-bg: #f1f5f9;
-  --button-hover-bg: #e2e8f0;
+  --button-bg: #ffffff;
+  --button-hover-bg: #f1f5f9;
 
-  --primary-gradient: linear-gradient(135deg, #3b82f6, #2563eb);
+  --primary-gradient: linear-gradient(135deg, #0284c7, #0369a1);
 
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.07);
-  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
-
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-neon: 0 0 0 rgba(0,0,0,0); /* No neon in light mode usually, or subtle */
+  
   /* Component gradients and accents (light) */
-  --title-gradient: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
-  --panel-shadow: -2px 0 12px rgba(37, 99, 235, 0.08);
-  --focus-border-color: #2563eb;
-  --focus-ring: 0 0 0 3px rgba(37, 99, 235, 0.1);
-  --hover-border-color: #2563eb;
-  --hover-shadow-weak: 0 4px 12px rgba(37, 99, 235, 0.1);
-  --hover-shadow-strong: 0 8px 20px rgba(37, 99, 235, 0.3);
-  --location-icon-color: #2563eb;
-  --time-gradient: linear-gradient(135deg, #1e40af 0%, #2563eb 100%);
-  --weather-card-gradient: linear-gradient(135deg, #1e40af 0%, #2563eb 100%);
-  --weather-card-hover-gradient: linear-gradient(
-    135deg,
-    #2563eb 0%,
-    #3b82f6 100%
-  );
-  --weather-card-shadow: 0 4px 6px rgba(37, 99, 235, 0.2);
-  --weather-card-hover-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
-  --earthquake-card-gradient: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
-  --no-earthquake-card-gradient: linear-gradient(
-    135deg,
-    #059669 0%,
-    #10b981 100%
-  );
-  --error-gradient: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  --title-gradient: linear-gradient(135deg, #0f172a 0%, #334155 100%);
+  --panel-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); 
+  
+  --focus-ring: 0 0 0 3px rgba(2, 132, 199, 0.2);
+  
+  --location-icon-color: #0284c7;
+  
+  --weather-card-gradient: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  --weather-card-text: #0f172a;
+  
+  --earthquake-card-gradient: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+  --no-earthquake-card-gradient: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+  
+  --error-gradient: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
   --error-text-color: #dc2626;
-  --growth-border-color: #2563eb;
-  --growth-title-color: #1e40af;
-  --growth-title-border: #2563eb;
-  --growth-hover-shadow: 0 4px 12px rgba(37, 99, 235, 0.1);
-  --growth-hover-border-color: #2563eb;
-  --growth-baseline-color: #2563eb;
+
+  /* Chart & Data Colors */
   --growth-positive-color: #16a34a;
   --growth-negative-color: #dc2626;
-  --growth-footer-color: #2563eb;
-  --growth-footer-border: #e5e7eb;
-  --no-data-gradient: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-  --no-data-border-color: #f59e0b;
+  
+  /* Status Colors */
+  --status-critical: #dc2626;
+  --status-high: #ea580c;
+  --status-medium: #d97706;
+  --status-low: #16a34a;
 }
 
 /* Dark Theme Variables */
+/* Dark Theme Variables */
 .dark,
 [data-theme="dark"] {
-  --primary-color: #60a5fa;
-  --primary-dark: #3b82f6;
-  --primary-light: #93c5fd;
+  /* Core Colors - Keeping existing feel but refining */
+  --primary-color: #06b6d4; /* Cyan 500 */
+  --primary-dark: #0891b2;  /* Cyan 600 */
+  --primary-light: #22d3ee; /* Cyan 400 */
 
-  --text-primary: #f1f5f9;
-  --text-secondary: #94a3b8;
+  --text-primary: #f1f5f9;  /* Slate 100 */
+  --text-secondary: #94a3b8; /* Slate 400 */
+  --text-muted: #64748b;    /* Slate 500 */
 
-  --bg-primary: #0f172a;
-  --bg-secondary: #1e293b;
+  --bg-primary: #020617;    /* Slate 950 */
+  --bg-secondary: #0f172a;  /* Slate 900 */
+  --bg-tertiary: #1e293b;   /* Slate 800 */
 
-  --navbar-bg: #1e293b;
+  --navbar-bg: rgba(15, 23, 42, 0.7);
   --card-bg: #1e293b;
-  --section-bg: #0f172a;
+  --section-bg: #020617;
 
   --border-color: #334155;
-  --sidebar-border: #64748b;
+  --sidebar-border: #334155;
 
-  --button-bg: #334155;
-  --button-hover-bg: #475569;
+  --button-bg: #1e293b;
+  --button-hover-bg: #334155;
 
-  --primary-gradient: linear-gradient(135deg, #3b82f6, #2563eb);
+  --primary-gradient: linear-gradient(135deg, #06b6d4, #0891b2);
 
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.4);
-  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.5);
-
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
+  --shadow-neon: 0 0 10px rgba(6, 182, 212, 0.5), 0 0 20px rgba(6, 182, 212, 0.3);
+  
   /* Component gradients and accents (dark) */
-  --title-gradient: linear-gradient(135deg, #60a5fa 0%, #93c5fd 100%);
+  --title-gradient: linear-gradient(135deg, #22d3ee 0%, #67e8f9 100%);
   --panel-shadow: -2px 0 12px rgba(0, 0, 0, 0.4);
-  --focus-border-color: #60a5fa;
-  --focus-ring: 0 0 0 3px rgba(96, 165, 250, 0.15);
-  --hover-border-color: #3b82f6;
-  --hover-shadow-weak: 0 4px 12px rgba(59, 130, 246, 0.15);
-  --hover-shadow-strong: 0 8px 20px rgba(0, 0, 0, 0.5);
-  --location-icon-color: #60a5fa;
-  --time-gradient: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+  
+  --focus-ring: 0 0 0 3px rgba(6, 182, 212, 0.2);
+  
+  --location-icon-color: #22d3ee;
+  
   --weather-card-gradient: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
-  --weather-card-hover-gradient: linear-gradient(
-    135deg,
-    #1e40af 0%,
-    #2563eb 100%
-  );
-  --weather-card-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-  --weather-card-hover-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+  --weather-card-text: #f1f5f9;
+  
   --earthquake-card-gradient: linear-gradient(135deg, #991b1b 0%, #dc2626 100%);
-  --no-earthquake-card-gradient: linear-gradient(
-    135deg,
-    #065f46 0%,
-    #059669 100%
-  );
-  --error-gradient: linear-gradient(135deg, #422006 0%, #292524 100%);
-  --error-text-color: #f87171;
-  --growth-border-color: #3b82f6;
-  --growth-title-color: #60a5fa;
-  --growth-title-border: #3b82f6;
-  --growth-hover-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
-  --growth-hover-border-color: #3b82f6;
-  --growth-baseline-color: #60a5fa;
+  --no-earthquake-card-gradient: linear-gradient(135deg, #065f46 0%, #059669 100%);
+  
+  --error-gradient: linear-gradient(135deg, #451a03 0%, #78350f 100%);
+  --error-text-color: #fca5a5;
+
+  /* Chart & Data Colors */
   --growth-positive-color: #4ade80;
   --growth-negative-color: #f87171;
-  --growth-footer-color: #60a5fa;
-  --growth-footer-border: #334155;
-  --no-data-gradient: linear-gradient(135deg, #422006 0%, #292524 100%);
-  --no-data-border-color: #f59e0b;
+  
+  /* Status Colors */
+  --status-critical: #f43f5e;
+  --status-high: #f97316;
+  --status-medium: #f59e0b;
+  --status-low: #10b981;
 }
 
 /* Severity badge tokens */

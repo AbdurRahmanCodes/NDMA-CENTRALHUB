@@ -3,11 +3,13 @@ import { Link, NavLink } from 'react-router-dom';
 import { Sun, Moon, Menu, X, ChevronDown, Activity } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { clsx } from 'clsx';
+import { useTheme } from '../context/ThemeContext';
 
 function PDMENavbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isHistoryDropdownOpen, setIsHistoryDropdownOpen] = useState(false);
+  const { theme, toggleTheme } = useTheme();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -29,8 +31,11 @@ function PDMENavbar() {
       animate={{ y: 0 }}
       className={clsx(
         'fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b border-transparent',
-        isScrolled ? 'bg-background/80 backdrop-blur-lg border-white/5 shadow-lg py-3' : 'bg-transparent py-5'
+        isScrolled 
+          ? 'bg-background/80 backdrop-blur-lg border-white/5 shadow-lg py-3' 
+          : 'bg-transparent py-5'
       )}
+      style={isScrolled ? { backgroundColor: 'var(--navbar-bg)' } : {}}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between">
@@ -39,7 +44,7 @@ function PDMENavbar() {
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-blue-600 flex items-center justify-center shadow-neon group-hover:scale-110 transition-transform">
               <Activity className="text-white w-6 h-6" />
             </div>
-            <span className="text-2xl font-bold font-heading text-white tracking-tight">
+            <span className="text-2xl font-bold font-heading text-text-primary tracking-tight">
               PDME
             </span>
           </Link>
@@ -54,7 +59,7 @@ function PDMENavbar() {
                 className={({ isActive }) =>
                   clsx(
                     'text-sm font-medium transition-colors hover:text-primary relative py-1',
-                    isActive ? 'text-primary' : 'text-gray-300'
+                    isActive ? 'text-primary' : 'text-text-secondary hover:text-primary'
                   )
                 }
               >
@@ -75,7 +80,7 @@ function PDMENavbar() {
             {/* History Dropdown */}
             <div className="relative group">
               <button
-                className="flex items-center gap-1 text-sm font-medium text-gray-300 hover:text-primary transition-colors py-1"
+                className="flex items-center gap-1 text-sm font-medium text-text-secondary hover:text-primary transition-colors py-1"
                 onClick={() => setIsHistoryDropdownOpen(!isHistoryDropdownOpen)}
                 onMouseEnter={() => setIsHistoryDropdownOpen(true)}
               >
@@ -108,6 +113,15 @@ function PDMENavbar() {
                 )}
               </AnimatePresence>
             </div>
+
+            {/* Theme Toggle */}
+            <button
+              onClick={toggleTheme}
+              className="p-2 rounded-full hover:bg-white/5 text-text-secondary hover:text-primary transition-colors"
+              aria-label="Toggle Theme"
+            >
+              {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+            </button>
           </nav>
 
           {/* Mobile Menu Button */}
@@ -138,7 +152,7 @@ function PDMENavbar() {
                   className={({ isActive }) =>
                     clsx(
                       'block text-lg font-medium',
-                      isActive ? 'text-primary' : 'text-gray-300'
+                      isActive ? 'text-primary' : 'text-text-secondary'
                     )
                   }
                 >

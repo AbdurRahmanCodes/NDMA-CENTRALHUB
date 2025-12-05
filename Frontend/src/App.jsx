@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { ThemeProvider } from './context/ThemeContext';
 import PDMENavbar from './components/PDMENavbar';
 import HomePage from './pages/HomePage';
 import DashboardLayout from './pages/dashboard/DashboardLayout';
@@ -14,10 +15,11 @@ import EarthquakeHistory from './pages/history/EarthquakeHistory';
 
 function App() {
   return (
-    <Router>
-      <div className="min-h-screen bg-background">
-        <PDMENavbar />
-        <Routes>
+    <ThemeProvider>
+      <Router>
+        <div className="min-h-screen bg-background text-text-primary transition-colors duration-300">
+          <PDMENavbar />
+          <Routes>
           {/* Home Page */}
           <Route path="/" element={<HomePage />} />
 
@@ -41,7 +43,8 @@ function App() {
           <Route path="*" element={<div className="p-6 text-white min-h-screen text-center">404 - Page Not Found</div>} />
         </Routes>
       </div>
-    </Router>
+      </Router>
+    </ThemeProvider>
   );
 }
 

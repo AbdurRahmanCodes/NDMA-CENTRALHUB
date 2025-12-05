@@ -96,7 +96,7 @@ const HomePage = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-background text-white overflow-hidden">
+    <div className="min-h-screen bg-background text-text-primary overflow-hidden">
       {/* Hero Section */}
       <section className="relative pt-32 pb-20 px-4 sm:px-6 lg:px-8">
         {/* Background Effects */}
@@ -111,18 +111,18 @@ const HomePage = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-md mb-8">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-card-bg/30 border border-border-color backdrop-blur-md mb-8 shadow-sm">
               <span className="w-2 h-2 rounded-full bg-risk-critical animate-pulse" />
-              <span className="text-sm font-medium text-gray-300">Live Disaster Monitoring System</span>
+              <span className="text-sm font-medium text-text-secondary">Live Disaster Monitoring System</span>
             </div>
             
-            <h1 className="text-5xl md:text-7xl font-bold font-heading tracking-tight mb-6 bg-clip-text text-transparent bg-gradient-to-r from-white via-gray-200 to-gray-400">
+            <h1 className="text-5xl md:text-7xl font-bold font-heading tracking-tight mb-6 bg-clip-text text-transparent bg-gradient-to-r from-text-primary via-text-secondary to-text-muted">
               One Platform. <br />
               <span className="text-primary">Every Disaster.</span> <br />
               Real-Time Intelligence.
             </h1>
             
-            <p className="text-xl text-gray-400 max-w-3xl mx-auto mb-10 font-body leading-relaxed">
+            <p className="text-xl text-text-secondary max-w-3xl mx-auto mb-10 font-body leading-relaxed">
               Empowering Pakistan with data-driven insights for disaster preparedness, 
               response, and recovery. Integrated with NDMA and PDMA networks.
             </p>
@@ -137,7 +137,7 @@ const HomePage = () => {
               </Link>
               <Link
                 to="/about"
-                className="px-8 py-4 bg-white/5 hover:bg-white/10 border border-white/10 text-white rounded-xl font-semibold transition-all backdrop-blur-md hover:-translate-y-1"
+                className="px-8 py-4 bg-background-light hover:bg-background-lighter border border-border-color text-text-primary rounded-xl font-semibold transition-all backdrop-blur-md hover:-translate-y-1"
               >
                 Learn More
               </Link>
@@ -188,8 +188,8 @@ const HomePage = () => {
       <section className="py-20 px-4 sm:px-6 lg:px-8 bg-background-light/30 backdrop-blur-sm border-t border-white/5">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold font-heading mb-4">Comprehensive Monitoring</h2>
-            <p className="text-gray-400 max-w-2xl mx-auto">
+            <h2 className="text-3xl md:text-4xl font-bold font-heading mb-4 text-text-primary">Comprehensive Monitoring</h2>
+            <p className="text-text-secondary max-w-2xl mx-auto">
               Advanced tools and analytics designed to keep you informed and prepared for any situation.
             </p>
           </div>
@@ -205,15 +205,15 @@ const HomePage = () => {
               <motion.div key={index} variants={itemVariants}>
                 <Link
                   to={feature.link}
-                  className="block h-full p-6 rounded-2xl bg-background border border-white/5 hover:border-primary/50 transition-all hover:shadow-neon group"
+                  className="block h-full p-6 rounded-2xl bg-card-bg border border-border-color hover:border-primary/50 transition-all hover:shadow-neon group"
                 >
                   <div className={`w-12 h-12 rounded-xl bg-${feature.color}-500/20 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}>
                     <div className={`text-${feature.color}-400`}>{feature.icon}</div>
                   </div>
-                  <h3 className="text-xl font-bold font-heading mb-2 group-hover:text-primary transition-colors">
+                  <h3 className="text-xl font-bold font-heading mb-2 group-hover:text-primary transition-colors text-text-primary">
                     {feature.title}
                   </h3>
-                  <p className="text-gray-400 text-sm leading-relaxed">
+                  <p className="text-text-secondary text-sm leading-relaxed">
                     {feature.desc}
                   </p>
                 </Link>
@@ -227,8 +227,8 @@ const HomePage = () => {
       <section className="py-20 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-transparent to-primary/5 pointer-events-none" />
         <div className="max-w-4xl mx-auto text-center relative z-10">
-          <h2 className="text-3xl md:text-4xl font-bold font-heading mb-8">Our Mission</h2>
-          <p className="text-xl text-gray-300 leading-relaxed mb-10 font-light">
+          <h2 className="text-3xl md:text-4xl font-bold font-heading mb-8 text-text-primary">Our Mission</h2>
+          <p className="text-xl text-text-secondary leading-relaxed mb-10 font-light">
             "To build a resilient Pakistan by leveraging technology, data, and community engagement. 
             We aim to minimize the impact of natural disasters through timely information and 
             proactive planning."

@@ -8,23 +8,28 @@ export default {
     extend: {
       colors: {
         background: {
-          DEFAULT: '#020617', // Deep Midnight
-          light: '#0f172a',   // Slate 900
-          lighter: '#1e293b', // Slate 800
+          DEFAULT: 'var(--bg-primary)',
+          light: 'var(--bg-secondary)', 
+          lighter: 'var(--bg-tertiary)',
         },
         primary: {
-          DEFAULT: '#06b6d4', // Cyan 500
-          dark: '#0891b2',    // Cyan 600
-          light: '#22d3ee',   // Cyan 400
+          DEFAULT: 'var(--primary-color)',
+          dark: 'var(--primary-dark)',
+          light: 'var(--primary-light)',
         },
         secondary: {
-          DEFAULT: '#8b5cf6', // Violet 500
+          DEFAULT: '#8b5cf6', // Violet 500 - keeping static for now or can make dynamic if needed
+        },
+        text: {
+           primary: 'var(--text-primary)',
+           secondary: 'var(--text-secondary)',
+           muted: 'var(--text-muted)',
         },
         risk: {
-          low: '#10b981',      // Emerald 500
-          medium: '#f59e0b',   // Amber 500
-          high: '#f97316',     // Orange 500
-          critical: '#f43f5e', // Rose 500
+          low: 'var(--status-low)',
+          medium: 'var(--status-medium)',
+          high: 'var(--status-high)',
+          critical: 'var(--status-critical)',
         }
       },
       fontFamily: {
@@ -43,7 +48,7 @@ export default {
       },
       boxShadow: {
         'glass': '0 8px 32px 0 rgba(31, 38, 135, 0.37)',
-        'neon': '0 0 10px rgba(6, 182, 212, 0.5), 0 0 20px rgba(6, 182, 212, 0.3)',
+        'neon': 'var(--shadow-neon)',
       }
     },
   },
