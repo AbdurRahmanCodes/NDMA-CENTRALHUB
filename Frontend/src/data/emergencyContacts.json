@@ -1,0 +1,80 @@
+{
+    "emergency_contacts": {
+        "national": {
+            "rescue_1122": {
+                "number": "1122",
+                "description": "Emergency Medical, Fire & Rescue Services",
+                "coverage": "All Pakistan"
+            },
+            "ndma": {
+                "phone": [
+                    "051-9030900",
+                    "051-8354777"
+                ],
+                "name": "National Disaster Management Authority",
+                "website": "www.ndma.gov.pk"
+            },
+            "pmd": {
+                "phone": "051-9250367",
+                "name": "Pakistan Meteorological Department",
+                "service": "Weather Forecasts & Warnings"
+            },
+            "ffd": {
+                "phone": [
+                    "042-99200139",
+                    "042-99200208"
+                ],
+                "name": "Flood Forecasting Division",
+                "service": "Flood Warnings & River Monitoring"
+            }
+        },
+        "provincial": {
+            "punjab": {
+                "helpline": "1129",
+                "phone": [
+                    "042-99203301",
+                    "042-99204409"
+                ],
+                "name": "PDMA Punjab",
+                "location": "Lahore"
+            },
+            "sindh": {
+                "phone": "021-99332003",
+                "name": "PDMA Sindh",
+                "location": "Karachi"
+            },
+            "kp": {
+                "helpline": "1700",
+                "phone": [
+                    "091-9219635",
+                    "091-9219636"
+                ],
+                "name": "PDMA Khyber Pakhtunkhwa",
+                "location": "Peshawar"
+            },
+            "balochistan": {
+                "helpline": "1129",
+                "control_room": [
+                    "081-9241122",
+                    "081-9241133"
+                ],
+                "whatsapp": "0334-9241133",
+                "name": "PDMA Balochistan",
+                "location": "Quetta"
+            },
+            "gb": {
+                "phone": [
+                    "05811-920974",
+                    "05811-922030"
+                ],
+                "name": "GBDMA Gilgit-Baltistan",
+                "location": "Gilgit"
+            },
+            "ajk": {
+                "phone": "05822-921023",
+                "name": "SDMA Azad Jammu & Kashmir",
+                "location": "Muzaffarabad"
+            }
+        }
+    }
+}

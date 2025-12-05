@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Activity, Menu, X } from 'lucide-react';
 import MapSelector from '../../components/dashboard/MapSelector';
 import WeatherSidebar from '../../components/dashboard/WeatherSidebar';
@@ -69,12 +69,12 @@ const WeatherMonitoring = () => {
     return () => clearInterval(interval);
   }, []);
 
-  const handleLocationSelect = (latitude, longitude, name) => {
+  const handleLocationSelect = useCallback((latitude, longitude, name) => {
     setSelectedLocation({ latitude, longitude, name: name || 'Selected Location' });
-  };
+  }, []);
 
   return (
-    <div className="flex flex-col h-screen bg-gray-950 overflow-hidden font-sans text-gray-100 selection:bg-blue-500/30">
+    <div className="flex flex-col h-[calc(100vh-5rem)] -m-6 w-[calc(100%+3rem)] bg-gray-950 overflow-hidden font-sans text-gray-100 selection:bg-blue-500/30">
       {/* Premium Header */}
       <motion.header
         initial={{ y: -20, opacity: 0 }}

@@ -13,10 +13,11 @@ const ChartsPanel = ({ weatherData, isOpen, onToggle }) => {
 
     return (
         <motion.div
-            initial={{ y: 100, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.6, ease: "easeOut" }}
-            className="bg-gray-900/95 backdrop-blur-md border-t border-gray-800 z-30 shadow-[0_-10px_40px_rgba(0,0,0,0.3)]"
+            initial={{ y: "100%" }}
+            animate={{ y: 0 }}
+            exit={{ y: "100%" }}
+            transition={{ duration: 0.5, type: "spring", damping: 25, stiffness: 200 }}
+            className="absolute bottom-0 left-0 right-0 bg-gray-900/95 backdrop-blur-md border-t border-gray-800 z-[1000] shadow-[0_-10px_40px_rgba(0,0,0,0.5)] max-h-[85vh] flex flex-col"
         >
             {/* Toggle Header */}
             <button
@@ -56,10 +57,10 @@ const ChartsPanel = ({ weatherData, isOpen, onToggle }) => {
                         animate={{ height: 'auto', opacity: 1 }}
                         exit={{ height: 0, opacity: 0 }}
                         transition={{ duration: 0.4, ease: "easeInOut" }}
-                        className="overflow-hidden"
+                        className="overflow-hidden flex-1"
                     >
-                        <div className="p-6 border-t border-gray-800 bg-gray-900/50">
-                            <div className="grid grid-cols-3 gap-6">
+                        <div className="p-4 border-t border-gray-800 bg-gray-900/50 overflow-y-auto max-h-[60vh]">
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 {/* Temperature Chart */}
                                 <motion.div
                                     initial={{ opacity: 0, y: 20 }}

@@ -121,9 +121,9 @@ export const TemperatureForecastChart = ({ forecast24h }) => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
-        style={{ height: '220px', width: '100%' }}
+        style={{ height: '180px', width: '100%' }}
       >
-        <ResponsiveContainer width="100%" height={220}>
+        <ResponsiveContainer width="100%" height={180}>
           <AreaChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 5 }}>
             <defs>
               <linearGradient id="tempGrad" x1="0" y1="0" x2="0" y2="1">
@@ -197,9 +197,10 @@ export const PrecipitationChart = ({ forecast24h }) => {
 
   const trend = useMemo(() => calculateTrend(data, 'precipitation'), [data]);
   const totalRain = data.reduce((sum, item) => sum + item.precipitation, 0).toFixed(1);
+  const isDry = data.every(item => item.precipitation === 0);
 
   return (
-    <div>
+    <div className="relative">
       <ChartHeader
         title="🌧️ Precipitation & Rainfall"
         description={`Expected rainfall volume in millimeters (Total: ${totalRain}mm)`}
@@ -209,17 +210,32 @@ export const PrecipitationChart = ({ forecast24h }) => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5, delay: 0.1 }}
-        style={{ height: '220px', width: '100%' }}
+        style={{ height: '180px', width: '100%' }}
+        className="relative"
       >
-        <ResponsiveContainer width="100%" height={220}>
+        {isDry && (
+          <div className="absolute inset-0 flex flex-col items-center justify-center bg-gray-900/50 backdrop-blur-[1px] rounded-lg z-10 border border-gray-800/50">
+            <div className="bg-yellow-500/10 p-3 rounded-full mb-2 ring-1 ring-yellow-500/30 shadow-[0_0_15px_rgba(234,179,8,0.2)]">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#eab308" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="5" />
+                <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+              </svg>
+            </div>
+            <p className="text-gray-300 font-semibold text-sm">No Rain Expected</p>
+            <p className="text-gray-500 text-xs mt-0.5">Conditions clear for next 24h</p>
+          </div>
+        )}
+
+        <ResponsiveContainer width="100%" height={180}>
           <ComposedChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 5 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#374151" opacity={0.3} />
+            <CartesianGrid strokeDasharray="3 3" stroke="#374151" opacity={0.2} /> {/* Reduced opacity */}
             <XAxis
               dataKey="hour"
               stroke="#9ca3af"
               fontSize={11}
               tickLine={false}
               axisLine={false}
+              opacity={isDry ? 0.3 : 1}
             />
             <YAxis
               stroke="#9ca3af"
@@ -227,8 +243,9 @@ export const PrecipitationChart = ({ forecast24h }) => {
               tickLine={false}
               axisLine={false}
               label={{ value: 'mm', position: 'insideTopLeft', fill: '#9ca3af', fontSize: 10 }}
+              opacity={isDry ? 0.3 : 1}
             />
-            <Tooltip content={<CustomTooltip unit="mm" />} />
+            <Tooltip content={<CustomTooltip unit="mm" />} cursor={!isDry} />
             <Bar
               dataKey="precipitation"
               fill="#3b82f6"
@@ -284,9 +301,9 @@ export const HumidityWindChart = ({ forecast24h }) => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5, delay: 0.2 }}
-        style={{ height: '220px', width: '100%' }}
+        style={{ height: '180px', width: '100%' }}
       >
-        <ResponsiveContainer width="100%" height={220}>
+        <ResponsiveContainer width="100%" height={180}>
           <ComposedChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 5 }}>
             <defs>
               <linearGradient id="humidGrad" x1="0" y1="0" x2="0" y2="1">

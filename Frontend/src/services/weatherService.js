@@ -11,6 +11,9 @@ const HOURLY_PARAMS = [
   "relative_humidity_2m",
 ].join(",");
 
+// Open-Meteo Geocoding API
+const GEOCODING_API_URL = "https://geocoding-api.open-meteo.com/v1/search";
+
 export async function fetchOpenMeteo(lat, lon) {
   const url = "https://api.open-meteo.com/v1/forecast";
   const params = {
@@ -100,50 +103,20 @@ export async function fetchWeatherForLocation(lat, lon) {
 }
 
 /**
- * Fetch weather data for multiple cities in parallel
- */
-export async function fetchMultipleCities(citiesArray) {
-  try {
-    const promises = citiesArray.map(city =>
-      fetchWeatherForLocation(city.latitude, city.longitude)
-        .then(weather => ({
-          ...city,
-          weather,
-          error: null
-        }))
-        .catch(error => ({
-          ...city,
-          weather: null,
-          error: error.message
-        }))
-    );
-
-    return await Promise.all(promises);
-  } catch (error) {
-    console.error('Error fetching multiple cities weather:', error);
-    throw error;
-  }
-}
-
-/**
- * Extract 24-hour forecast from hourly data
+ * Helper to extract 24h forecast
  */
 function extractForecast24h(data) {
-  if (!data || !data.hourly) return [];
+  if (!data.hourly || !data.hourly.time) return [];
 
-  const hourly = data.hourly;
-  const times = hourly.time || [];
-
-  if (times.length === 0) return [];
-
-  // Get current hour index
+  const { time: times, ...hourly } = data.hourly;
   const currentIndex = pickCurrentHourly(data);
-  if (currentIndex === null || currentIndex < 0) return [];
-
-  // Get next 24 hours starting from current hour
   const forecast = [];
-  for (let i = 0; i < 24 && (currentIndex + i) < times.length; i++) {
+
+  // Get next 24 hours starting from current index
+  for (let i = 0; i < 24; i++) {
     const index = currentIndex + i;
+    if (index >= times.length) break;
+
     const time = new Date(times[index]);
 
     forecast.push({
@@ -194,4 +167,101 @@ export function getWeatherCondition(weatherCode) {
   };
 
   return conditions[weatherCode] || 'Unknown';
+}
+
+/**
+ * Search for cities using Open-Meteo Geocoding API with explicit Pakistan biasing
+ * @param {string} query - City name to search for
+ * @returns {Promise<Array>} - List of matching cities
+ */
+export async function searchCities(query) {
+  if (!query || query.length < 2) return [];
+
+  try {
+    const params = {
+      name: query,
+      count: 10,
+      language: 'en',
+      format: 'json'
+    };
+
+    const { data } = await axios.get(GEOCODING_API_URL, { params });
+
+    if (!data.results) return [];
+
+    return data.results.map(city => ({
+      name: city.name,
+      latitude: city.latitude,
+      longitude: city.longitude,
+      country: city.country,
+      region: city.admin1 || city.country,
+      weather: null // Weather will be fetched when selected
+    }));
+  } catch (error) {
+    console.error('Error searching cities:', error);
+    return [];
+  }
+}
+
+/**
+ * Get closest city name from coordinates using Open-Meteo Geocoding API
+ * (Reverse Geocoding workaround using finding nearest city)
+ */
+export async function fetchCityNameFromCoords(lat, lon) {
+  try {
+    // Open-Meteo doesn't have a direct reverse geocoding endpoint in the free tier easily accessible 
+    // without using the "search" by location approximation or just using the closest big city.
+    // However, we can use BigDataCloud or OpenStreetMap (Nominatim) for free reverse geocoding.
+    // Let's use OpenStreetMap Nominatim as it's free and reliable for this.
+
+    // Using Nominatim API for reverse geocoding
+    const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=10&addressdetails=1`;
+
+    const { data } = await axios.get(url, {
+      headers: {
+        'User-Agent': 'FloodManagementSystem/1.0'
+      }
+    });
+
+    if (data && data.address) {
+      // Try to find the most relevant name: city > town > village > county
+      const name = data.address.city ||
+        data.address.town ||
+        data.address.village ||
+        data.address.county ||
+        data.address.state_district ||
+        "Unknown Location";
+      return name;
+    }
+    return "Custom Location";
+  } catch (error) {
+    console.error('Error in reverse geocoding:', error);
+    return "Custom Location";
+  }
+}
+
+/**
+ * Fetch weather data for multiple cities in parallel
+ * @param {Array} cities - Array of city objects {name, latitude, longitude, ...}
+ * @returns {Promise<Array>} - Cities with added weather property
+ */
+export async function fetchMultipleCities(cities) {
+  if (!cities || !Array.isArray(cities) || cities.length === 0) return [];
+
+  try {
+    const promises = cities.map(async (city) => {
+      try {
+        const weather = await fetchWeatherForLocation(city.latitude, city.longitude);
+        return { ...city, weather };
+      } catch (error) {
+        console.warn(`Failed to fetch weather for ${city.name}`, error);
+        return { ...city, weather: null };
+      }
+    });
+
+    return await Promise.all(promises);
+  } catch (error) {
+    console.error("Error fetching multiple cities:", error);
+    return cities;
+  }
 }
