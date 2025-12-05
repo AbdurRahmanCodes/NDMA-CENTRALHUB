@@ -3,7 +3,7 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { PAKISTAN_BOUNDS } from '../../data/pakistanCities';
 
-// Fix Leaflet default marker icon issue with Vite/Webpack
+// Fix Leaflet default marker icon issue
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png',
@@ -12,21 +12,20 @@ L.Icon.Default.mergeOptions({
 });
 
 /**
- * MapSelector with reliable standard markers
+ * MapSelector - Fixed version that doesn't remove markers
  */
 const MapSelector = ({ selectedLocation, citiesWeather = [], onLocationSelect }) => {
   const mapContainer = useRef(null);
   const mapRef = useRef(null);
   const markerRef = useRef(null);
   const cityMarkersRef = useRef([]);
-  const heatLayerRef = useRef(null);
+  const lastPositionRef = useRef(null); // Track last position to prevent unnecessary updates
 
   const [mapLoaded, setMapLoaded] = useState(false);
   const [showCityMarkers, setShowCityMarkers] = useState(true);
-  const [showHeatmap, setShowHeatmap] = useState(false);
   const [error, setError] = useState(null);
 
-  // Initialize map once
+  // Initialize map ONCE
   useEffect(() => {
     if (mapContainer.current && !mapRef.current) {
       try {
@@ -40,8 +39,8 @@ const MapSelector = ({ selectedLocation, citiesWeather = [], onLocationSelect })
 
         L.control.zoom({ position: 'bottomright' }).addTo(map);
 
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-          attribution: '© OpenStreetMap, © CARTO',
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '© OpenStreetMap contributors',
           maxZoom: 19,
           minZoom: 5
         }).addTo(map);
@@ -49,11 +48,11 @@ const MapSelector = ({ selectedLocation, citiesWeather = [], onLocationSelect })
         mapRef.current = map;
         setMapLoaded(true);
 
-        // Handle map clicks
+        // Map click handler
         map.on('click', (e) => {
           const { lat, lng } = e.latlng;
           if (onLocationSelect) {
-            onLocationSelect(lat, lng, `Location (${lat.toFixed(2)}°, ${lng.toFixed(2)}°)`);
+            onLocationSelect(lat, lng, `Custom (${lat.toFixed(2)}°, ${lng.toFixed(2)}°)`);
           }
         });
 
@@ -68,78 +67,50 @@ const MapSelector = ({ selectedLocation, citiesWeather = [], onLocationSelect })
         setError(err.message);
       }
     }
-  }, [onLocationSelect]);
+  }, []); // Empty deps - only run once
 
-  // Update marker when location changes - FIXED VERSION
+  // Update marker - ONLY when coordinates actually change
   useEffect(() => {
     if (!mapLoaded || !mapRef.current || !selectedLocation) return;
 
-    // Use timeout to avoid Leaflet animation conflicts
-    const timeoutId = setTimeout(() => {
-      if (!mapRef.current) return;
+    const posKey = `${selectedLocation.latitude.toFixed(6)},${selectedLocation.longitude.toFixed(6)}`;
 
-      // Safely remove old marker
-      if (markerRef.current) {
-        try {
-          mapRef.current.removeLayer(markerRef.current);
-        } catch (e) {
-          // Ignore errors from removing markers during animations
-        }
-        markerRef.current = null;
-      }
+    // Don't update if position hasn't changed
+    if (lastPositionRef.current === posKey) {
+      return;
+    }
 
-      // Create new standard Leaflet marker (blue pin)
-      try {
-        const marker = L.marker(
-          [selectedLocation.latitude, selectedLocation.longitude],
-          {
-            title: `${selectedLocation.name}`,
-            riseOnHover: true,
-            draggable: false
-          }
-        );
+    lastPositionRef.current = posKey;
 
-        marker.bindPopup(`
-          <div style="padding: 10px; min-width: 160px;">
-            <h4 style="margin: 0 0 8px 0; color: #1e40af; font-size: 15px; font-weight: 600;">
-              📍 ${selectedLocation.name}
-            </h4>
-            <div style="font-size: 12px; color: #64748b; line-height: 1.6;">
-              <div><strong>Lat:</strong> ${selectedLocation.latitude.toFixed(4)}°N</div>
-              <div><strong>Lon:</strong> ${selectedLocation.longitude.toFixed(4)}°E</div>
-            </div>
+    // Remove old marker
+    if (markerRef.current && mapRef.current) {
+      mapRef.current.removeLayer(markerRef.current);
+      markerRef.current = null;
+    }
+
+    // Add new marker
+    try {
+      const marker = L.marker([selectedLocation.latitude, selectedLocation.longitude])
+        .bindPopup(`
+          <div style="padding: 8px;">
+            <strong style="color:#2563eb;">${selectedLocation.name}</strong><br/>
+            <small>${selectedLocation.latitude.toFixed(4)}°N, ${selectedLocation.longitude.toFixed(4)}°E</small>
           </div>
-        `, {
-          closeButton: true,
-          autoClose: false,
-          className: 'custom-leaflet-popup'
-        });
+        `)
+        .addTo(mapRef.current);
 
-        marker.addTo(mapRef.current);
-        markerRef.current = marker;
+      markerRef.current = marker;
+      marker.openPopup();
+    } catch (err) {
+      console.error('Error adding marker:', err);
+    }
+  }, [selectedLocation?.latitude, selectedLocation?.longitude, selectedLocation?.name, mapLoaded]);
 
-        // Auto-open popup after a short delay
-        setTimeout(() => {
-          if (marker && mapRef.current) {
-            marker.openPopup();
-          }
-        }, 150);
-      } catch (err) {
-        console.error('Error adding marker:', err);
-      }
-    }, 150); // Delay to avoid conflicts
-
-    return () => clearTimeout(timeoutId);
-  }, [selectedLocation?.latitude, selectedLocation?.longitude, mapLoaded]);
-
-  // Update city markers
+  // City markers
   useEffect(() => {
     if (!mapLoaded || !mapRef.current || !showCityMarkers) {
-      // Clear markers if toggle is off
       cityMarkersRef.current.forEach(m => {
-        try {
-          mapRef.current?.removeLayer(m);
-        } catch (e) { }
+        try { mapRef.current?.removeLayer(m); } catch (e) { }
       });
       cityMarkersRef.current = [];
       return;
@@ -148,15 +119,11 @@ const MapSelector = ({ selectedLocation, citiesWeather = [], onLocationSelect })
     if (!Array.isArray(citiesWeather) || citiesWeather.length === 0) return;
 
     try {
-      // Clear old markers
       cityMarkersRef.current.forEach(m => {
-        try {
-          mapRef.current.removeLayer(m);
-        } catch (e) { }
+        try { mapRef.current.removeLayer(m); } catch (e) { }
       });
       cityMarkersRef.current = [];
 
-      // Add new markers for major cities
       const majorCities = citiesWeather.filter(city =>
         ['Karachi', 'Lahore', 'Islamabad', 'Peshawar', 'Quetta', 'Multan', 'Faisalabad', 'Rawalpindi'].includes(city.name)
       );
@@ -165,30 +132,29 @@ const MapSelector = ({ selectedLocation, citiesWeather = [], onLocationSelect })
         if (!city.weather?.current) return;
 
         const temp = city.weather.current.temperature;
-        let color = temp > 30 ? '#ef4444' : temp > 20 ? '#f59e0b' : temp > 10 ? '#10b981' : '#3b82f6';
+        const color = temp > 30 ? '#ef4444' : temp > 20 ? '#f59e0b' : temp > 10 ? '#10b981' : '#3b82f6';
 
         const cityIcon = L.divIcon({
           className: '',
           html: `
             <div style="
-              width: 14px;
-              height: 14px;
+              width: 12px;
+              height: 12px;
               background: ${color};
               border: 2px solid white;
               border-radius: 50%;
               box-shadow: 0 2px 4px rgba(0,0,0,0.3);
             "></div>
           `,
-          iconSize: [14, 14],
-          iconAnchor: [7, 7]
+          iconSize: [12, 12],
+          iconAnchor: [6, 6]
         });
 
         const marker = L.marker([city.latitude, city.longitude], { icon: cityIcon })
           .bindPopup(`
-            <div style="padding: 8px;">
+            <div style="padding: 6px;">
               <strong>${city.name}</strong><br/>
-              <span style="color: ${color}; font-weight: bold;">${temp}°C</span><br/>
-              <small>💧 ${city.weather.current.humidity}% | 💨 ${city.weather.current.windSpeed} km/h</small>
+              <span style="color:${color};font-weight:bold;">${temp}°C</span>
             </div>
           `)
           .addTo(mapRef.current);
@@ -199,42 +165,6 @@ const MapSelector = ({ selectedLocation, citiesWeather = [], onLocationSelect })
       console.error('Error updating city markers:', error);
     }
   }, [citiesWeather, mapLoaded, showCityMarkers]);
-
-  // Update heatmap
-  useEffect(() => {
-    if (heatLayerRef.current && mapRef.current) {
-      try {
-        mapRef.current.removeLayer(heatLayerRef.current);
-      } catch (e) { }
-      heatLayerRef.current = null;
-    }
-
-    if (!mapLoaded || !mapRef.current || !showHeatmap || !Array.isArray(citiesWeather) || citiesWeather.length === 0) {
-      return;
-    }
-
-    try {
-      const heatCircles = citiesWeather
-        .filter(city => city.weather?.current)
-        .map(city => {
-          const temp = city.weather.current.temperature;
-          const color = temp > 35 ? '#dc2626' : temp > 30 ? '#f59e0b' : temp > 20 ? '#10b981' : '#3b82f6';
-
-          return L.circle([city.latitude, city.longitude], {
-            radius: 30000,
-            fillColor: color,
-            fillOpacity: 0.2,
-            stroke: false
-          });
-        });
-
-      const heatGroup = L.layerGroup(heatCircles);
-      heatGroup.addTo(mapRef.current);
-      heatLayerRef.current = heatGroup;
-    } catch (error) {
-      console.error('Error updating heatmap:', error);
-    }
-  }, [citiesWeather, mapLoaded, showHeatmap]);
 
   if (error) {
     return (
@@ -268,13 +198,6 @@ const MapSelector = ({ selectedLocation, citiesWeather = [], onLocationSelect })
             }`}
         >
           {showCityMarkers ? '✓' : '○'} Cities
-        </button>
-        <button
-          onClick={() => setShowHeatmap(!showHeatmap)}
-          className={`px-4 py-2 rounded-lg text-sm font-medium shadow-lg transition-all ${showHeatmap ? 'bg-orange-600 text-white' : 'bg-white text-gray-700'
-            }`}
-        >
-          {showHeatmap ? '✓' : '○'} Heat
         </button>
       </div>
 
